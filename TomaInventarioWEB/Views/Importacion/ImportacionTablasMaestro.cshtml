@@ -1,0 +1,213 @@
+﻿
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex flex-column flex-lg-row align-items-start gap-3">
+            <div class="nav-pills-container">
+                <div class="nav flex-lg-column nav-pills bg-light-subtle rounded p-2 d-flex flex-row flex-lg-column overflow-auto"
+                     id="v-pills-tab-maestro"
+                     role="tablist"
+                     aria-orientation="vertical">
+                    <button class="nav-link active fw-semibold mb-lg-2 me-2 me-lg-0 text-nowrap"
+                            id="v-pills-almacen-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#v-pills-almacen"
+                            type="button"
+                            role="tab"
+                            aria-controls="v-pills-almacen"
+                            aria-selected="true">
+                        <i class="ti ti-building-warehouse me-2"></i>
+                        <span class="d-none d-sm-inline">ALMACÉN</span>
+                        <span class="d-inline d-sm-none">ALM</span>
+                    </button>
+                    <button class="nav-link fw-semibold mb-lg-2 me-2 me-lg-0 text-nowrap"
+                            id="v-pills-usu-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#v-pills-usu"
+                            type="button"
+                            role="tab"
+                            aria-controls="v-pills-usu"
+                            aria-selected="false">
+                        <i class="ti ti-users me-2"></i>
+                        <span class="d-none d-sm-inline">USUARIOS</span>
+                        <span class="d-inline d-sm-none">USU</span>
+                    </button>
+                    <button class="nav-link fw-semibold mb-lg-2 me-2 me-lg-0 text-nowrap"
+                            id="v-pills-usuXalm-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#v-pills-usuXalm"
+                            type="button"
+                            role="tab"
+                            aria-controls="v-pills-usuXalm"
+                            aria-selected="false">
+                        <i class="ti ti-user-check me-2"></i>
+                        <span class="d-none d-sm-inline">USU X ALMN</span>
+                        <span class="d-inline d-sm-none">UxA</span>
+                    </button>
+                    <button class="nav-link fw-semibold mb-lg-2 me-2 me-lg-0 text-nowrap"
+                            id="v-pills-prod-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#v-pills-prod"
+                            type="button"
+                            role="tab"
+                            aria-controls="v-pills-prod"
+                            aria-selected="false">
+                        <i class="ti ti-box me-2"></i>
+                        <span class="d-none d-sm-inline">PRODUCTOS</span>
+                        <span class="d-inline d-sm-none">PROD</span>
+                    </button>
+                    <button class="nav-link fw-semibold me-2 me-lg-0 text-nowrap"
+                            id="v-pills-ubi-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#v-pills-ubi"
+                            type="button"
+                            role="tab"
+                            aria-controls="v-pills-ubi"
+                            aria-selected="false">
+                        <i class="ti ti-map-pin me-2"></i>
+                        <span class="d-none d-sm-inline">UBICACIONES</span>
+                        <span class="d-inline d-sm-none">UBI</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenido de Tabs Verticales -->
+            <div class="tab-content flex-fill" id="v-pills-tabContent-maestro">
+                <!-- ALMACÉN -->
+                <div class="tab-pane fade show active"
+                     id="v-pills-almacen"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-almacen-tab">
+                    <div class="card border">
+                        <div class="card-header bg-primary-subtle">
+                            <h5 class="card-title mb-0">
+                                <i class="ti ti-building-warehouse me-2 text-primary"></i>
+                                Almacenes
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="tbl_almacen" class="table table-striped table-hover display responsive nowrap w-100">
+                                    <thead class="table-light">
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USUARIOS -->
+                <div class="tab-pane fade"
+                     id="v-pills-usu"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-usu-tab">
+                    <div class="card border">
+                        <div class="card-header bg-primary-subtle">
+                            <h5 class="card-title mb-0">
+                                <i class="ti ti-users me-2 text-primary"></i>
+                                Usuarios
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="tbl_usuarios" class="table table-striped table-hover display responsive nowrap w-100">
+                                    <thead class="table-light">
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USUARIOS X ALMACÉN -->
+                <div class="tab-pane fade"
+                     id="v-pills-usuXalm"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-usuXalm-tab">
+                    <div class="card border">
+                        <div class="card-header bg-primary-subtle">
+                            <h5 class="card-title mb-0">
+                                <i class="ti ti-user-check me-2 text-primary"></i>
+                                Usuarios por Almacén
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="tbl_usuXalmn" class="table table-striped table-hover display responsive nowrap w-100">
+                                    <thead class="table-light">
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUCTOS -->
+                <div class="tab-pane fade"
+                     id="v-pills-prod"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-prod-tab">
+                    <div class="card border">
+                        <div class="card-header bg-primary-subtle">
+                            <h5 class="card-title mb-0">
+                                <i class="ti ti-box me-2 text-primary"></i>
+                                Productos
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="tbl_productos" class="table table-striped table-hover display responsive nowrap  w-100">
+                                    <thead class="table-light">
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UBICACIONES -->
+                <div class="tab-pane fade"
+                     id="v-pills-ubi"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-ubi-tab">
+                    <div class="card border">
+                        <div class="card-header bg-primary-subtle">
+                            <h5 class="card-title mb-0">
+                                <i class="ti ti-map-pin me-2 text-primary"></i>
+                                Ubicaciones
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="tbl_ubicacion" class="table table-striped table-hover display responsive nowrap w-100">
+                                    <thead class="table-light">
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

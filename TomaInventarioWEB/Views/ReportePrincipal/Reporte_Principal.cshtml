@@ -1,0 +1,869 @@
+﻿@{
+    ViewBag.Title = "Reporte Principal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+<link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
+<link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">
+
+
+<!-- Sección Seleccionar Inventario -->
+<!--<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3 fw-semibold">
+                    <i class="ti ti-clipboard-check me-2"></i>
+                    Seleccionar Inventario
+                </h5>
+
+                <div class="row align-items-end">
+                        <div class="col-md-8">
+                            <label for="cbxInventariosCerrados" class="form-label fw-semibold">Inventario para generar reporte detallado</label>
+                            <select class="select2 form-control" id="cbxInventariosCerrados">
+                                @foreach (var item in ViewBag.ListInventariosCerrados)
+                                {
+                                    <option value="@item.vchValue">@item.vchdesc</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-primary w-100" id="btnCargarInventario">
+                                <i class="ti ti-check me-1"></i> Cargar Inventario
+                            </button>
+                        </div>
+                    </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="seccionResumen" class="row d-none">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 class="mb-1 fw-semibold text-white">
+                            <i class="ti ti-table me-2"></i>REPORTE DETALLADO
+                        </h5>
+                        <small class="text-white">Reporte detallado de su inventario</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-info-subtle text-info" id="badgeEstadoInventario">-</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-barcode fs-6 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Código Inventario</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenCodInventario">-</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-building-warehouse fs-6 text-secondary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Almacén</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenNombreAlmacen">-</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-calendar fs-6 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Fecha Registro</p>
+                                <h5 class="mb-0 fw-semibold fs-4" id="txtResumenFechaRegistro">-</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-info-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-package fs-6 text-info"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Total Productos</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenTotalProductos">0</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-warning-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-alert-triangle fs-6 text-warning"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Con Diferencias</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenConDiferencias">0</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-success-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-check fs-6 text-success"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Sin Diferencias</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenSinDiferencias">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- Filtros y Tabla -->
+<!--<div id="seccionReporte" class="row d-none">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">-->
+<!-- Guía informativa -->
+<!--<div class="alert alert-info border-info mb-4" role="alert">
+    <div class="d-flex align-items-center">
+        <div>
+            <div class="d-flex align-items-center">
+                <i class="ti ti-info-circle fs-5 me-2"></i>
+                <h6 class="alert-heading mb-1">Guía de Exportación</h6>
+            </div>
+            <p class="mb-0 small">
+                <strong>1.</strong> Selecciona el tipo de registro o busca por producto/usuario/ubicación
+            </p>
+            <p class="mb-0 small">
+                <strong>2.</strong> Aplica los filtros necesarios
+            </p>
+            <p class="mb-0 small">
+                <strong>3.</strong> Exporta los resultados a Excel
+            </p>
+        </div>
+    </div>
+</div>-->
+<!-- Sección de Filtros -->
+<!--<div class="card bg-light mb-4">
+    <div class="card-header bg-transparent">
+        <h6 class="mb-0 fw-semibold">
+            <i class="ti ti-adjustments me-2"></i>Filtros de Búsqueda
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">-->
+<!-- Tipo de Registro -->
+<!--<div class="col-md-4">
+    <label for="filtroDiferencias" class="form-label fw-semibold">
+        <i class="ti ti-category me-1"></i>Tipo de Registro
+    </label>
+    <select class="form-select" id="filtroDiferencias">
+        <option value="0">Todos los registros</option>
+        <option value="1">Con Diferencias</option>
+        <option value="2">Sin Diferencias</option>
+    </select>
+</div>-->
+<!-- Búsqueda Personalizada -->
+<!--<div class="col-md-5">
+    <label for="customSearch" class="form-label fw-semibold">
+        <i class="ti ti-search me-1"></i>Búsqueda General
+    </label>
+    <div class="input-group">
+        <span class="input-group-text bg-white">
+            <i class="ti ti-search"></i>
+        </span>
+        <input type="text"
+               class="form-control"
+               id="customSearch"
+               placeholder="Producto, Usuario, Ubicación, Lote...">
+        <button class="btn btn-outline-secondary d-none"
+                type="button"
+                id="btnLimpiarBusqueda"
+                title="Limpiar búsqueda">
+            <i class="ti ti-x"></i>
+        </button>
+    </div>
+    <div class="form-text">
+        Busca por código, nombre de producto, usuario, ubicación o lote
+    </div>
+</div>-->
+<!-- Botones de Acción -->
+<!--<div class="col-md-3">
+                <label class="form-label fw-semibold d-block">
+                    <i class="ti ti-click me-1"></i>Acciones
+                </label>
+                <div class="d-flex align-items-end gap-2">
+                    <button type="button" class="btn btn-primary flex-fill" id="btnAplicarFiltros">
+                        <i class="ti ti-filter me-1"></i> Aplicar Filtros
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary flex-fill" id="btnLimpiarFiltros">
+                        <i class="ti ti-refresh me-1"></i> Limpiar Todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- Encabezado de Tabla y Exportación -->
+<!--<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <h5 class="mb-1 fw-semibold">
+            <i class="ti ti-table me-2"></i>Detalle del Inventario
+        </h5>
+        <small class="text-muted">Resultados basados en los filtros aplicados</small>
+    </div>
+    <button type="button" class="btn btn-success" id="btnExportarExcel">
+        <i class="ti ti-file-download me-1"></i> Exportar a Excel
+    </button>
+</div>-->
+<!-- Tabla -->
+<!--<div class="table-responsive">
+                    <table id="tblReporteInventario" class="table table-hover table-bordered align-middle text-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Ubicación</th>
+                                <th>Lote</th>
+                                <th class="text-end">Stock Inicial</th>
+                                <th class="text-end">Conteo 1</th>
+                                <th class="text-end">Conteo 2</th>
+                                <th class="text-end">Conteo 3</th>
+                                <th class="text-end">Stock Final</th>
+                                <th class="text-end">Diferencial</th>
+                                <th>Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="table-secondary fw-bold">
+                            <tr>
+                                <td colspan="4" class="text-end">TOTALES:</td>
+                                <td class="text-end" id="footerStockInicial">0</td>
+                                <td class="text-end" id="footerConteo1">0</td>
+                                <td class="text-end" id="footerConteo2">0</td>
+                                <td class="text-end" id="footerConteo3">0</td>
+                                <td class="text-end" id="footerStockFinal">0</td>
+                                <td class="text-end" id="footerDiferencial">0</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- Sección Seleccionar Inventario -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3 fw-semibold">
+                    <i class="ti ti-clipboard-check me-2"></i>
+                    Seleccionar Inventario
+                </h5>
+
+                <div class="row align-items-end">
+                    <div class="col-md-8">
+                        <label for="cbxInventariosCerrados" class="form-label fw-semibold">Inventario para generar reporte detallado</label>
+                        <select class="select2 form-control" id="cbxInventariosCerrados">
+                            @foreach (var item in ViewBag.ListInventariosCerrados)
+                            {
+                                <option value="@item.vchValue">@item.vchdesc</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary w-100" id="btnCargarInventario">
+                            <i class="ti ti-check me-1"></i> Cargar Inventario
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección Resumen -->
+<div id="seccionResumen" class="row d-none">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 class="mb-1 fw-semibold text-white">
+                            <i class="ti ti-table me-2"></i>REPORTE DETALLADO
+                        </h5>
+                        <small class="text-white">Reporte detallado de su inventario</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-info-subtle text-info" id="badgeEstadoInventario">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Estadísticas del inventario -->
+                <div class="row mb-4">
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-barcode fs-6 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Código Inventario</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenCodInventario">-</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-building-warehouse fs-6 text-secondary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Almacén</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenNombreAlmacen">-</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-calendar fs-6 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Fecha Registro</p>
+                                <h5 class="mb-0 fw-semibold fs-4" id="txtResumenFechaRegistro">-</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-info-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-package fs-6 text-info"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Total Productos</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenTotalProductos">0</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-warning-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-alert-triangle fs-6 text-warning"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Con Diferencias</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenConDiferencias">0</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="round-40 rounded-circle bg-success-subtle d-flex align-items-center justify-content-center me-3">
+                                <i class="ti ti-check fs-6 text-success"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted fs-3">Sin Diferencias</p>
+                                <h5 class="mb-0 fw-semibold" id="txtResumenSinDiferencias">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Filtros -->
+                <div id="seccionReporte" class="d-none">
+                    <div class="border rounded-3 p-3 mb-3 bg-light">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ti ti-adjustments fs-5 me-2 text-primary"></i>
+                            <h6 class="mb-0 fw-semibold">Filtros de Búsqueda</h6>
+                        </div>
+
+                        <div class="row g-3 align-items-end">
+                            <!-- Tipo de Registro -->
+                            <div class="col-lg-3 col-md-4">
+                                <label for="filtroDiferencias" class="form-label fw-semibold small mb-1">
+                                    <i class="ti ti-category me-1"></i>Tipo de Registro
+                                </label>
+                                <select class="form-select" id="filtroDiferencias">
+                                    <option value="0">Todos los registros</option>
+                                    <option value="1">Con Diferencias</option>
+                                    <option value="2">Sin Diferencias</option>
+                                </select>
+                            </div>
+
+                            <!-- Búsqueda General -->
+                            <div class="col-lg-5 col-md-4">
+                                <label for="customSearch" class="form-label fw-semibold small mb-1">
+                                    <i class="ti ti-search me-1"></i>Búsqueda General
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="ti ti-search"></i>
+                                    </span>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="customSearch"
+                                           placeholder="Producto, Usuario, Ubicación, Lote...">
+                                    <button class="btn btn-outline-secondary d-none"
+                                            type="button"
+                                            id="btnLimpiarBusqueda"
+                                            title="Limpiar búsqueda">
+                                        <i class="ti ti-x"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción lado a lado -->
+                            <div class="col-lg-4 col-md-4">
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-primary flex-fill" id="btnAplicarFiltros">
+                                        <i class="ti ti-filter me-1"></i> Aplicar
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary flex-fill" id="btnLimpiarFiltros">
+                                        <i class="ti ti-refresh me-1"></i> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Línea separadora -->
+                    <hr class="my-4">
+
+                    <!-- Encabezado de Tabla y Exportación -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <div>
+                            <h5 class="mb-1 fw-semibold">
+                                <i class="ti ti-table me-2"></i>Detalle del Inventario
+                            </h5>
+                            <small class="text-muted">Resultados basados en los filtros aplicados</small>
+                        </div>
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
+                        </button>
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="table-responsive">
+                        <table id="tblReporteInventario" class="table table-hover table-bordered align-middle text-nowrap mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th>Ubicación</th>
+                                    <th>Lote</th>
+                                    <th class="text-end">Stock Inicial</th>
+                                    <th class="text-end">Conteo 1</th>
+                                    <th class="text-end">Conteo 2</th>
+                                    <th class="text-end">Conteo 3</th>
+                                    <th class="text-end">Stock Final</th>
+                                    <th class="text-end">Diferencial</th>
+                                    <th>Usuario</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="table-secondary fw-bold">
+                                <tr>
+                                    <td colspan="4" class="text-end">TOTALES:</td>
+                                    <td class="text-end" id="footerStockInicial">0</td>
+                                    <td class="text-end" id="footerConteo1">0</td>
+                                    <td class="text-end" id="footerConteo2">0</td>
+                                    <td class="text-end" id="footerConteo3">0</td>
+                                    <td class="text-end" id="footerStockFinal">0</td>
+                                    <td class="text-end" id="footerDiferencial">0</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section scripts {
+    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+    <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
+    <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
+    <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
+    <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
+    <script src="~/Content/matdash/js/forms/select2.init.js"></script>
+
+
+    <script nonce="@nonce">
+
+        let tblReporteInventario;
+        let inventarioSeleccionado = {
+            codigo: '',
+            nombre: ''
+        };
+
+        $(document).ready(function () {
+            inicializarComponentes();
+            inicializarEventos();
+        });
+
+        function inicializarComponentes() {
+            $('#cbxInventariosCerrados').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '-- Seleccione un inventario cerrado --',
+                allowClear: false,
+                language: {
+                    noResults: function () {
+                        return "No se encontraron resultados";
+                    },
+                    searching: function () {
+                        return "Buscando...";
+                    }
+                }
+            });
+        }
+
+
+        function inicializarEventos() {
+
+            $('#btnCargarInventario').click(function () {
+                let selectedValue = $('#cbxInventariosCerrados').val();
+                let selectedText = $('#cbxInventariosCerrados option:selected').text();
+
+                if (!selectedValue || selectedValue === '-1' || selectedValue === '') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atención',
+                        text: 'Debe seleccionar un inventario válido'
+                    });
+                    return;
+                }
+
+                inventarioSeleccionado.codigo = selectedValue;
+                inventarioSeleccionado.nombre = selectedText;
+
+                cargarDatosInventario();
+            });
+
+            $('#btnAplicarFiltros').click(function () {
+                reloadTableReporte();
+            });
+
+            //$('#btnLimpiarFiltros').click(function () {
+            //    $('#filtroDiferencias').val('0');
+            //    reloadTableReporte();
+            //});
+            $('#btnLimpiarFiltros').click(function () {
+                $('#filtroDiferencias').val('0');
+                $('#customSearch').val('');
+                $('#btnLimpiarBusqueda').addClass('d-none');
+                reloadTableReporte();
+            });
+
+            $('#btnExportarExcel').click(function () {
+                exportarExcel();
+            });
+            $('#customSearch').on('keyup', function () {
+                if (typeof tblReporteInventario !== 'undefined') {
+                    tblReporteInventario.search(this.value).draw();
+                }
+            });
+        }
+
+        function CargarTablaReporteInventario(codInventario) {
+        if (typeof tblReporteInventario !== 'undefined') {
+            tblReporteInventario.destroy();
+                }
+
+
+        tblReporteInventario = $('#tblReporteInventario').DataTable({
+            "serverSide": true,
+            "ajax": {
+                "url": "@Url.Action("ObtenerDatosReporteInventario", "ReportePrincipal")",
+                "type": "POST",
+                "datatype": "json",
+                "data": function (d) {
+                    d.codInventario = codInventario;
+                    d.filtroDiferencias = parseInt($('#filtroDiferencias').val());
+                    //d.searchValue = $('input[type="search"][aria-controls="tblReporteInventario"]').val();
+                    d.searchValue = $('#customSearch').val();
+                //    toggle_Loadingtb('tbLoading', true);
+                },
+                "complete": function (response) {
+        //console.log('Respuesta completa:', response.responseJSON);
+        toggle_Loadingtb('tbLoading', false);
+
+        if (response.responseJSON) {
+            if (response.responseJSON.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.responseJSON.error
+                });
+            }
+
+            if (response.responseJSON.listFooter && response.responseJSON.listFooter.length > 0) {
+                CargarFooterReporte(response.responseJSON.listFooter);
+
+                var totalRegistros = response.responseJSON.recordsTotal || 0;
+                $('#txtResumenTotalProductos').text(totalRegistros);
+            }
+
+            // AGREGAR ESTO: Cargar información del inventario
+            if (response.responseJSON.infoInventario && response.responseJSON.infoInventario.length >= 4) {
+                $('#txtResumenNombreAlmacen').text(response.responseJSON.infoInventario[0] || '-');
+                $('#txtResumenFechaRegistro').text(response.responseJSON.infoInventario[1] || '-');
+                $('#txtResumenFechaCierre').text(response.responseJSON.infoInventario[2] || '-');
+                //$('#badgeEstadoInventario').text(response.responseJSON.infoInventario[4] || '-');
+
+                let estado = response.responseJSON.infoInventario[4] || '-';
+                $('#badgeEstadoInventario').text(estado);
+                $('#badgeEstadoInventario').removeClass('bg-success-subtle text-success bg-warning-subtle text-warning');
+                if (estado === 'CERRADO') {
+                    $('#badgeEstadoInventario').addClass('bg-success-subtle text-success');
+                } else {
+                    $('#badgeEstadoInventario').addClass('bg-warning-subtle text-warning');
+                }
+
+            }
+        }
+    },
+                "error": function(xhr, error, thrown) {
+                    //console.error('Error Ajax:', error, thrown);
+                    toggle_Loadingtb('tbLoading', false);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al cargar datos',
+                        text: 'Ocurrió un error al cargar la información'
+                    });
+                }
+            },
+            "columns": [
+                { "data": "Cod_Producto", "title": "COD_PRODUCTO" },
+                { "data": "Dsc_Producto", "title": "PRODUCTO" },
+                { "data": "Cod_ubicacion", "title": "UBICACIÓN" },
+                { "data": "Lote_Producto", "title": "LOTE" },
+                {
+                    "data": "Stock_inicial",
+                    "title": "STOCK INICIAL",
+                    "className": "text-end",
+                    "render": function (data) {
+                        return data != null ? Math.round(parseFloat(data)).toString() : '0';
+                    }
+                },
+                {
+                    "data": "Conteo_1",
+                    "title": "CONTEO 1",
+                    "className": "text-end",
+                    "render": function (data) {
+                        return data != null ? Math.round(parseFloat(data)).toString() : '0';
+                    }
+                },
+                {
+                    "data": "Conteo_2",
+                    "title": "CONTEO 2",
+                    "className": "text-end",
+                    "render": function (data) {
+                        return data != null ? Math.round(parseFloat(data)).toString() : '0';
+                    }
+                },
+                {
+                    "data": "Conteo_3",
+                    "title": "CONTEO 3",
+                    "className": "text-end",
+                    "render": function (data) {
+                        return data != null ? Math.round(parseFloat(data)).toString() : '0';
+                    }
+                },
+                {
+                    "data": "Stock_Final",
+                    "title": "STOCK FINAL",
+                    "className": "text-end",
+                    "render": function (data) {
+                        return data != null ? Math.round(parseFloat(data)).toString() : '0';
+                    }
+                },
+                {
+                    "data": "Stock_Diferencial",
+                    "title": "DIFERENCIAL",
+                    "className": "text-end",
+                    "render": function (data) {
+                        if (data == null) return '0';
+
+                        let value = Math.round(parseFloat(data));
+                        let clase = value > 0 ? 'text-success fw-bold' : value < 0 ? 'text-danger fw-bold' : '';
+
+                        return '<span class="' + clase + '">' + value + '</span>';
+                    }
+                },
+                { "data": "Cod_Usuario_Registro", "title": "USUARIO" }
+            ],
+            "paging": true,
+            "pageLength": 10,
+            "searching": false,
+            "lengthChange": true,
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+            "responsive": false,
+            "language": españolTbl
+        });
+    }
+
+
+
+        function CargarFooterReporte(listFooter) {
+            //console.log('Footer data:', listFooter);
+
+            if (listFooter && listFooter.length >= 6) {
+                $('#footerStockInicial').text(formatNumber(listFooter[0]));
+                $('#footerConteo1').text(formatNumber(listFooter[1]));
+                $('#footerConteo2').text(formatNumber(listFooter[2]));
+                $('#footerConteo3').text(formatNumber(listFooter[3]));
+                $('#footerStockFinal').text(formatNumber(listFooter[4]));
+
+                let diferencial = listFooter[5];
+                let diferencialFormatted = formatNumber(diferencial);
+                let clase = diferencial > 0 ? 'text-success fw-bold' : diferencial < 0 ? 'text-danger fw-bold' : '';
+                $('#footerDiferencial').html('<span class="' + clase + '">' + diferencialFormatted + '</span>');
+
+                if (listFooter.length >= 8) {
+                    $('#txtResumenConDiferencias').text(formatNumber(listFooter[6]));
+                    $('#txtResumenSinDiferencias').text(formatNumber(listFooter[7]));
+                }
+            } else {
+            //    console.warn('ListFooter vacío o incompleto');
+            }
+        }
+
+        function reloadTableReporte() {
+            if (typeof tblReporteInventario !== 'undefined') {
+                setTimeout(function () {
+                    tblReporteInventario.ajax.reload(null, false);
+                }, 300);
+            }
+        }
+
+        function cargarDatosInventario() {
+
+            // Mostrar información básica del resumen
+            $('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
+            $('#seccionResumen').removeClass('d-none');
+
+            // Cargar tabla
+            CargarTablaReporteInventario(inventarioSeleccionado.codigo);
+
+            // Mostrar sección de reporte
+            $('#seccionReporte').removeClass('d-none');
+
+        }
+
+
+        function exportarExcel() {
+            if (!inventarioSeleccionado.codigo) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: 'Debe seleccionar un inventario primero'
+                });
+                return;
+            }
+
+            let filtroDiferencias = parseInt($('#filtroDiferencias').val());
+            let searchValue = $('#customSearch').val() || '';
+
+            Swal.fire({
+                title: 'Generando Excel...',
+                html: 'Por favor espere',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Construir URL manualmente
+            let baseUrl = '@Url.Action("ExportarExcelInventarioCerrado", "ReportePrincipal")';
+            let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
+                         '&filtroDiferencias=' + filtroDiferencias +
+                         '&searchValue=' + encodeURIComponent(searchValue);
+
+            window.location.href = baseUrl + params;
+
+            setTimeout(function() {
+                Swal.close();
+            }, 500);
+        }
+
+
+        // En formatNumber:
+        function formatNumber(value) {
+            if (value == null || value === '') return '0';
+            return Math.round(parseFloat(value)).toString();
+        }
+
+        function toggle_Loadingtb(idLoading, mostrar) {
+            if (mostrar) {
+                Swal.fire({
+                    title: 'Cargando...',
+                    html: 'Por favor espere',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            } else {
+                Swal.close();
+            }
+        }
+
+
+        $('#customSearch').on('keyup change', function () {
+            if ($(this).val().length > 0) {
+                $('#btnLimpiarBusqueda').removeClass('d-none');
+            } else {
+                $('#btnLimpiarBusqueda').addClass('d-none');
+            }
+        });
+
+        $('#btnLimpiarBusqueda').on('click', function () {
+            $('#customSearch').val('');
+            $('#btnLimpiarBusqueda').addClass('d-none');
+            if (typeof tblReporteInventario !== 'undefined') {
+                tblReporteInventario.search('').draw();
+            }
+        });
+
+
+    </script>
+}
+

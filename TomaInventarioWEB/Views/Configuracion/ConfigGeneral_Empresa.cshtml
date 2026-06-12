@@ -1,0 +1,226 @@
+﻿@{
+    ViewBag.Title = "ConfigGeneral_Empresa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+
+<link href="~/Assets/CSS/cdn/JqueryUI-1.13.2-themes.css" rel="stylesheet" />
+<link href="~/Assets/CSS/Configuracion_nuevo.css" rel="stylesheet" />
+
+
+<div class="card">
+    <!-- Titulo -->
+    <div class="card-header card__cabecera">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 card-cabecera__mobile">
+            <div class="card-titulo__mobile">
+                <h4 class="mb-0 fw-semibold text-white">Datos de la Empresa</h4>
+                <h7 class="text-white opacity-75">Realice modificaciones en los datos</h7>
+            </div>
+            @*<button id="btn_Save_DatosEmpresa" class="btn btn-success boton__estilo">
+                <i class="ti ti-device-floppy"></i>Guardar cambios
+            </button>*@
+        </div>
+    </div>
+   
+    <form id="configEmpresa" class="needs-validation" novalidate>
+        <div class="card-body card-cuerpo__mobile">
+            <!-- Contenido Empresa -->
+            <div class="card border mb-4 p-3">
+                <div class="row">
+                    <!-- Icono -->
+                    <div class="empresa__contenedor-imagen col-md-2">
+                        <div class="empresa__imagen mb-4">
+                            <i class="ti ti-building-store"></i>
+                        </div>
+                    </div>
+                    <!-- Opciones 1 -->
+                    <div class="col-md-4">
+                        <div class="mb-4">
+                            <label for="txt_nom_Empresa" class="form-label contenedor__subtitulo">Nombre</label>
+                            <input id="txt_nom_Empresa" type="text" class="form-control" autocomplete="off">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="txt_drc_Empresa" class="form-label contenedor__subtitulo">Dirección</label>
+                            <input id="txt_drc_Empresa" type="text" class="form-control" autocomplete="off">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="txt_tlf" class="form-label contenedor__subtitulo">Teléfono</label>
+                            <input id="txt_tlf" type="text" class="form-control" autocomplete="off">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                    </div>
+                    <!-- Opciones 2 -->
+                    <div class="col-md-4">
+                        <div class="mb-4">
+                            <label for="txt_RUC" class="form-label contenedor__subtitulo">RUC</label>
+                            <input id="txt_RUC" type="text" class="form-control" autocomplete="off">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="mb-5">
+                            <label for="txt_rz_social" class="form-label contenedor__subtitulo">Razón Social</label>
+                            <input id="txt_rz_social" type="text" class="form-control" autocomplete="off">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button id="btn_Save_DatosEmpresa" class="btn btn-primary">
+                            <i class="ti ti-device-floppy me-1"></i>Guardar cambios
+                        </button>
+                    </div>
+                </div>
+                @*<div class="row justify-content-end">
+                    
+                </div>*@
+            </div>
+
+            <!-- Contenido Correo (oculto) -->
+            <div class="card border mb-2 p-3 d-none">
+                <div class="row">
+                    <!-- Icono -->
+                    <div class="empresa__contenedor-imagen col-md-2">
+                        <div class="empresa__imagen mb-4">
+                            <i class="ti ti-mail-cog"></i>
+                        </div>
+                    </div>
+                    <!-- Opciones 1 -->
+                    <div class="col-md-4">
+                        <div class="mb-4">
+                            <label for="txt_serv_Correo" class="form-label contenedor__subtitulo">Servidor del correo</label>
+                            <input id="txt_serv_Correo" type="text" class="form-control">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="txt_remitente_Correo" class="form-label contenedor__subtitulo">Remitente</label>
+                            <input id="txt_remitente_Correo" type="text" class="form-control">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" @*role="switch"*@ id="chkAuth_Correo"
+                                       checked>
+                                <label class="form-check-label" for="chkAuth_Correo">Autenticación</label>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="txt_usuario_Correo" class="form-label contenedor__subtitulo">Usuario</label>
+                            <input id="txt_usuario_Correo" type="text" class="form-control">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                    </div>
+                    <!-- Opciones 2 -->
+                    <div class="col-md-4">
+                        <div class="mb-4">
+                            <label for="txt_port_Correo" class="form-label contenedor__subtitulo">Puerto</label>
+                            <input id="txt_port_Correo" type="text" class="form-control">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="txt_prio_Correo" class="form-label contenedor__subtitulo">Prioridad</label>
+                            <select id="txt_prio_Correo" class="form-select">
+                                <option value="Alta">Alta</option>
+                                <option value="Media">Media</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" @*role="switch"*@ id="chkSSL_Correo" checked>
+                                <label class="form-check-label" for="chkSSL_Correo">Habilitar SSL</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="txt_pass_Correo" class="form-label contenedor__subtitulo">Contraseña</label>
+                            <input id="txt_pass_Correo" type="text" class="form-control">
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>  
+</div>
+
+
+<!-- Titulo -->
+<!--<div class="row gx-0 justify-content-center mb-2">
+    <header class="col-12 text-center">
+        <h1 class="contenedor__titulo">Datos de la Empresa</h1>
+    </header>
+</div>
+<div class="row gx-0 flex-grow-1">
+    <div class="col-md-7 col-xxl-5 mx-auto">
+        <div class="contenedor__estilo d-flex flex-column align-items-center">-->
+            <!-- Icono -->
+            <!--<div class="empresa__imagen">
+                <i class="ti ti-building-store"></i>
+                <i class="ti ti-building-cog"></i>
+            </div>
+            <div class="row px-2">
+                <div class="col-md-6 mb-3">
+                    <label for="txt_nom_Empresa" class="form-label contenedor__subtitulo">Nombre</label>
+                    <div class="input-group mb-3 ">
+                        <span class="input-group-text borde-redondo" id="basic-addon1">
+                            <i class="ti ti-building"></i>
+                        </span>
+                        <input id="txt_nom_Empresa" type="text" class="form-control borde-redondo"
+                               aria-label="Username" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="txt_RUC" class="form-label contenedor__subtitulo">RUC</label>
+                    <div class="input-group mb-3 ">
+                        <span class="input-group-text borde-redondo" id="basic-addon1">
+                            <i class="ti ti-number"></i>
+                        </span>
+                        <input id="txt_RUC" type="text" class="form-control borde-redondo"
+                               aria-label="Username" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="txt_drc_Empresa" class="form-label contenedor__subtitulo">Dirección</label>
+                    <div class="input-group mb-3 ">
+                        <span class="input-group-text borde-redondo" id="basic-addon1">
+                            <i class="ti ti-map-pin"></i>
+                        </span>
+                        <input id="txt_drc_Empresa" type="text" class="form-control borde-redondo"
+                               aria-label="Username" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="txt_rz_social" class="form-label contenedor__subtitulo">Razón Social</label>
+                    <div class="input-group mb-3 ">
+                        <span class="input-group-text borde-redondo" id="basic-addon1">
+                            <i class="ti ti-notebook"></i>
+                        </span>
+                        <input id="txt_rz_social" type="text" class="form-control borde-redondo"
+                               aria-label="Username" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="txt_tlf" class="form-label contenedor__subtitulo">Teléfono</label>
+                    <div class="input-group mb-3 ">
+                        <span class="input-group-text borde-redondo" id="basic-addon1">
+                            <i class="ti ti-phone"></i>
+                        </span>
+                        <input id="txt_tlf" type="text" class="form-control borde-redondo"
+                               aria-label="Username" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <button id="btn_Save_DatosEmpresa" class="boton_principal borde-redondo mb-3 w-75" type="submit">Guardar</button>
+        </div>
+    </div>
+</div>-->
+
+
+
+@section scripts{
+
+    <script src="~/Assets/JS/cdn/! jQuery UI - v1.13.2 - 2022-07-14.js"></script>
+    <script src="~/Assets/JS/ConfigJS/Config_Empresa.js"></script>
+
+}

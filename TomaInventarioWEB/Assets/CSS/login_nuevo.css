@@ -1,0 +1,107 @@
+/* ----- LOGIN ----- */
+.login__background {
+    height: 100vh;
+    background-image: url("../IMG/FondoAlmacen.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.login__contenedor {
+    max-height: 700px;
+    background-color: white;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-central);
+    padding: 1.5rem;
+}
+
+.login__bienvenida {
+    padding: 1rem 0 2rem 0;
+    margin-bottom:1.5rem;
+    text-align: start;
+    font-size: clamp(1.7rem, 2.5vw, 2rem);
+    font-weight: 800;
+    color: var(--color-primario);
+    background-color: white;
+    text-shadow: var(--sombra-letras);
+    border-bottom: 1px solid var(--color-bordes);
+}
+
+.login__input {
+    position: relative;
+    /*margin-bottom:1.6rem;*/
+}
+
+    .login__input i {
+        font-size: 1.7rem;
+        position: absolute;       
+        top: 50%;
+        color: var(--color-icono-placeholder);
+        /*transform: translateY(-20%);*/
+    }
+
+    .login__input .icon-left {
+        left: 0.8rem;
+    }
+
+    .login__input .icon-right {
+        right: 1.8rem;
+        color: var(--color-primario);
+        cursor:pointer;
+        pointer-events:auto;
+    }
+
+    .login__input input {
+        min-height: 3rem;
+        /*padding-left: 3rem;*/
+    }
+
+        .login__input input::placeholder {
+            font-style: italic;
+        }
+
+    .invalid-feedback{
+        position:absolute;
+        bottom:-1.5rem;
+        left:0;
+    }
+
+.login__enlace {
+    color: var(--color-primario);
+}
+
+.login__boton {
+    width: 100%;
+    padding: 0.5rem 0.375rem;
+    font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+    font-weight: 600;
+    background-color: var(--color-primario);
+    box-shadow: var(--sombra-central);
+    color: white;
+    border: none;
+    border-radius: var(--radio-borde);
+    transition: transform 0.2s ease-in-out;
+}
+
+    .login__boton:hover {
+        transform: scale(1.02);
+    }
+
+.login__boton.procesando .login__texto{
+    display:none;
+}
+
+.login__validando{
+    display:none;
+}
+
+.login__validando.active{
+    display:block;
+}
+
+.login__logo{
+    width:10rem;
+}
+
+.login__eslogan{
+    font-size:0.7rem;
+}

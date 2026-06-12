@@ -1,0 +1,46 @@
+﻿
+<div class="GestorPrincipal" id="GestorPrincipal" timer=" @ViewBag.reloadTable">
+    <br>
+    <div class="card cardForm">
+        <div class="card-header cardForm_cabecera flex_flex-space-between" >
+            <span>Inventario: <span id="lblInventario">CodInventario</span> - Almacen: <span id="lblAlmacen">CodAlmacen</span></span>
+            @*<button class="btn btn-danger btn-lg" onclick="CerrarGestor();" ><i class="fa-solid fa-x"></i></button>*@
+            <button class="btn btn-danger btn-lg" id="GestorPrincipal_CloseBtn"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div class="card-body cardForm_contenido">
+
+            <ul class="nav nav-tabs" id="GestorInvTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="Inventario-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Gestión Inv.Actual</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="GrafGe-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Gráficos Generales</button>
+                </li>
+                
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Report-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Generar Reportes</button>
+                </li>
+                
+
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="Inventario-tab" tabindex="0">
+                    @Html.Partial("~/Views/Inventario/GestorInventario/Gestor/GestorInventario.cshtml")
+
+                </div>
+                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="GrafGe-tab" tabindex="0">
+                    @Html.Partial("~/Views/Inventario/GestorInventario/Graficos/GraficosGenerales.cshtml")
+                </div>
+                
+                <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="Report-tab" tabindex="0">
+                    @Html.Partial("~/Views/Inventario/GestorInventario/Reportes/ReportesInventario.cshtml")
+                </div>
+                
+                
+            </div>
+
+        </div>
+    </div>
+
+</div>
+

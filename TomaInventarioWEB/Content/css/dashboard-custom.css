@@ -1,0 +1,110 @@
+﻿/* ===========================================
+   Dashboard Custom Styles
+   Archivo: dashboard-custom.css
+   =========================================== */
+
+/* Spinner Loading States */
+#kpiAlmacenes .spinner-border,
+#kpiInventarios .spinner-border,
+#kpiProductos .spinner-border,
+#totalAnio .spinner-border,
+#promedioMensual .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 0.2em;
+}
+
+/* Tabla de inventarios - altura mínima */
+#tbodyInventarios {
+    min-height: 200px;
+}
+
+/* Tabla responsive - scroll suave */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Dropdown años - ancho mínimo */
+#listaAnios {
+    min-width: 120px;
+}
+
+/* Animación suave al actualizar datos */
+.fade-update {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Badges - asegurar tamaño consistente */
+.badge.fs-1 {
+    min-width: 35px;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Gráfico - contenedor responsive */
+#graficoInventarios {
+    width: 100%;
+    min-height: 280px;
+}
+
+/* Cards KPI - altura uniforme */
+.primary-gradient,
+.warning-gradient,
+.secondary-gradient {
+    min-height: 100%;
+}
+
+/* Estados de carga - centrado */
+.spinner-loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* Mejora visual tabla hover */
+.table-hover tbody tr:hover {
+    background-color: rgba(93, 135, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+/* Dropdown items - mejor espaciado */
+.dropdown-item.anio-item {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+
+    .dropdown-item.anio-item:hover {
+        background-color: rgba(93, 135, 255, 0.1);
+    }
+
+    .dropdown-item.anio-item:active {
+        background-color: rgba(93, 135, 255, 0.2);
+    }
+
+/* Responsive - ajustes móviles */
+@media (max-width: 768px) {
+    #graficoInventarios {
+        min-height: 250px;
+    }
+
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+
+    .badge.fs-1 {
+        font-size: 0.75rem !important;
+        min-width: 30px;
+    }
+}

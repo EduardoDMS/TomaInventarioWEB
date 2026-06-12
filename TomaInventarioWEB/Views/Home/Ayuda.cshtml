@@ -1,0 +1,362 @@
+@{
+    ViewBag.Title = "Ayuda";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+@*<p>Nonce vista: @nonce</p>*@
+
+<div class="card">
+    <!-- Titulo -->
+    <div class="card-header card__cabecera">
+        <div class="d-flex flex-column justify-content-center align-items-center gap-2 card-cabecera__mobile">
+            <h2 class="fw-bold text-white card-titulo__mobile">¿En que podemos ayudarte?</h2>
+            <div class="row w-100 justify-content-center">
+                <div class="col-12 col-lg-6 mb-2">
+                    <div class="navbar__busqueda">
+                        <input class="form-control" type="text" placeholder="Busque un tema" id="buscadorPreguntas"
+                               autocomplete="off">
+                        <i class="ti ti-search navbar__busqueda i"></i>
+                        <ul class="list-group position-absolute w-100 mt-1 d-none" id="resultadosBusquedaPreguntas">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 d-flex justify-content-end gap-1 card-enlace__mobile">
+                <h6 class="fw-normal text-white">¿Es la primera vez que ingresas?</h6>
+                <a class="fw-bold text-decoration-underline text-white" href="https://youtu.be/bLDseNuRaV0?si=4TyJ4_VxkBQh7R2M" target="_blank">Esta guía te ayudara</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h4 class="fw-semibold">Preguntas frecuentes</h4>
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta1" aria-expanded="true"
+                                    aria-controls="Pregunta1">
+                                ¿Qué es el software de Toma de Inventario?
+                            </button>
+                        </h2>
+                        <div id="Pregunta1" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Es una plataforma web para <strong>planificar, ejecutar y controlar inventarios</strong>. Las empresas pueden administrar el control de productos, 
+                                repuestos y materiales en tiempo real. Este sistema permite mantener niveles de stock actualizados, evitar quiebres de inventario y 
+                                optimizar la operación diaria de los almacenes con mayor precisión y eficiencia.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta2" aria-expanded="false"
+                                    aria-controls="Pregunta2">
+                                ¿Qué información muestra el Dashboard?
+                            </button>
+                        </h2>
+                        <div id="Pregunta2" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Muestra un resumen general con: Los últimos inventarios, inventarios realizados por mes, total de almacenes, inventarios y productos creados
+                                hasta el momento.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta3" aria-expanded="false"
+                                    aria-controls="Pregunta3">
+                                ¿Para qué sirve la opción Preparar Inventario?
+                            </button>
+                        </h2>
+                        <div id="Pregunta3" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Permite definir el <strong>almacen, ubicaciones y productos que formarán parte de un nuevo inventario</strong> antes de ejecutarlo.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta4" aria-expanded="false"
+                                    aria-controls="Pregunta4">
+                                ¿Qué se hace en Gestionar Inventario?
+                            </button>
+                        </h2>
+                        <div id="Pregunta4" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Aquí se realiza <strong>la supervisión de la toma de inventario</strong>, donde se puede visualizar el registro de productos por parte de los operadores. Se
+                                podra <strong>gestionar hasta 3 conteos</strong> y ver gráficos resumenes del proceso actual.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta5" aria-expanded="false"
+                                    aria-controls="Pregunta5">
+                                ¿Dónde puedo ver inventarios anteriores?
+                            </button>
+                        </h2>
+                        <div id="Pregunta5" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                En Historial de Inventarios, se <strong>guardan todos los inventarios finalizados</strong> para su consulta y análisis.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta6" aria-expanded="false"
+                                    aria-controls="Pregunta6">
+                                ¿Qué tipos de reportes ofrece el sistema?
+                            </button>
+                        </h2>
+                        <div id="Pregunta6" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                El sistema cuenta con <strong>7 reportes</strong>, enfocados en diferentes resultados como: diferencias, productos y usuarios. Estos reportes pueden usarse para
+                                <strong>análisis, control y auditoria</strong>.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta7" aria-expanded="false"
+                                    aria-controls="Pregunta7">
+                                ¿Qué roles de usuario existen?
+                            </button>
+                        </h2>
+                        <div id="Pregunta7" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Existen 2 tipos de usuarios: <br />
+                                <strong>Administrador:</strong> Tiene acceso total y configuración del sistema para su gestión. <br />
+                                <strong>Operador:</strong> Tiene acceso a la aplicacion Android para la ejecución del inventario.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta8" aria-expanded="false"
+                                    aria-controls="Pregunta8">
+                                ¿Puedo editar o deshabilitar usuarios?
+                            </button>
+                        </h2>
+                        <div id="Pregunta8" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Sí. <strong>Desde Gestión de Usuarios</strong> puedes editar información, cambiar roles o deshabilitar usuarios cuando ya no deban tener acceso.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta9" aria-expanded="false"
+                                    aria-controls="Pregunta9">
+                                ¿Qué son los recursos del sistema?
+                            </button>
+                        </h2>
+                        <div id="Pregunta9" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Son los <strong>datos base del sistema necesarios para trabajar</strong> estos son: almacenes, ubicaciones, productos y unidades de medida. Todos pueden
+                                crearse, editarse o deshabilitarse según sea necesario.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta10" aria-expanded="false"
+                                    aria-controls="Pregunta10">
+                                ¿Puedo realizar más de un inventario al mismo tiempo?
+                            </button>
+                        </h2>
+                        <div id="Pregunta10" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Sí. El sistema permite gestionar múltiples inventarios, siempre que estén <strong>correctamente preparados y asignados</strong>.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta11" aria-expanded="false"
+                                    aria-controls="Pregunta11">
+                                ¿Qué pasa si deshabilito un producto o almacén?
+                            </button>
+                        </h2>
+                        <div id="Pregunta11" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Un recurso deshabilitado <strong>no podrá usarse en nuevos inventarios</strong>, pero se conserva para consultas históricas.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta12" aria-expanded="false"
+                                    aria-controls="Pregunta12">
+                                ¿Dónde configuro los datos de la empresa?
+                            </button>
+                        </h2>
+                        <div id="Pregunta12" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                En la opción <strong>Empresa dentro de Ajustes</strong>, donde se puede editar datos como: nombre, dirección, teléfono y otros.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta13" aria-expanded="false"
+                                    aria-controls="Pregunta13">
+                                ¿Cuando finalizo un conteo en la gestión de inventario puedo regresar al anterior?
+                            </button>
+                        </h2>
+                        <div id="Pregunta13" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Por el momento el sistema <strong>no permite retroceder al conteo anterior</strong>, por ello recomendamos realizar las coordinaciones correspondientes
+                                antes de finalizar y pasar al siguiente.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta14" aria-expanded="false"
+                                    aria-controls="Pregunta14">
+                                ¿Para qué sirven los archivos esenciales?
+                            </button>
+                        </h2>
+                        <div id="Pregunta14" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Permiten importar datos iniciales como almacenes, ubicaciones, productos, etc para que el <strong>sistema funcione correctamente</strong> la primera
+                                vez que se usara.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta15" aria-expanded="false"
+                                    aria-controls="Pregunta15">
+                                ¿Puedo volver a importar los archivos Excel?
+                            </button>
+                        </h2>
+                        <div id="Pregunta15" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Sí, pero se recomienda hacerlo solo en etapas iniciales o con supervisión de un administrador ya que pueden <strong>afectar datos existentes</strong>.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fs-4 fw-medium collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#Pregunta16" aria-expanded="false"
+                                    aria-controls="Pregunta16">
+                                ¿Tienes más dudas?
+                            </button>
+                        </h2>
+                        <div id="Pregunta16" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body fs-4">
+                                Realizalas a <strong>Andronium</strong> que es nuestro asistente virtual potenciado con Inteligencia Artificial. El será tu acompañante en todo los temas
+                                relacionados con inventarios de almacenes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts{
+    <script nonce="@nonce">
+
+        // Ocultar el buscador principal de opciones
+        //const navbarBusqueda = document.querySelector(".navbar__busqueda");
+        //navbarBusqueda.classList.add("oculto");
+
+        // obtener el texto de cada boton
+        // guardar los textos en un arreglo
+        const inputPregunta = document.getElementById("buscadorPreguntas");
+        const resultadosPregunta = document.getElementById("resultadosBusquedaPreguntas");
+        const preguntas = Array.from(document.querySelectorAll(".accordion-button")).map(boton => {
+            return {
+                texto: boton.textContent.trim().toLowerCase(),
+                boton,
+                target: boton.getAttribute("data-bs-target")
+            };
+        });
+            
+
+        //obtener el input del usuario
+        inputPregunta.addEventListener("input", () => {
+            const consulta = inputPregunta.value.trim().toLowerCase();
+            resultadosPregunta.innerHTML = "";
+
+            if (!consulta) {
+                resultadosPregunta.classList.add("d-none");
+                return;
+            }
+
+            //buscar si el input coincide con algun texto de las preguntas
+            const filtradosPreguntas = preguntas.filter(p => p.texto.includes(consulta));
+
+            console.log(filtradosPreguntas);
+
+            if (filtradosPreguntas.length===0) {
+                resultadosPregunta.innerHTML = "<li class='list-group-item text-muted'>Sin resultados</li>";
+            } else {
+                filtradosPreguntas.forEach(p => {
+                    const liEtiqueta = document.createElement("li");
+                    liEtiqueta.className = "list-group-item list-group-item-action";
+
+                    liEtiqueta.textContent = p.texto.charAt(0)+p.texto.charAt(1).toUpperCase()+p.texto.slice(2);
+
+                    // al dar clik me dirige a la seccion de la pregunta
+                    liEtiqueta.addEventListener("click", () => {
+                        const accordionCuerpo = document.querySelector(p.target);
+                        const boton = p.boton;
+
+                        // Cerrar los otros accordions
+                        document.querySelectorAll(".accordion-collapse").forEach(c => c.classList.remove("show"));
+                        document.querySelectorAll(".accordion-button").forEach(b => {
+                            b.setAttribute("aria-expanded", "false")
+                            b.classList.add("collapsed");
+                        });
+
+                        // Abrir el accordion
+                        accordionCuerpo.classList.add("show");
+                        boton.setAttribute("aria-expanded", "true");
+                        boton.classList.remove("collapsed");
+
+                        // Ir hacia el accordion
+                        accordionCuerpo.scrollIntoView({ behavior: "smooth" });
+
+                        // Limpiar input
+                        inputPregunta.value = "";
+                        resultadosPregunta.classList.add("d-none");
+                    });
+
+                    resultadosPregunta.appendChild(liEtiqueta);                   
+                });          
+            }
+            resultadosPregunta.classList.remove("d-none");
+        });
+
+        // Si se da click en cualquier lugar fuera de la lista esta se cierra
+        document.addEventListener("click", e => {
+            if (!input.contains(e.target) && !resultadosPregunta.contains(e.target)) {               
+                resultadosPregunta.classList.add("d-none");               
+                inputPregunta.value = "";
+            }
+        });
+    </script>   
+}

@@ -1,0 +1,191 @@
+﻿
+<div class="NewInvPrincipal" id="NewInvPrincipal">
+    <br>
+    <div class="card cardForm">
+        <div class="card-header cardForm_cabecera" >
+            <span>Creación de Inventario</span>
+            @*<button class="btn btn-danger btn-lg" onclick="CerrarNewInv();" id="NewInvPrincipal_btnClose"><i class="fa-solid fa-x"></i></button>*@
+            <button class="btn btn-danger btn-lg"  id="NewInvPrincipal_btnClose"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div class="card-body cardForm_contenido">
+            <br />
+
+            <div class="bloque1">
+                <div class="row ">
+                    <div class="col">
+                        <div class="input-wrapper ">
+                            <input type="text" class="input-text form-control input_bloque1" id="txt_New_CodInventario" maxlength="20">
+                            <label for="txt_New_CodInventario" class="select-label lbl_bloque1">Cod. Inventario</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div id="Div_cbxAlmacen_add" class="input-wrapper">
+                            <select class="form-select select2_ input_bloque1" id="cbxAlmacen_NewInv"></select>
+                            <label for="cbxAlmacen_NewInv lbl_bloque1" class="select-label">Almacen</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-primary float-end input_bloque1" id="btnConfirmarBloque1">
+                            <span id="">
+                                @*<i class="fa-solid fa-users fa-xl"></i>*@
+                                <i class="fa-regular fa-circle-check fa-xl"></i>
+                            </span>   Confirmar Datos Inventario
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <br />
+
+            <div class="bloque2">
+                <div class="row ">
+                    <div class="col">
+                        <div id="Div_cbxUbicación_add" class="input-wrapper">
+                            <select class="form-select select2_ input_bloque2" id="cbxUbicacion_NewInv" disabled></select>
+                            <label for="cbxUbicacion_NewInv" class="select-label lbl_bloque2 backDisabled">Ubicación</label>
+                        </div>
+
+                        @*<div class="input-wrapper ">
+                                <input type="text" class="input-text form-control" id="txt_New_CodInventario">
+                                <label for="txt_New_CodInventario" class="select-label ">Cod. Ubicación</label>
+                            </div>*@
+                    </div>
+                    <div class="col">
+                        <div id="Div_cbxProducto_add" class="input-wrapper margin-bottom0">
+                            <select class="form-select select2_ input_bloque2" id="cbxProducto_NewInv" disabled></select>
+                            <label for="cbxProducto_NewInv" class="select-label lbl_bloque2 backDisabled">Producto</label>
+                        </div>
+                        <strong class="input-wrapper Color_Red" id="UMText" mult=""></strong>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col">
+                        <div class="input-wrapper ">
+                            <input type="text" class="input-text form-control input_bloque2" id="txtLote_NewInv" maxlength="20" disabled>
+                            <label for="txtLote_NewInv" class="select-label lbl_bloque2 backDisabled">Lote Producto</label>
+                        </div>
+                    </div>
+                    <div class="col DisplayNone">
+                        <div class="input-wrapper ">
+                            <input type="text" class="input-text form-control input_bloque2" id="txtSerie_NewInv" maxlength="50" disabled>
+                            <label for="txtSerie_NewInv" class="select-label lbl_bloque2 backDisabled">Serie Producto</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-wrapper ">
+                            <input type="number" class="input-text form-control input_bloque2" id="txtStock_NewInv" value="0" step="1" onkeypress="return validateNumber(event)" disabled>
+                            <label for="txtStock_NewInv" class="select-label lbl_bloque2 backDisabled">Stock</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-success float-start input_bloque2 margin5Px" id="btnGuardarInventario"  disabled>
+                            <span id="">
+                                <i class="fa-solid fa-upload fa-xl"></i>
+                            </span>   Crear Inventario
+                        </button>
+
+
+                        <button class="btn btn-primary float-end input_bloque2 margin5Px" id="btnConfirmarBloque2" disabled>
+                            <span id="">
+
+                                @*<i class="fa-regular fa-circle-check fa-xl"></i>*@
+                                <i class="fa-solid fa-circle-plus fa-xl"></i>
+                            </span>   Agregar
+                        </button>
+                        <button class="btn btn-danger float-end input_bloque2 margin5Px" id="btnEliminarFila"  disabled>
+                            <span id="">
+                                <i class="fa-solid fa-trash  fa-xl"></i>
+                            </span>   Eliminar
+                        </button> 
+                        <button class="btn btn-success float-end input_bloque2 margin5Px" id="btnExcel_crearInv"  disabled>
+                            <span id="">
+                                <i class="fa-solid fa-file-excel fa-xl"></i>
+                            </span>   Cargar Excel
+                        </button>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <br />
+
+            <table id="tbl_addProductos" class="display responsive nowrap Width100">
+                <thead>
+                    <tr>
+                        <th>Cod_Inventario</th>
+                        <th>Cod_Ubicación</th>
+                        <th>Dsc_Ubicación</th>
+                        <th>Cod_Producto</th>
+                        <th>Dsc_Producto</th>
+                        <th>Lote_Producto</th>
+                        @*<th>Serie_Producto</th>*@
+                        <th>Stock_Actual</th>
+                    </tr>
+                <thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        @*<td></td>*@
+                        <td></td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@* Modal CrearInv_Importar  *@
+<div class="modal fade" id="CrearInv_Importar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content custom_modal_content">
+            <div class="modal-header custom_modal_head">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Importar Detalle de Productos</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body custom_modal_body" >
+
+                <div class="row">
+                    <div class="col">
+                        <span class="ColorBlack">1°. Descargar plantilla:</span>
+                        <button id="CrearInv_btnTemplate" type="button" class="btn btn-success btn-sm">
+                            Plantilla Detalle <i class="fa-solid fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row ">
+                    <div class="col" >
+                        <span class="ColorBlack" >2°. </span>
+                        <input class="form-control border1PxSolid" id="CrearInv_fileInput" type="file" accept=".xlsx,.xls" >
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer custom_modal_footer">
+                <div class="" id="content_mensajes3" ></div>
+                <button type="button" class="btn btn-primary" onclick="" id="CrearInv_btn_Import">Importar</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

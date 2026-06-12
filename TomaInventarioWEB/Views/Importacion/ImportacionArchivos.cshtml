@@ -1,0 +1,498 @@
+﻿
+@{
+    ViewBag.Title = "ImportaciónArchivos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+
+<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+<link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
+<link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="~/Assets/CSS/loader.css" rel="stylesheet" />
+
+
+
+
+    <div class="card">
+        <div class="card-header card__cabecera">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 card-cabecera__mobile">
+                <div class="card-titulo__mobile">
+                    <h4 class="mb-0 fw-semibold text-white">Importación - Carga de archivos excel</h4>
+                    @*<h7 class="text-white opacity-75">Realice modificaciones en los datos</h7>*@
+                </div>
+            </div>
+        </div>
+        <div class="card-body wizard-content">
+            <!--Espacio Video-->
+            @*<div class="w-50 mx-auto mb-3">
+                <div class="ratio ratio-16x9">
+                    <iframe src="https://www.youtube.com/embed/mWozsMslM9I" allowfullscreen>
+                    </iframe>
+                </div>
+            </div>*@            
+            
+            @*<h4 class="card-title mb-0">Importación - Carga de archivos excel</h4>
+            <h6 class="card-subtitle mb-3"></h6>*@
+
+            <div class="row justify-content-center">
+                <div class="col-md-6 d-flex align-items-center gap-2">
+                    <h5 class="text-center">¿Es la primera vez que realiza la importación?</h5>
+                    <a href="https://www.youtube.com/watch?v=7sy8eUfwN4A" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary d-flex align-items-center justify-content-center">
+                        Ver video tutorial
+                        <i class="ti ti-brand-youtube ms-1 fs-6"></i>
+                    </a>
+                </div>         
+            </div>
+            
+            <hr class="my-4"/>
+
+            <form action="#" class="tab-wizard wizard-circle">
+                <!-- Step 1 -->
+                <h6>Descargar plantillas</h6>
+                <section>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="text-center mb-4">
+                                <div class="mb-3">
+                                    <i class="ti ti-cloud-download fs-10 text-success"></i>
+                                </div>
+                                <h4 class="fw-bold mb-3">Descarga las Plantillas Excel</h4>
+                                <p class="text-muted mb-4">
+                                    Al descargar encontrarás <strong>dos archivos</strong>: uno para el <strong>Maestro</strong> y otro para el <strong>Inventario</strong>.
+                                    Rellena cada plantilla con tus datos y estarás listo para importar.
+                                </p>
+                            </div>
+
+                            <div class="row justify-content-center">
+                                <div class="col-md-8 col-lg-6">
+                                    <div class="card border border-success shadow-sm">
+                                        <div class="card-body text-center p-4">
+                                            <div class="mb-3">
+                                                <span class="badge bg-success-subtle text-success mb-2">
+                                                    @*<i class="ti ti-file-spreadsheet me-1"></i>*@ Incluye 2 archivos
+                                                </span>
+                                            </div>
+                                            <h5 class="mb-3">Contenido del paquete:</h5>
+                                            <div class="d-flex justify-content-center gap-3 mb-4">
+                                                <div class="text-start">
+                                                    <div class="mb-2">
+                                                        <i class="ti ti-circle-check text-success me-2"></i>Plantilla Maestro
+                                                    </div>
+                                                    <div>
+                                                        <i class="ti ti-circle-check text-success me-2"></i>Plantilla Inventario
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button id="btnTemplate" type="button" class="btn btn-success btn-lg px-5 shadow">
+                                                <i class="ti ti-download me-2"></i> Descargar Plantillas
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 2 -->
+                <h6>Subir Archivo maestro</h6>
+                <section>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="text-center mb-4">
+                                <div class="mb-3">
+                                    <i class="ti ti-file-check fs-10 text-primary"></i>
+                                </div>
+                                <h4 class="fw-bold mb-3">Carga tu Archivo Maestro</h4>
+                                <p class="text-muted mb-4">
+                                    Este archivo contiene la información base de tu sistema: <strong>Usuarios</strong>, <strong>Almacenes</strong>,
+                                    <strong>Usuarios por Almacén</strong>, <strong>Productos</strong> y <strong>Ubicaciones</strong>.
+                                    Verifica que todos los datos estén correctos antes de continuar.
+                                </p>
+                            </div>
+
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-8">
+                                    <div class="card border border-primary shadow-sm">
+                                        <div class="card-body p-4">
+                                            <div class="mb-4">
+                                                <h6 class="fw-bold mb-3">
+                                                    @*<i class="ti ti-database text-primary me-2"></i>*@
+                                                    ¿Qué contiene el Maestro?
+                                                </h6>
+                                                <div class="row g-2">
+                                                    <div class="col-md-4 col-6">
+                                                        <div class="alert alert-primary mb-0 py-2 text-center">
+                                                            <i class="ti ti-users me-1"></i> Usuarios
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-6">
+                                                        <div class="alert alert-primary mb-0 py-2 text-center">
+                                                            <i class="ti ti-building-warehouse me-1"></i> Almacenes
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-6">
+                                                        <div class="alert alert-primary mb-0 py-2 text-center">
+                                                            <i class="ti ti-user-check me-1"></i> Usuarios/Almacén
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-6">
+                                                        <div class="alert alert-primary mb-0 py-2 text-center">
+                                                            <i class="ti ti-box me-1"></i> Productos
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-6">
+                                                        <div class="alert alert-primary mb-0 py-2 text-center">
+                                                            <i class="ti ti-map-pin me-1"></i> Ubicaciones
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label for="fileInputM" class="form-label fw-bold mb-3">
+                                                    @*<i class="ti ti-file-spreadsheet text-success me-2"></i>*@
+                                                    Selecciona el Archivo Maestro:
+                                                </label>
+                                                <input class="form-control  shadow-sm" id="fileInputM" type="file" accept=".xlsx,.xls">
+                                                <div class="form-text mt-2">
+                                                    <i class="ti ti-info-circle text-primary me-1"></i>
+                                                    Formatos permitidos: <strong>.xlsx</strong> o <strong>.xls</strong>
+                                                </div>
+                                                <div id="file-maestro-status" class="mt-3"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 3 -->
+                <h6>Subir Archivo Inventario</h6>
+                <section>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="text-center mb-4">
+                                <div class="mb-3">
+                                    <i class="ti ti-clipboard-check fs-10 text-info"></i>
+                                </div>
+                                <h4 class="fw-bold mb-3">Carga tu Archivo de Inventario</h4>
+                                <p class="text-muted mb-4">
+                                    Este archivo contiene la información de tu <strong>Inventario</strong> y el <strong>Detalle del Inventario</strong>.
+                                    Asegúrate de que los datos coincidan con la información del archivo Maestro.
+                                </p>
+                            </div>
+
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-8">
+                                    <div class="card border border-info shadow-sm">
+                                        <div class="card-body p-4">
+                                            <div class="mb-4">
+                                                <h6 class="fw-bold mb-3">
+                                                    <i class="ti ti-list-check text-info me-2"></i>
+                                                    ¿Qué contiene el Inventario?
+                                                </h6>
+                                                <div class="row g-2">
+                                                    <div class="col-md-6">
+                                                        <div class="alert alert-info mb-0 py-2 text-center">
+                                                            <i class="ti ti-clipboard-list me-1"></i> Inventario General
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="alert alert-info mb-0 py-2 text-center">
+                                                            <i class="ti ti-list me-1"></i> Detalle de Inventario
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label for="fileInputI" class="form-label fw-bold mb-3">
+                                                    <i class="ti ti-file-spreadsheet text-success me-2"></i>
+                                                    Selecciona el Archivo de Inventario:
+                                                </label>
+                                                <input class="form-control shadow-sm" id="fileInputI" type="file" accept=".xlsx,.xls">
+                                                <div class="form-text mt-2">
+                                                    <i class="ti ti-info-circle text-info me-1"></i>
+                                                    Formatos permitidos: <strong>.xlsx</strong> o <strong>.xls</strong>
+                                                </div>
+                                                <div id="file-inventario-status" class="mt-3"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+    @Html.Partial("~/Views/Importacion/ImportacionTabs.cshtml")
+
+
+
+    @section scripts{
+        <script src="~/Assets/JS/Importacion/ImportacionJS.js"></script>
+        <script src="~/Content/matdash/libs/jquery-steps/build/jquery.steps.min.js"></script>
+        <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+        @*<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
+        <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+        <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
+
+        <script nonce="@nonce">
+        jQuery(document).ready(function () {
+
+            // ===== FUNCIONES DE VALIDACIÓN Y SUBIDA =====
+            function ValidFiles() {
+                var rpt = true;
+                if ($("#fileInputM")[0].files[0] === undefined) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Archivo faltante',
+                        text: 'No se ha seleccionado el archivo Maestro',
+                        confirmButtonColor: '#5d87ff'
+                    });
+                    rpt = false;
+                }
+                if ($("#fileInputI")[0].files[0] === undefined) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Archivo faltante',
+                        text: 'No se ha seleccionado el archivo Inventario',
+                        confirmButtonColor: '#5d87ff'
+                    });
+                    rpt = false;
+                }
+                return rpt;
+            }
+
+            function SubirMaestros(formdataM, formdataI) {
+                $.ajax({
+                    url: '@Url.Action("ImportacionMaestros", "Importacion")',
+                    type: 'POST',
+                    data: formdataM,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        CargarTablasMaestro(response.Entity);
+                        SubirInventario(formdataI);
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.close();
+                        //toggle_Loadingtb('tbLoading', false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al subir Maestro',
+                            text: 'Ocurrió un error al procesar el archivo Maestro.',
+                            confirmButtonColor: '#5d87ff'
+                        });
+                    }
+                });
+            }
+
+            function SubirInventario(formdataI) {
+                $.ajax({
+                    url: '@Url.Action("ImportacionInventario", "Importacion")',
+                    type: 'POST',
+                    data: formdataI,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        CargarTablasInventario(response.Entity);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Importación exitosa!',
+                            text: 'Revisa los resultados de tu importación.',
+                            confirmButtonColor: '#5d87ff',
+                            confirmButtonText: 'Ver Resultados'
+                        }).then(function () {
+                            $('.card .wizard-content').parent().addClass('d-none');
+                            $('#cardtables').removeClass('d-none');
+
+                            $('html, body').animate({
+                                scrollTop: $('#cardtables').offset().top - 20
+                            }, 500);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al subir Inventario',
+                            text: 'Ocurrió un error al procesar el archivo Inventario.',
+                            confirmButtonColor: '#5d87ff'
+                        });
+                    },
+                    complete: function (response) {
+                        //    toggle_Loadingtb('tbLoading', false);
+                        Swal.close();
+
+                    }
+                });
+            }
+
+            // ===== CONFIGURACIÓN DEL WIZARD =====
+            $(".tab-wizard").steps({
+                headerTag: "h6",
+                bodyTag: "section",
+                transitionEffect: "fade",
+                titleTemplate: '<span class="step">#index#</span> #title#',
+                labels: {
+                    finish: "Cargar Archivos",
+                    next: "Siguiente",
+                    previous: "Anterior"
+                },
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    if (newIndex < currentIndex) {
+                        return true;
+                    }
+
+                    // Validación Step 2: Archivo Maestro
+                    if (currentIndex === 1) {
+                        var fileMaestro = $("#fileInputM")[0].files[0];
+                        if (!fileMaestro) {
+                            event.preventDefault();
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Archivo requerido',
+                                text: 'Por favor, selecciona el archivo Maestro antes de continuar.',
+                                confirmButtonColor: '#5d87ff',
+                                allowOutsideClick: false
+                            }).then(function() {
+                                $("#fileInputM").focus();
+                            });
+                            return false;
+                        }
+                    }
+
+                    // Validación Step 3: Archivo Inventario
+                    if (currentIndex === 2) {
+                        var fileInventario = $("#fileInputI")[0].files[0];
+                        if (!fileInventario) {
+                            event.preventDefault();
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Archivo requerido',
+                                text: 'Por favor, selecciona el archivo Inventario antes de continuar.',
+                                confirmButtonColor: '#5d87ff',
+                                allowOutsideClick: false
+                            }).then(function() {
+                                $("#fileInputI").focus();
+                            });
+                            return false;
+                        }
+                    }
+
+                    return true;
+                },
+                onFinishing: function (event, currentIndex) {
+                    return ValidFiles();
+                },
+                onFinished: function (event, currentIndex) {
+                    var formdataM = new FormData();
+                    formdataM.append("Maestro", $("#fileInputM")[0].files[0]);
+
+                    var formdataI = new FormData();
+                    formdataI.append("Inventario", $("#fileInputI")[0].files[0]);
+
+                    //toggle_Loadingtb('tbLoading', true);
+                    Swal.fire({
+                        title: 'Cargando...',
+                        text: 'Por favor espere',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    SubirMaestros(formdataM, formdataI);
+                }
+            });
+
+            // Personalizar botones después de inicializar el wizard
+            setTimeout(function () {
+                $('a[href="#next"]').html('Siguiente <i class="ti ti-arrow-right ms-2"></i>').addClass('btn-primary px-4');
+                $('a[href="#previous"]').html('<i class="ti ti-arrow-left me-2"></i> Anterior').addClass('btn-outline-secondary px-4');
+                $('a[href="#finish"]').html('<i class="ti ti-cloud-upload me-2"></i> Cargar Archivos').addClass('btn-success px-4');
+            }, 200);
+
+            // ===== FEEDBACK VISUAL AL CARGAR ARCHIVOS =====
+            $('#fileInputM').on('change', function() {
+                var file = this.files[0];
+                var statusDiv = $('#file-maestro-status');
+
+                if (file) {
+                    var extension = file.name.split('.').pop().toLowerCase();
+                    if (extension !== 'xlsx' && extension !== 'xls') {
+                        statusDiv.html('<div class="alert alert-danger"><i class="ti ti-x me-2"></i>Formato no válido. Solo se permiten archivos .xlsx o .xls</div>');
+                        $(this).val('');
+                    } else {
+                        statusDiv.html('<div class="alert alert-success"><i class="ti ti-check me-2"></i>Archivo cargado: <strong>' + file.name + '</strong></div>');
+                    }
+                } else {
+                    statusDiv.html('');
+                }
+            });
+
+            $('#fileInputI').on('change', function() {
+                var file = this.files[0];
+                var statusDiv = $('#file-inventario-status');
+
+                if (file) {
+                    var extension = file.name.split('.').pop().toLowerCase();
+                    if (extension !== 'xlsx' && extension !== 'xls') {
+                        statusDiv.html('<div class="alert alert-danger"><i class="ti ti-x me-2"></i>Formato no válido. Solo se permiten archivos .xlsx o .xls</div>');
+                        $(this).val('');
+                    } else {
+                        statusDiv.html('<div class="alert alert-success"><i class="ti ti-check me-2"></i>Archivo cargado: <strong>' + file.name + '</strong></div>');
+                    }
+                } else {
+                    statusDiv.html('');
+                }
+            });
+
+            // ===== DESCARGA DE PLANTILLAS =====
+            $("#btnTemplate").on("click", function () {
+                DescargarExcel();
+            });
+
+            function DescargarExcel() {
+                DescargarExcelMaestro();
+                setTimeout(function () {
+                    DescargarExcelInventario();
+                }, 1500);
+            }
+
+            function DescargarExcelMaestro() {
+                window.location.href = '@Url.Action("DescargarExcelMaestro", "Importacion")';
+            }
+
+            function DescargarExcelInventario() {
+                window.location.href = '@Url.Action("DescargarExcelInventario", "Importacion")';
+            }
+
+
+            $(document).on('click', '#btnNuevaImportacion', function () {
+                location.reload();
+            });
+
+
+        });
+        </script>
+    }

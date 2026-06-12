@@ -1,0 +1,350 @@
+﻿
+@{
+    ViewBag.Title = "InventarioPrincipal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+
+@*<link href="~/Assets/CSS/InventarioCSS.css" rel="stylesheet" />*@
+
+@*<div class="Inv_grid_btn">
+    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalSelectInv">
+        <span class="spanIcon">
+            <i class="fa-regular fa-clipboard"></i>
+        </span>
+
+
+        <span class="spantext">Gestionar Inventario</span>
+    </button>
+    <button type="button" class="btn btn-success" id="btnCrearInventario">
+        <span class="spanIcon"><i class="fa-solid fa-box-open"></i></span>
+        <span class="spantext">Crear Inventario</span>
+    </button>
+</div>*@
+@*<button type="button" class="btn btn-warning float-end DisplayNone" data-bs-toggle="modal" data-bs-target="#ModalCreateINVAPI" id="btnCrearInventarioAPI">Crear inventario desde la nube <i class="fa-solid fa-cloud-arrow-down"></i></button>*@
+
+@* Modal Seleccion  *@
+@*<div class="modal fade" id="ModalSelectInv" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content custom_modal_content">
+            <div class="modal-header custom_modal_head">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">SELECCIONAR INVENTARIO</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body custom_modal_body">
+                <div class="row">
+                    <div class="col">
+                        <div id="Div_cbxAlmacen_add" class="input-wrapper">
+                            <select class="form-select " id="cbxInventarioP"></select>
+                            <label for="cbxInventarioP" class="select-label">Inventario</label>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>*@
+
+@* Modal API Seleccion  *@
+@*<div class="modal fade" id="ModalCreateINVAPI" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content custom_modal_content">
+            <div class="modal-header custom_modal_head">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">SELECCIONAR AlMACEN</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body custom_modal_body">
+                <div class="row">
+                    <div class="col">
+                        <div id="API_Div_cbxAlmacen_add" class="input-wrapper">
+                            @Html.DropDownList("API_cbxAlmacen", new SelectList(ViewBag.ListaAlmacenes, "vchValue", "vchdesc"), new { @Class = " form-select ", })
+                            <label for="API_cbxAlmacen" class="select-label">Almacen</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div id="" class="input-wrapper">
+                            <div class="Modal_content_mensajes" id="API_content_mensajes"></div>
+                            <button type="button" class="btn btn-primary" id="API_btn_Add">Crear Inventario</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>*@
+
+
+@*@Html.Partial("~/Views/Inventario/GestorInventario/TabGestorPrincipal.cshtml")
+@Html.Partial("~/Views/Inventario/CrearInventario/CrearInventario.cshtml")*@
+
+@section scripts{
+    <script src="https://cdn.datatables.net/plug-ins/1.11.5/api/sum().js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>*@
+    @*<script src="~/Assets/JS/cdn/Chart.js-3.7.0-chart.min.js"></script>*@
+    <script src="~/Assets/JS/cdn/Chart.js-4.4.1-chart.min.js"></script>
+    <script src="~/Assets/JS/cdn/Chart-DataLabels-V2.2.js"></script>
+
+    @*<script src="~/Assets/JS/InventarioJS/CrearInventario.js"></script>
+    <script src="~/Assets/JS/InventarioJS/InventarioJS.js"></script>*@
+    <script src="~/Assets/JS/cdn/exceljs-4.3.0-exceljs.min.js"></script>
+    <script nonce="@nonce">
+
+        //$('#CrearInv_btnTemplate').on("click", function () {
+        //    downTemplate();
+        //});
+
+        @*function downTemplate() {
+            window.location.href = "@Url.Content("~/")Importacion/DescargarExcelDetalle"
+        }*@
+        $('#cbxInventarioP').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            height: '100%',
+            dropdownParent: $('#ModalSelectInv'),
+
+        });
+
+        $('#API_cbxAlmacen').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            height: '100%',
+            dropdownParent: $('#ModalCreateINVAPI'),
+
+        });
+
+        $(document).ready(function () {
+            /*toggle_Loadingtb('tbLoading', false);*/
+            /*$('#ModalSelectInv').modal('show');*/
+
+            $('#cbxProducto_NewInv').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                height: '100%'
+            });
+            $('#cbxUbicacion_NewInv').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                height: '100%'
+            });
+
+            $('.select2_').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                height: '100%'
+            });
+            $('#CrearInv_btn_Import').click(function () {
+                var formData = new FormData();
+                    formData.append("archivo", $("#CrearInv_fileInput")[0].files[0]);
+                    formData.append("IdAlmacen", $('#cbxAlmacen_NewInv').val());
+
+                /*toggle_Loadingtb('tbLoading', true);*/
+                    $.ajax({
+                        url: '@Url.Action("SubirArchivo_Detalle", "Importacion")',
+                        type: 'POST',
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        //async:false,
+                        success: function (response) {
+                            $("#CrearInv_fileInput").val("");
+                            //Console.log(response);
+                            if (response.HUBO_ERROR == true) {
+                                MostrarError(response.MENSAJE_ERROR, "content_mensajes3");
+                            } else {
+                                Charge_RImport_Modal(response.Entity);
+                                addImport(response.Entity)
+                            }
+
+
+                        },
+                        complete: function (response) {
+
+                            /*toggle_Loadingtb('tbLoading', false);*/
+                            if (response.HUBO_ERROR) {
+                                //Console.log("Error")
+                            }
+
+                        }
+                    });
+
+                });
+
+
+        });
+
+       /* LoadCbxInventario();*/
+
+        //$('#ConfirmarExport').on("click", function () {
+        //    var radSelect = $('input:radio[name=ListRadioExcel]:checked').val();
+        //    //Console.log('inicia export');
+        //    toggle_Loadingtb('tbLoading', true);
+        //    $('#ConfirmarExport').prop("disabled", true);
+
+        //    //let ChkcontTotal = $('#chkExport_ConteoTotalizado').is(':checked') ? 1 : 0;
+        //    //if (!ChkcontTotal) {
+
+
+        //    //} else {
+        //    //    ExportInventarioTotalizado()
+        //    //}
+
+        //    switch (radSelect) {
+        //        case '1': ExportInventario(1); break;
+        //        case '2': ExportInventario(2); break;
+        //        case '3': ExportInventario(3); break;
+        //        default: //Console.log('Sin selección');; break;
+        //    }
+
+        //});
+
+        @*function ExportInventario(SlcConteo) {
+            //Console.log('inicia export funcion2');
+            var _url = '@Url.Content("~/")Inventario/ExportInventario/';
+            var ChkcontTotal = $('#chkExport_ConteoTotalizado').is(':checked') ? 1 : 0;
+
+            var obj = new Object();
+
+            obj.COD_INVENTARIO = $('#lblInventario').text();
+            if (SlcConteo == 1 || ChkcontTotal) { obj.NRO_CONTEO_1 = 1; } else { obj.NRO_CONTEO_1 = 0; }
+            if (SlcConteo == 2 || ChkcontTotal) { obj.NRO_CONTEO_2 = 2; } else { obj.NRO_CONTEO_2 = 0; }
+            if (SlcConteo == 3 || ChkcontTotal) { obj.NRO_CONTEO_3 = 3; } else { obj.NRO_CONTEO_3 = 0; }
+            obj.inventario = $('#lblAlmacen').text();
+            obj.codigo = $('#lblInventario').text();
+
+
+            //Console.log(obj);
+
+            var _xhr = new XMLHttpRequest();
+            _xhr.open('GET', _url + '?COD_INVENTARIO=' + obj.COD_INVENTARIO + '&NRO_CONTEO_1=' + obj.NRO_CONTEO_1
+                + '&NRO_CONTEO_2=' + obj.NRO_CONTEO_2 + '&NRO_CONTEO_3=' + obj.NRO_CONTEO_3
+                + '&inventario=' + obj.inventario + '&codigo=' + obj.codigo, true);
+            _xhr.responseType = 'blob'; // Indicar que esperamos una respuesta binaria
+            // Cuando la solicitud esté completada
+            _xhr.onload = function () {
+                // Crear un objeto Blob con la respuesta
+                var blob = _xhr.response;
+
+                // Crear un enlace (link) en el DOM
+                var downloadLink2 = document.createElement('a');
+                downloadLink2.href = window.URL.createObjectURL(blob);
+
+                var titulo = ''
+                titulo = $('#lblInventario').text() + '- Conteo' + SlcConteo + '.xlsx';
+                if (ChkcontTotal) {
+                    titulo = $('#lblInventario').text() + '- Conteo Totalizado' + '.xlsx';
+                }
+                var _name = titulo
+                downloadLink2.download = _name + '.xlsx';
+
+                // Hacer click en el enlace para descargar el archivo
+                document.body.appendChild(downloadLink2);
+                downloadLink2.click();
+
+                afterDownload()
+
+            }
+            // Enviar la solicitud
+            _xhr.send();
+        }
+        function afterDownload() {
+            $('#ConfirmarExport').prop("disabled", false);
+            // Ocultar el indicador de carga
+            toggle_Loadingtb('tbLoading', false);
+        }*@
+
+
+
+        $("#btnExportReport1").on("click", function () {
+            ExportExcelReport();
+        });
+        $("#btnExportReport2").on("click", function () {
+            ExportExcelReport();
+        });
+        $("#btnExportReport3").on("click", function () {
+            ExportExcelReport();
+        });
+        $("#btnExportReport4").on("click", function () {
+            ExportExcelReport();
+        });
+
+        //function ExportExcelReport() {
+
+        //}
+
+
+        function ExportExcelReport() {
+            var url = '@Url.Content("~/")Inventario/ExportarExcel/';
+
+            var radSelect = $('input:radio[name=listGroupReport]:checked').val();
+            var filtro = new Object();
+
+            filtro.tipoReporte = radSelect;
+            filtro.Cod_inventario = $('#lblInventario').text();
+            switch (radSelect) {
+                case "0": filtro.DatoFiltro = $('#RangeReport1').val(); break;
+                case "1": filtro.DatoFiltro = $('#txtCodProduct').val(); break;
+                case "2": filtro.DatoFiltro = $('#txtCodUbicacion').val();
+                    filtro.NConteo = $('#RangeReport3').val();
+                    filtro.Usuario = $('#txtCodUsuario1').val();
+                    break;
+                case "3": filtro.DatoFiltro = $('#txtCodUsuario2').val(); break;
+                default: //Console.log('Sin selección de reporte');; break;
+            }
+
+            if (radSelect != 2) { filtro.NConteo = ConteoActual; }
+            if (radSelect != 2) { filtro.Usuario = ""; }
+            filtro.inventario = $('#lblAlmacen').text();
+            filtro.codigo = $('#lblInventario').text();
+            /*toggle_Loadingtb('tbLoading', true);*/
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url + '?fecha=' + filtro.fecha + '&tipoReporte=' + filtro.tipoReporte
+                + '&Cod_inventario=' + filtro.Cod_inventario + '&DatoFiltro=' + filtro.DatoFiltro + '&NConteo=' + filtro.NConteo
+                + '&Usuario=' + filtro.Usuario + '&inventario=' + filtro.inventario + '&codigo=' + filtro.codigo , true);
+            xhr.responseType = 'blob'; // Indicar que esperamos una respuesta binaria
+            // Cuando la solicitud esté completada
+            xhr.onload = function () {
+                // Crear un objeto Blob con la respuesta
+                var blob = xhr.response;
+
+                // Crear un enlace (link) en el DOM
+                var downloadLink = document.createElement('a');
+                downloadLink.href = window.URL.createObjectURL(blob);
+              var titulo = "";
+                switch (filtro.tipoReporte) {
+                    case "0": titulo = "Reporte Diferencial Conteo - " + filtro.DatoFiltro; break;
+                    case "1": titulo = "Reporte de Productos"; break;
+                    case "2": titulo = "Reporte de Ubicaciones Conteo - " + filtro.NConteo; break;
+                    case "3": titulo = "Reporte de Lecturas de Usuario"; break;
+                }
+                var _name = titulo
+                downloadLink.download = _name + '.xlsx';
+
+                // Hacer click en el enlace para descargar el archivo
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+
+                // Una vez que se ha descargado el archivo, ocultar el indicador de carga
+                /*toggle_Loadingtb('tbLoading', false);*/
+            };
+            // Enviar la solicitud
+            xhr.send();
+
+
+        }
+
+
+    </script>
+
+}

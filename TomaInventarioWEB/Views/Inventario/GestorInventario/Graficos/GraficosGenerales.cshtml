@@ -1,0 +1,210 @@
+﻿<!-- Cards general -->
+<div class="row pt-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pb-0 card-titulo__mobile">
+                <h5>Resumen General</h5>
+            </div>
+            <div class="card-body p-3 pb-4">
+                <div class="row">
+
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="card border border-primary">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-primary display-6">
+                                        <i class="ti ti-package"></i>
+                                    </span>
+                                    <div>
+                                        <h2 id="dataSquare4" class="fs-7">00</h2>
+                                        <p class="fw-medium text-primary mb-0">
+                                            Total de Productos
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="card border border-success">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-success display-6">
+                                        <i class="ti ti-barcode"></i>
+                                    </span>
+                                    <div>
+                                        <h2 id="dataSquare2" class="fs-7">00</h2>
+                                        <p class="fw-medium text-success mb-0">
+                                            Productos Inventariados
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="card border border-danger">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-danger display-6">
+                                        <i class="ti ti-barcode-off"></i>
+                                    </span>
+                                    <div>
+                                        <h2 id="dataSquare3" class="fs-7">00</h2>
+                                        <p class="fw-medium text-danger mb-0">
+                                            Productos Faltantes
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cards diferencias -->
+<div class="row d-none">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pb-0 card-titulo__mobile">
+                <h5>Resumen de Diferencias</h5>
+            </div>
+            <div class="card-body p-3 pb-4">
+                <div class="row">
+
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="card border border-success">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-success display-6">
+                                        <i class="ti ti-circle-check"></i>
+                                    </span>
+                                    <div>
+                                        <h2 id="dataSinDif" class="fs-7">00</h2>
+                                        <p class="fw-medium text-success mb-0">
+                                            Productos sin Diferencias
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="card border border-warning">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-warning display-6">
+                                        <i class="ti ti-alert-circle"></i>
+                                    </span>
+                                    <div>
+                                        <h2 id="dataConDif" class="fs-7">00</h2>
+                                        <p class="fw-medium text-warning mb-0">
+                                            Productos con Diferencias
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grafico Pie Stock -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header pb-0 text-center">
+                <h5>Avance del Inventario</h5>
+            </div>
+            <div class="card-body mx-auto graficos__mobile">
+                <div id="GraficoPieStock">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header pb-0 text-center">
+                <h5>Stock Registrado por Operador</h5>
+            </div>
+            <div class="card-body mx-auto graficos__mobile">
+                <div id="GraficoBarOperadores">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<br />
+    <div id="ContentCharts">
+        <div class="row Graficos_row" >
+            <div class="col Graficos_col" >
+                <button id="rectangle1" class="rec btn btn-info">
+                    <span class="circleIcon">
+                        <i class="fa-solid fa-warehouse fa-xl iconGrafics"></i>
+                    </span>
+                    <span class="span_ttlGrafic">INVENTARIO</span>
+                    <span class="spanSquareGraph" id="dataSquare1">00</span>
+                </button>
+                <button id="rectangle2" class="rec btn btn-warning">
+                    <span class="circleIcon">
+                        <i class="fa-solid fa-box fa-xl iconGrafics"></i>
+                    </span>
+
+                    <span class="span_ttlGrafic">INVENTARIADOS</span>
+                    <span class="spanSquareGraph" id="dataSquare2">00</span>
+
+                </button>
+                <button id="rectangle3" class="rec btn btn-danger">
+                    <span class="circleIcon">
+                        <i class="fa-solid fa-box-open fa-xl iconGrafics"></i>
+                    </span>
+
+                    <span class="span_ttlGrafic">FALTANTES</span>
+                    <span class="spanSquareGraph" id="dataSquare3">00</span>
+
+                </button>
+                <button id="rectangle4" class="rec btn btn-success">
+                    <span class="circleIcon">
+                        <i class="fa-solid fa-check-to-slot fa-xl iconGrafics"></i>
+                    </span>
+
+                    <span class="span_ttlGrafic">TOTAL</span>
+                    <span class="spanSquareGraph" id="dataSquare4">00</span>
+
+                </button>
+            </div>
+        </div>
+        <br />
+        <div class="row Flex-Wrap" id="rowChart" >
+            <div class="">
+                <div class="form-check form-switch" >
+                    <input class="form-check-input" type="checkbox" role="switch" id="ChartSwitch">
+                    <label class="form-check-label" for="ChartSwitch"># Lecturas por Usuarios </label>
+                </div>
+            </div>
+
+            <div class="col" id="colChart1" >
+                <canvas id="Chart1" ></canvas>
+            </div>
+            <div class="col" id="colChart2" >
+                <canvas id="Chart2" ></canvas>
+            </div>
+            <div class="col" id="colChart3">
+                <canvas id="Chart3" ></canvas>
+            </div>
+        </div>
+    </div>*@
+

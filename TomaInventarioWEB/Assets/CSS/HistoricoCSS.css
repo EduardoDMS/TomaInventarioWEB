@@ -1,0 +1,71 @@
+﻿#rowConteos {
+    max-width: 100%;
+}
+
+    #rowConteos button {
+        min-height: 3.5rem;
+        border-radius: 5px;
+        color: #3bb5fe;
+        align-items: center;
+        display: flex;
+        font-weight: 900;
+        max-height: 70px;
+        max-width: 158px;
+        margin: 5px 10px 5px 0;
+    }
+
+#iconConteo1, #iconConteo2 {
+    min-width: 3.5rem;
+    min-height: 3.5rem;
+    border: 3px solid #3bb5fe;
+    margin-right: 5px;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    font-weight: 900;
+    border-top-style: groove;
+    border-left-style: groove;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+}
+
+#btnBuscar {
+    margin-right: 10px;
+    color: #fff !important;
+}
+
+#tbl_Inventario {
+    table-layout: auto;
+    margin-top: 3.5rem;
+}
+
+th,
+td {
+    white-space: pre-wrap !important;
+    word-wrap: break-word;
+}
+
+input[type="date"], .chkFiltrodtm {
+    max-width: 15rem;
+    margin: 5px;
+}
+
+
+
+#GestorPrincipal .col-md-2 {
+    border: 1px solid #000;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#GestorPrincipal .colfiltro {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #000;
+    margin-left: 5px;
+    align-items: center;
+    justify-content: center;
+}

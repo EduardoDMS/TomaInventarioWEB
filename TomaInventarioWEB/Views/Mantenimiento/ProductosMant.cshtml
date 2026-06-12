@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewBag.Title = "ProductosMant";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+
+@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+<link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
+<link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">*@
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h5 class="mb-0 fw-semibold text-white">Gestión de Productos</h5>
+                <small class="opacity-75">Organice sus productos</small>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-warning d-none" id="Prod_Almacen">
+                    <i class="ti ti-cloud-upload"></i> Cargar Productos desde la nube
+                </button>
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Import_Modal">
+                    <i class="ti ti-file-upload"></i> Importar  
+                </button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Add_Modal">
+                    <i class="ti ti-plus"></i> Agregar  
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Código o nombre del producto</label>
+                <input type="text" class="form-control" id="txtProducto" maxlength="200" placeholder="Buscar producto..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold"> Estado</label>
+                <select class="form-select" id="cbxActivo" data-control="select2">
+                    <option value="-1">Todos</option>
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+            <div class="col-md-5 d-flex align-items-end gap-2">
+                <button id="btn_filtrar" class="btn btn-primary flex-fill">
+                    <i class="ti ti-search me-2"></i>Buscar
+                </button>
+                <button id="btn_limpiar" class="btn btn-outline-secondary flex-fill">
+                    <i class="ti ti-eraser me-2"></i>Limpiar
+                </button>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="table-responsive">
+            <table id="dtTabla" class="table table-striped table-hover w-100">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Acciones</th>
+                        <th scope="col">Cod. Producto</th>
+                        <th scope="col">Desc. Producto</th>
+                        <th scope="col">Estado</th>
+
+                    </tr>
+                <thead>
+                <tbody>
+                    <tr>
+                        <td class="d-none">Cargando...</td>
+                        <td class="d-none">Cargando...</td>
+                        <td class="d-none">Cargando...</td>
+                        <td class="d-none">Cargando...</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+@Html.Partial("~/Views/Mantenimiento/Modals/ModalsProductosMant.cshtml")
+@*@Html.Partial("~/Views/Shared/Modals_Generales.cshtml")*@
+
+@section scripts{
+    <script src="~/Assets/JS/MantenimientosJS/ProductosMant/ProductoMantJS.js"></script>
+    <script src="~/Assets/JS/MantenimientosJS/ProductosMant/ProductoTable.js"></script>
+    <script nonce="@nonce">
+    function downTemplate() {
+        window.location.href = "@Url.Content("~/")Importacion/DescargarExcelProductos"
+    }
+
+    jQuery(document).ready(function () {
+        $('#btn_Import').click(function () {
+            var fileInput = $("#fileInput")[0];
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Archivo no seleccionado',
+                    text: 'Por favor, seleccione un archivo para importar.',
+                    confirmButtonColor: '#5d87ff',
+                    confirmButtonText: 'Entendido'
+                });
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("archivo", fileInput.files[0]);
+
+            Swal.fire({
+                title: 'Importando productos...',
+                html: 'Por favor espere mientras se procesa el archivo.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: '@Url.Action("SubirArchivo_Producto", "Importacion")',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    Swal.close(); 
+
+                    $("#fileInput").val("");
+
+                    if (response.HUBO_ERROR === true) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error en la importación',
+                            text: response.MENSAJE_ERROR,
+                            confirmButtonColor: '#5d87ff',
+                            confirmButtonText: 'Entendido'
+                        });
+                    } else {
+                        Charge_RImport_Modal(response.Entity);
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Importación exitosa!',
+                            text: 'Los productos se han importado correctamente.',
+                            confirmButtonColor: '#5d87ff',
+                            confirmButtonText: 'Aceptar',
+                            timer: 2500,
+                            timerProgressBar: true
+                        });
+                    }
+
+                    ActualizarTabla();
+                },
+                error: function (xhr, status, error) {
+                    Swal.close(); 
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo procesar el archivo. Por favor, intente nuevamente.',
+                        confirmButtonColor: '#5d87ff',
+                        confirmButtonText: 'Entendido'
+                    });
+                },
+                complete: function (response) {
+                    $("#fileInput").val("");
+                }
+            });
+        });
+    });
+    </script>
+
+    @*<script src="~/Content/matdash/libs/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>*@
+
+}

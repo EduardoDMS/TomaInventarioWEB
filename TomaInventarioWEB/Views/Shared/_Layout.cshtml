@@ -1,0 +1,371 @@
+﻿
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toma de Inventarios</title>
+    <link rel="shortcut icon" href="~/Assets/IMG/LogoAlmacen.png">
+
+    @*@Styles.Render("~/bundles/css-vendor")
+        @Styles.Render("~/bundles/css-app")*@
+
+    <!-- CSS Terceros -->
+    <link href="~/Content/matdash/libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/matdash/libs/jquery-ui/dist/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/Assets/CSS/cdn/select2-bootstrap-5-theme@1.3.0-dist-select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link href="~/Content/matdash/fonts/tabler-icons/tabler-icons.min.css" rel="stylesheet" />
+    <link href="~/Assets/CSS/cdn/dataTables.jqueryui.min.css" rel="stylesheet" />
+    <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    @*<link href="~/Assets/CSS/cdn/responsive.dataTables.min.css" rel="stylesheet" />*@
+
+    <!-- CSS Propios -->
+    <link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+    <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
+    <link href="~/Assets/CSS/Estilos-generales_nuevo.css" rel="stylesheet" />
+    <link href="~/Assets/CSS/Login_nuevo.css" rel="stylesheet" />
+    <link href="~/Assets/CSS/Header_nuevo.css" rel="stylesheet" />
+    <link href="~/Assets/CSS/Sidebar_nuevo.css" rel="stylesheet" />
+
+</head>
+<body class="body__principal">
+
+    <!-- INICIO BARRA SUPERIOR -->
+    <header class="navbar__principal">
+        <div class="row justify-content-between align-items-center gx-0">
+            <!-- Logo -->
+            <div class="col">
+                <img class="navbar__logo" src="~/Assets/IMG/LogoAlmacenBanner.png" alt="Logo Toma de Inventario">
+            </div>
+            <!-- Busqueda -->
+            <div class="col ">
+                <div class="navbar__busqueda">
+                    <input class="form-control" type="text" placeholder="Buscar" id="buscadorSubmenus"
+                           autocomplete="off">
+                    <i class="ti ti-search"></i>
+                    <ul class="list-group position-absolute w-100 mt-1 d-none" id="resultadosBusqueda">
+                    </ul>
+                </div>
+            </div>
+            <!-- Navbar izquierdo-->
+            <div class="col d-flex justify-content-end">
+                <div class="navbar_secundario pe-3">
+                    <ul class="list-inline d-flex align-items-center justify-content-end h-100 mb-0">
+                        <!--<li>
+                            <div class="dropdown">-->
+                        <!-- Icono -->
+                        <!--<button class="position-relative" id="notificaciones" data-bs-toggle="dropdown">
+                            <i class="ti ti-bell"></i>
+                            <span class="navbar__secundario-notificacion">2</span>
+                        </button>-->
+                        <!-- Panel de notificaciones -->
+                        <!--<div class="dropdown-menu dropdown-menu-start notificacion__contenedor">
+                            <h5 class="mb-3">Notificaciones</h5>-->
+                        <!-- Notificacion 1 -->
+                        <!--<div class="card notificacion__item mb-2">
+                            <div class="card-body d-flex align-items-center p-1 gap-2">
+                                <div class="notificacion__indicador indicador-ope">
+                                </div>
+                                <div class="flex-grow-1 px-1">
+                                    <h4 class="notificacion__nombre mb-1">Javier P.</h4>
+                                    <span class="notificacion__actividad m-0">
+                                        Inicio el primer
+                                        conteo:
+                                    </span>
+                                    <span class="notificacion__descripcion mb-1">
+                                        "Inv. Septiembre
+                                        2025"
+                                    </span>
+                                    <h6 class="notificacion__fecha m-0">01/09/25 - 09:40</h6>
+                                </div>
+                            </div>
+                        </div>-->
+                        <!-- Notificacion 2 -->
+                        <!--<div class="card notificacion__item mb-2">
+                                        <div class="card-body d-flex align-items-center p-1 gap-2">
+                                            <div class="notificacion__indicador indicador-admi">
+                                            </div>
+                                            <div class="flex-grow-1 px-1">
+                                                <h4 class="notificacion__nombre mb-1">Juan A.</h4>
+                                                <span class="notificacion__actividad m-0">Creo un inventario:</span>
+                                                <span class="notificacion__descripcion mb-1">
+                                                    “Inv. Septiembre
+                                                    2025”
+                                                </span>
+                                                <h6 class="notificacion__fecha m-0">01/09/25 - 09:20</h6>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>-->
+                        <li>
+                            <button type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ti ti-user-circle"></i>
+                            </button>
+                            <ul class="dropdown-menu px-4 pt-3 pb-2" aria-labelledby="dropdownUserButton">
+                                <li class="">
+                                    <div class="border-bottom d-flex align-items-center gap-3 pb-3">
+                                        <img src="@Url.Content("~/Assets/IMG/iconoUsuario.png")" class="rounded-circle img_perfil" />
+                                        <div class="d-flex gap-1">
+                                            <h5 class="fs-12 fw-normal">Bienvenido,</h5>
+                                            <h5 class="fs-12 fw-bold">@Session["Username"]</h5>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="message-body">
+                                    <a class="dropdown-item p-2 h6" href="@Url.Action("logout","Seguridad")">Cerrar Sesión</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <button id="btnAyuda" type="button">
+                                <i class="ti ti-help"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- FIN BARRA SUPERIOR -->
+    <!-- INICIO SIDEBAR -->
+    <aside>
+        <div class="sidebar__contenedor d-flex flex-column align-items-center justify-content-around">
+            <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
+                <div class="sidebar__item" id="Inicio" data-menu="inicio" title="Inicio">
+                    <i class="ti ti-home"></i>
+                    <small>Inicio</small>
+                </div>
+            </a>
+
+            <div class="sidebar__item" data-menu="inventario" title="Inventario">
+                <i class="ti ti-archive"></i>
+                <small>Inventario</small>
+            </div>
+            <div class="sidebar__item" data-menu="reportes" title="Reportes">
+                <i class="ti ti-file-analytics"></i>
+                <small>Reportes</small>
+            </div>
+            @*<div class="sidebar__item" data-menu="gestionUsuario" title="Gestión de usuarios">
+                    <i class="ti ti-users"></i>
+                    <small>Gestión de usuarios</small>
+                </div>*@
+            <a href="@Url.Action("UsuariosMant", "Mantenimiento")" class="text-decoration-none">
+                <div class="sidebar__item" id="GestionUsuarios" data-menu="gestionUsuarios" title="Gestión de Usuarios">
+                    <i class="ti ti-user"></i>
+                    <small>Gestión de Usuarios</small>
+                </div>
+            </a>
+            <div class="sidebar__item" data-menu="gestionRecursos" title="Gestión de recursos">
+                <i class="ti ti-adjustments-horizontal"></i>
+                <small>Gestión de recursos</small>
+            </div>
+            <div class="sidebar__item" data-menu="ajustes" title="Ajustes">
+                <i class="ti ti-settings"></i>
+                <small>Ajustes</small>
+            </div>
+            <div id="botonColapso" class="sidebar__icono-colapso">
+                <i class="ti ti-arrow-badge-left"></i>
+            </div>
+        </div>
+    </aside>
+    <!-- FIN SIDEBAR -->
+    <!-- INICIO SUBMENUS -->
+    <div class="submenu__principal">
+        <!-- INVENTARIO-->
+        <div class="submenu__secundario" id="inventario" data-nombre="Inventario">
+            <a class="submenu__secundario--item" href="@Url.Action("PrepararInventario","Inventario")">
+                <span class="submenu__titulo">Preparar Inventario</span>
+                <small class="submenu__descripcion">
+                    Selecciona un almacén e importa los productos el cual se realizara el
+                    inventario
+                </small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("GestionInventario","Inventario")">
+                <span class="submenu__titulo">Gestionar Inventario</span>
+                <small class="submenu__descripcion">
+                    Supervisa el avance de los inventarios, inicia o finaliza hasta 3
+                    ciclos
+                </small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("Historico_Inventariado", "Reportes")">
+                <span class="submenu__titulo">Historial de Inventario</span>
+                <small class="submenu__descripcion">Administra tus inventarios creados</small>
+            </a>
+            @*<a class="submenu__secundario--item" href="@Url.Action("ImportacionArchivos", "Importacion")">
+                <span class="submenu__titulo">Importar archivos escenciales</span>
+                <small>Cargue archivos excel para el funcionamiento inicial de la aplicación</small>
+            </a>*@
+        </div>
+        <!-- REPORTE-->
+        <div class="submenu__secundario" id="reportes" data-nombre="Reportes">
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Diferencial", "ReportePrincipal")">
+                <span class="submenu__titulo">Diferencial</span>
+                <small>Muestra las diferencias entre el stock inicial y el conteo final</small>
+            </a>
+
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Conteo", "ReportePrincipal")">
+                <span class="submenu__titulo">Conteo</span>
+                <small>Muestra el número de conteo y stock diferencial</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Usuario", "ReportePrincipal")">
+                <span class="submenu__titulo">Usuario</span>
+                <small>Muestra el stock inventariado por un usuario seleccionado</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Producto", "ReportePrincipal")">
+                <span class="submenu__titulo">Producto</span>
+                <small>Muestra el stock inventariado, el usuario por un producto seleccionado</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Ubicacion", "ReportePrincipal")">
+                <span class="submenu__titulo">Ubicación</span>
+                <small>Muestra el stock inventariado, el usuario en una ubicación seleccionada</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Principal", "ReportePrincipal")">
+                <span class="submenu__titulo">Detalle inventario</span>
+                <small>Acceda a más filtros</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Lectura", "Reportes")">
+                <span class="submenu__titulo">Lecturas</span>
+                <small>
+                    Muestra la fecha, stock inventariado, usuario y terminal donde se registro
+                </small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Detalle", "Reportes")">
+                <span class="submenu__titulo">Inventario Inicial</span>
+                <small>
+                    Muestra los productos iniciales antes de un inventario
+                </small>
+            </a>
+
+        </div>
+        <!-- GESTION DE USUARIO-->
+        @*<div class="submenu__secundario" id="gestionUsuario" data-nombre="Gestión de Usuarios">
+                <a class="submenu__secundario--item" href="@Url.Action("UsuariosMant", "Mantenimiento")">
+                    <span class="submenu__titulo">Usuarios Generales</span>
+                    <small>Realice modificaciones a sus usuarios (crea, edita y desactive)</small>
+                </a>
+                <a class="submenu__secundario--item" href="@Url.Action("UsuariosMant", "Mantenimiento")">
+                        <span class="submenu__titulo">Usuario Operador</span>
+                        <small>Realice modificaciones a sus usuarios (crea, edita y desactive)</small>
+                </a>
+            </div>*@
+        <!-- GESTION DE RECURSOS-->
+        <div class="submenu__secundario" id="gestionRecursos" data-nombre="Gestión de Recursos">
+            <a class="submenu__secundario--item" href="@Url.Action("AlmacenesMant", "Mantenimiento")">
+                <span class="submenu__titulo">Almacenes</span>
+                <small>Administra tus almances (crea, edita y desactive)</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("UbicacionesMant", "Mantenimiento")">
+                <span class="submenu__titulo">Ubicaciones</span>
+                <small>Administra tus ubicaciones dentro de los almacenes (crea, edita y desactive)</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("ProductosMant", "Mantenimiento")">
+                <span class="submenu__titulo">Productos</span>
+                <small>Administra tus productos (crea, edita y desactive)</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("UnidadesMant", "Mantenimiento")">
+                <span class="submenu__titulo">Unidades de Medida</span>
+                <small>Administra como se cuantificaran tus productos (Ejm: unidades, litros, metros, etc)</small>
+            </a>
+        </div>
+        <!-- AJUSTES-->
+        <div class="submenu__secundario" id="ajustes" data-nombre="Ajustes">
+            <a class="submenu__secundario--item" href="@Url.Action("ConfigGeneral_Empresa", "Configuracion")">
+                <span class="submenu__titulo">Empresa</span>
+                <small>Edite información referente al negocio (nombre, RUC, dirección, etc)</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("ConfigGeneral_Personalizacion", "Configuracion")">
+                <span class="submenu__titulo">Personalización</span>
+                <small>Incluya logo para los reportes</small>
+            </a>
+        </div>
+    </div>
+    <!-- FIN SUBMENUS -->
+    <!-- INICIO CONTENIDO PRINCIPAL -->
+    <main class="contenido-principal">
+        @*<p>Nonce layout: @HttpContext.Current.Items["ScriptNonce"]</p>*@
+        @RenderBody()
+
+        <!-- INICIO ANDRONIUM -->
+        <!-- Icono -->
+        <div id="iconoAndronium" class="contenedor-andronium" data-bs-toggle="tooltip"
+             data-bs-placement="top"
+             data-bs-container="body"
+             data-bs-html="true"
+             data-bs-title="¡Hola! soy Andronium la IA de <strong>DMS</strong>">
+            <img class="andronium__icono" src="~/Assets/IMG/Andronium_chat.png" />
+        </div>
+
+        <!-- Ventana de chat -->
+        <div id="andronium-chat" class="card andronium-chat oculto-chat">
+            <div class="card-header text-bg-primary d-flex justify-content-between px-3">
+                <h6 class="card-title text-white mb-0">Andronium IA</h6>
+                <span id="cerrarChat" class="andronium-cerrar">✕</span>
+            </div>
+            <div id="andronium-mensajes" class="card-body andronium-chat__mensajes">
+
+            </div>
+            <div class="card-footer p-1">
+                <form id="androniumForm" class="d-flex gap-1">
+                    <input id="andronium-input" class="form-control" placeholder="Escribe tu mensaje..." autocomplete="off" />
+                    <button type="submit" id="btnEnviarMensaje" class="btn text-bg-primary">
+                        <i class="ti ti-send text-white"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- FIN ANDRONIUM -->
+    </main>
+    <!-- FIN CONTENIDO PRINCIPAL -->
+    @*@Scripts.Render("~/bundles/js-jquery")*@
+
+    <!-- Scripts Plugins -->
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/matdash/libs/jquery-ui/dist/jquery-ui.min.js"></script>
+    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
+    <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/matdash/libs/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+    @*<script src="~/Content/matdash/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>*@
+    @*<script src="~/assets/js/cdn/1.13.8-js-datatables.min.js"></script>
+        <script src="~/assets/js/cdn/1.13.8-datatables.responsive.min.js"></script>*@
+    <script src="~/assets/js/DatatableLanguage.js"></script>
+
+    <!-- Scripts Propios -->
+    <script src="~/Assets/JS/LayoutJS.js"></script>
+    <script src="~/Assets/JS/AndroniumJS/AndroniumChat.js"></script>
+
+
+    @RenderSection("scripts", required: false)
+
+    <script nonce="@HttpContext.Current.Items["ScriptNonce"]">
+
+        /*// IR A LA PAGINA DE AYUDA //*/
+        document.getElementById("btnAyuda").addEventListener("click", function () {
+            window.location.href = '@Url.Action("Ayuda", "Home")';
+        });
+
+
+        /*// ANDRONIUM CHAT //*/
+        const urlEnviarMensaje = '@Url.Action("EnviarMensaje", "Chat")';
+        const urlObtenerHistorial = '@Url.Action("ObtenerHistorial", "Chat")';
+        document.addEventListener("DOMContentLoaded", loadChat);
+
+
+        /*// INICIALIZAR TOOLTIPS //*/
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        /*console.log(tooltipTriggerList);*/
+        tooltipTriggerList.forEach(el => {
+            new bootstrap.Tooltip(el);
+        });
+
+    </script>
+</body>
+</html>

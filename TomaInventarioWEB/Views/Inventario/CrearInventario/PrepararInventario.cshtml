@@ -1,0 +1,704 @@
+﻿@{
+    ViewBag.Title = "PrepararInventario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+<div class="card">
+    <!-- Titulo -->
+    <div class="card-header card__cabecera">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 card-cabecera__mobile">
+            <div class="card-titulo__mobile">
+                <h4 class="mb-1 fw-semibold text-white">Preparación de Inventario</h4>
+                <h7 class="text-white opacity-75">Realice los preparativos para su próximo inventario</h7>
+            </div>
+        </div>
+    </div>
+    <div class="card-body wizard-content">
+        <form id="PasosPrepararInventario" class="tab-wizard wizard-circle">
+            <!-- Paso 1 -->
+            <h6>Datos del inventario</h6>
+            <section>
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card border p-3">
+                            <div class="mb-4">
+                                <label for="cbxAlmacen_NewInv" class="form-label contenedor__subtitulo">Seleccionar un Almacen</label>
+                                <div class="position-relative">
+                                    <select id="cbxAlmacen_NewInv" class="form-select">
+                                        @*<option value="0" selected>--Seleccione un almacen--</option>*@
+                                    </select>
+                                    <div class="invalid-feedback">Este campo es requerido</div>
+                                </div>
+                                
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="txt_New_CodInventario" class="form-label contenedor__subtitulo">Código del Inventario</label>
+                                <button type="button" id="btnGenerarCodInv" class="btn btn-success btn-sm ms-2">Generar</button>
+                                <div class="position-relative">
+                                    <input id="txt_New_CodInventario" type="text" class="form-control input_placeholder" autocomplete="off" @*placeholder="Ejm: Inv_Enero_2025"*@ disabled>
+                                    <div class="invalid-feedback">Este campo es requerido</div>
+                                </div>                              
+
+                                <small id="infoCodInv" class="text-muted d-none">
+                                    <i class="ti ti-info-circle fs-4">
+                                    </i>Formato: INV-"Fecha"-"Hora"
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Paso 2 -->
+            <h6>Forma de agregar el inventario</h6>
+            <section>
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card border p-3">
+                            <h5 class="text-center mb-3">Seleccione como incluir su inventario</h5>
+                            <div class="p-2 d-flex flex-column gap-3">
+                                <button type="button" id="btnExcel_crearInv" class="btn btn-primary w-100 d-flex flex-column" data-bs-toggle="modal" data-bs-target="#modal_importExcel">
+                                    Importar desde Excel
+                                    <small class="text-white-50">Recomendado para grandes cantidades de productos</small>
+                                </button>
+                                <button type="button" id="btnManual_crearInv" class="btn btn-primary w-100 d-flex flex-column">
+                                    Agregar manualmente
+                                    <small class="text-white-50">Ideal para agregar pocos productos o hacer correcciones</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Paso 3 -->
+            <h6>Previsualizacion del inventario</h6>
+            <section class="p-0">
+                <div class="card border p-2">
+                    <h5 id="almacenActual" class="mb-4 mt-1 fw-bold text-primary">Almacen: </h5>
+                    <div class="row mx-0 g-2 my-2 justify-content-center">
+                        <div class="col-md-3">
+                            <p for="cbxUbicacion_NewInv" class="form-label contenedor__subtitulo">Seleccione una Ubicación</p>
+                            <select id="cbxUbicacion_NewInv" class="form-control">
+                            </select>
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="col-md-3">
+                            <p for="cbxProducto_NewInv" class="form-label contenedor__subtitulo">Seleccione un Producto</p>
+                            <select id="cbxProducto_NewInv" class="form-control">
+                                @*<option value="0" selected>--Seleccione un producto--</option>*@
+                            </select>
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="txtLote_NewInv" class="form-label contenedor__subtitulo">
+                                Lote del producto
+                                @*<small class="text-muted">(Opcional)</small>*@
+                                <i class="ti ti-info-circle text-primary"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   data-bs-html="true"
+                                   data-bs-title="Campo opcional">
+                                </i>
+                            </label>
+                            <input id="txtLote_NewInv" type="text" class="form-control input_placeholder" autocomplete="off" placeholder="">
+                        </div>
+                        <div class="col-md-2">
+                            <div class="d-flex justify-content-between">
+                                <label for="txtStock_NewInv" class="form-label contenedor__subtitulo">
+                                    Stock
+                                    @*<i id="infoUM" class="ti ti-info-circle text-primary"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       data-bs-html="true"
+                                       data-bs-title="Unidad de medida"
+                                       mult="">
+                                    </i>*@
+                                </label>
+                                <div>
+                                    <i class="ti ti-info-circle fs-3 text-muted"></i>
+                                    <small class="text-muted fw-bold" id="UMText" mult=""></small>
+                                </div>
+                            </div>
+                            <div class="position-relative">
+                                <input id="txtStock_NewInv" type="number" class="form-control input_placeholder" autocomplete="off">
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div> 
+                        </div>
+                        <div class="col-md-2 d-flex justify-content-center gap-3 align-items-end flex-wrap">
+                            <button type="button" id="btnAgregar" class="btn btn-primary">Agregar</button>
+                            <button type="button" id="btnEliminarFila" class="btn btn-danger">Eliminar</button>
+                        </div>
+                    </div>
+                    <!--tabla-->
+                    <hr class="mb-4">
+                    <div class="table-responsive">
+                        <table id="tbl_addProductos" class="table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Cod. Inventario</th>
+                                    <th scope="col">Cod. Ubicación</th>
+                                    <th scope="col">Dsc. Ubicación</th>
+                                    <th scope="col">Cod. Producto</th>
+                                    <th scope="col">Dsc. Producto</th>
+                                    <th scope="col">Lote Producto</th>
+                                    <th scope="col">Stock Actual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL IMPORTACION -->
+<div class="modal fade" id="modal_importExcel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <h5 class="modal-title fw-bold mb-1">
+                            <i class="ti ti-file-import me-2 text-primary"></i>Importar Inventario
+                        </h5>
+                        <p class="mb-0 text-muted fs-2">Cargue su inventario desde un archivo Excel</p>
+                    </div>                  
+                    <a href="https://www.youtube.com/watch?v=c1M2HYaEj8I" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary d-flex align-items-center justify-content-center" id="videoInv">
+                        ¿Necesitas ayuda?
+                        <i class="ti ti-brand-youtube ms-1 fs-6"></i>
+                    </a>
+                </div>        
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body py-4">
+                <div class="mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="rounded-circle bg-light-primary d-flex align-items-center justify-content-center flex-shrink-0 me-3">
+                            <span class="fw-bold text-primary fs-5">1</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-semibold mb-2">Descargue la plantilla de Excel</h6>
+                            <p class="text-muted mb-3 fs-2">
+                                Utilice nuestra plantilla para asegurar que los datos estén en el formato correcto
+                            </p>
+                            <button id="CrearInv_btnTemplate" type="button" class="btn btn-success btn-sm">
+                                <i class="ti ti-download me-1 fs-4"></i>Descargar Plantilla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-top my-4"></div>
+
+                <div class="mb-3">
+                    <div class="d-flex align-items-start">
+                        <div class="rounded-circle bg-light-primary d-flex align-items-center justify-content-center flex-shrink-0 me-3">
+                            <span class="fw-bold text-primary fs-5">2</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-semibold mb-2">Seleccione el archivo a importar</h6>
+                            <p class="text-muted mb-3 fs-2">
+                                Complete la plantilla con su inventario y cárguela aquí
+                            </p>
+                            <div class="mb-2">
+                                <input class="form-control" id="CrearInv_fileInput" type="file" accept=".xlsx,.xls">
+                                <div class="invalid-feedback">
+                                    Por favor seleccione un archivo Excel válido
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                <i class="ti ti-info-circle fs-4"></i> Formatos aceptados: .xlsx, .xls
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info d-flex align-items-start mt-4" role="alert">
+                    <div class="d-flex flex-column gap-3">
+                        @*<div>
+                            <i class="ti ti-info-circle me-2 fs-5 flex-shrink-0"></i><strong>Asegúrese de incluir el código de la ubicación del paso anterior</strong>
+                        </div>*@
+                        <div>
+                            <i class="ti ti-info-circle me-2 fs-5 flex-shrink-0"></i><strong>El uso de lote para sus productos es opcional</strong>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                    <i class="ti ti-x me-1 fs-4"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="CrearInv_btn_Import">
+                    <i class="ti ti-upload me-1 fs-4"></i>Importar Inventario
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PRODUCTOS CON ERROR AL IMPORTAR -->
+<div class="modal fade" id="modal_productosNoImportados">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title fw-bold mb-1 "><i class="ti ti-alert-circle text-danger me-1"></i>Productos no Importados</h5>
+                    <p class="mb-0 text-muted fs-2">Verifique cuidadosamente el mensaje de cada producto que no fue importado</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <!--tabla-->
+                <div class="table-responsive">
+                    <table id="RImport_Tbl" class="table table-hover w-100">
+                        <thead class="table-light">
+
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script src="~/Assets/JS/InventarioJS/PrepararInventario.js"></script>
+    <script src="~/Content/matdash/libs/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+
+    <script nonce="@nonce">
+
+        /* PROTEGER SALIDA DE LA PAGINA */
+        let hayCambios = false;
+        let urlDestino = null;
+        let esDescarga = false;
+        let esVideo = true;
+
+        // Advertencia si el usuario escoge otra opcion
+        document.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", function (e) {
+                if (!hayCambios || e.target.id =="videoInv") return;
+
+                e.preventDefault();
+                urlDestino = this.href;
+                
+                Swal.fire({
+                    title: "¿Estas seguro de salir?",
+                    text: "Si sales ahora, perderás el progreso realizado.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    cancelButtonColor: "#d33",
+                    cancelButtonText:"Cancelar",
+                    confirmButtonText: "Salir"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        hayCambios = false;
+                        window.location.href = urlDestino;
+                    } else if (result.isDenied) {
+                        hayCambios = true;
+                    }
+                });
+            });
+        });
+
+        // Marca cambios cuando el usuario edita algo
+        document.addEventListener("input", () => {
+            hayCambios = true;
+        });
+
+        // Advertencia del navegador
+        window.addEventListener("beforeunload", function (e) {
+            if (!hayCambios || esDescarga) return;
+
+            e.preventDefault();
+            e.returnValue = ""; // obligatorio para que el navegador muestre el aviso
+        });   
+
+
+
+        /* FORMULARIO WIZARD */
+        const formularioPasos = document.getElementById("PasosPrepararInventario");
+        const modalProdNoImport = new bootstrap.Modal(document.getElementById("modal_productosNoImportados"));
+        const urlGestionar = '@Url.Action("GestionInventario", "Inventario")';
+        const inputAlmacen = document.getElementById("cbxAlmacen_NewInv");
+        const inputUbicacion = document.getElementById("cbxUbicacion_NewInv");
+        $("#PasosPrepararInventario").steps({
+            headerTag: "h6",
+            bodyTag: "section",
+            transitionEffect: "fade",
+            enableAllSteps:false,
+            titleTemplate: `<span class="step">#index#</span>#title#`,
+            labels: {
+                finish: "Finalizar",
+                next: "Siguiente",
+                previous:"Anterior"
+            },
+
+            onInit: function (event, currentIndex) {
+                LoadCbxAlmacenInv();
+                let idAlmacen = $("#cbxAlmacen_NewInv").val();
+                LoadCbxUbiInv(idAlmacen);
+                LoadCbxProdInv("");
+                LoadUndMed();
+                InicializarTablaCrearInv();
+            },
+
+            onStepChanging: function (event, currentIndex, newIndex) {
+
+                if (newIndex < currentIndex) return true;
+
+                //Validacion paso 1 antes del 2
+                if (currentIndex === 0) {
+                    let camposValidos = validarCamposLlenados(formularioPasos);
+                    let existenciaInv = validarExistenciaInv();
+
+                    return camposValidos && existenciaInv;
+                }
+
+                if (currentIndex === 1) {
+                    let texto = $("#cbxAlmacen_NewInv option:selected").text();
+                    document.getElementById("almacenActual").textContent = "Almacen: " + texto;
+                }
+
+                hayCambios = true;
+                return true;
+            },
+
+            onStepChanged: function (event, currentIndex) {
+                let btnSiguiente = $('a[href="#next"]').closest('li');
+                let btnAnterior = $('a[href="#previous"]').closest('li');
+
+                btnSiguiente.removeClass("d-none");
+
+                if (currentIndex === 1) {
+                    btnSiguiente.addClass("d-none");
+                    btnAnterior.addClass("d-none");
+
+                    $("#txt_New_CodInventario").prop("disabled", true);
+                    $("#btnGenerarCodInv").prop("disabled", true);
+                    $("#cbxAlmacen_NewInv").prop("disabled", true);
+                    /*$("#cbxUbicacion_NewInv").prop("disabled", true);*/
+                }
+
+                if (currentIndex === 2) {
+                    btnAnterior.removeClass("d-none");
+                }
+            },
+
+            onFinishing: function (event, currentIndex) {
+                Swal.fire({
+                    title: "¿Estas seguro de finalizar la preparación?",
+                    text: "Se recomienda verificar que todos los productos a inventariar se encuentren en la tabla.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    cancelButtonColor: "#d33",
+                    cancelButtonText: "Cancelar",
+                    confirmButtonText: "Finalizar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        hayCambios = false;
+                        GuardarInventarioPreparado();
+                        return true;
+                    } else if (result.isDenied) {
+                        hayCambios = true;
+                    }
+                });
+
+                //console.log("terminando");
+                //GuardarInventarioPreparado();
+                //hayCambios = false;
+                //return true;
+            }
+
+            @*onFinished: function (event, currentIndex) {
+                console.log("terminado");
+                window.location.href = '@Url.Action("Index", "Home")';
+                return true;
+            }*@
+        });
+
+
+
+        /* VALIDAR Y AGREGAR PRODUCTO A LA TABLA */
+        const btnAgregarProducto = document.querySelector("#btnAgregar");
+        const inputProducto = document.getElementById("cbxProducto_NewInv");
+        const inputStock = document.getElementById("txtStock_NewInv");
+        const inputLote = document.getElementById("txtLote_NewInv");
+        btnAgregarProducto.addEventListener("click", () => {
+
+            if (inputProducto.value.trim() === "" || inputProducto.value === "-1") {
+                inputInvalido(inputProducto, "Este campo es requerido");
+                return;
+            }
+            limpiarInvalido(inputProducto);
+
+            if (!inputStock.value) {
+                inputInvalido(inputStock, "Este campo es requerido");
+                return;
+            }
+            limpiarInvalido(inputStock);
+
+            AgregarNuevoProducto();
+            inputStock.value = "";
+            inputLote.value = "";
+        });
+
+
+
+        // Validacion del campo Stock 
+        inputStock.addEventListener("input", function () {
+            let value = inputStock.value;
+
+            // Evitar espacio en blanco
+            if (value === "") return;
+
+            // Evitar signo negativo
+            if (value.startsWith("-")) {
+                inputStock.value = value.replace("-", "");
+                return;
+            }
+
+            // Permitir solo numeros y .
+            if (!/^\d*\.?\d*$/.test(value)) {
+                inputStock.value = value.slice(0, -1);
+                return;
+            }
+
+            const partes = value.split(".");
+            let entero = partes[0];
+            let decimal = partes[1];
+
+            if (entero.length > 5) {
+                entero = entero.slice(0, 5);
+            }
+
+            if (decimal && decimal.length > 3) {
+                decimal = decimal.slice(0, 3);
+            }
+
+            inputStock.value = decimal !== undefined
+                ? `${entero}.${decimal}`
+                : entero;
+        });
+
+
+
+        // Actualizar unidades de medida
+        $('#cbxProducto_NewInv').change(function () {
+            LoadUndMed();
+        })
+
+
+
+        /* VALIDAR EL MODAL DE IMPORTACION Y PASA AL SIGUIENTE */
+        const inputInventarioFile = document.getElementById("CrearInv_fileInput");
+        const btnImportarInventario = document.getElementById("CrearInv_btn_Import");
+        btnImportarInventario.addEventListener("click", () =>{
+            // si esta validado siguiente paso
+            if (!validarArchivoInventario(inputInventarioFile)) {
+                return;
+            }
+
+            const modalImportar = bootstrap.Modal.getInstance(document.getElementById("modal_importExcel"));
+            modalImportar.hide();
+
+            $("#PasosPrepararInventario").steps("next");
+        });
+
+
+
+        /*// AGREGAR INVENTARIO POR IMPORTACION EXCEL //*/
+        $('#CrearInv_btn_Import').click(function () {
+
+            var formData = new FormData();
+            formData.append("archivo", $("#CrearInv_fileInput")[0].files[0]);
+            formData.append("IdAlmacen", $('#cbxAlmacen_NewInv').val());
+
+            /*toggle_Loadingtb('tbLoading', true);*/
+            $.ajax({
+                url: '@Url.Action("SubirArchivo_Detalle", "Importacion")',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                //async:false,
+                success: function (response) {
+
+                    /*$("#CrearInv_fileInput").val("");*/
+                    if (response.HUBO_ERROR == true) {
+                        Swal.fire("Error al importar su inventario", response.MENSAJE_ERROR, "warning");
+                        /*MostrarError(response.MENSAJE_ERROR, "content_mensajes3");*/
+                    } else {
+                        /*Charge_RImport_Modal(response.Entity);*/
+                        const data = response.Entity;
+                        const productosError = data.filter(x => x.Flg_Pass === 0);
+
+                        /*console.time("importar");*/
+                        ImportarProductos(data);
+                        /*console.timeEnd("importar");*/
+
+                        $("#PasosPrepararInventario").steps("next");
+
+                        if (productosError.length > 0) {
+                            /*console.time("noImportados");*/
+                            MostrarTablaNoImportados(productosError);
+                            /*console.timeEnd("noImportados");*/
+                            modalProdNoImport.show();
+                        }
+                    }
+                },
+                complete: function (response) {
+
+                    /*toggle_Loadingtb('tbLoading', false);*/
+                    if (response.HUBO_ERROR) {
+                        //Console.log("Error")
+                        Swal.fire("Error", response.MENSAJE_ERROR, "error");
+                    }
+                }
+            });
+        });
+
+
+
+        /* DESDE LA OPCION AGREGAR MANUAL IR AL SIGUIENTE PASO */
+        document.getElementById("btnManual_crearInv").addEventListener("click", () => {
+            $("#PasosPrepararInventario").steps("next");
+        });
+
+
+
+        /* DESCARGAR PLANTILLA DE INVENTARIO */
+        document.getElementById("CrearInv_btnTemplate").addEventListener("click", () => {
+            esDescarga = true;
+             window.location.href = "@Url.Content("~/")Importacion/DescargarExcelDetalle"
+        });
+
+
+
+        /* VALIDAR INPUT AL ESCRIBIR */
+        const inputInventario = document.getElementById("txt_New_CodInventario");
+        inputInventario.addEventListener("input", () => {
+
+            inputInventario.classList.remove("input-validation-error", "error");
+
+            if (inputInventario.value.trim() === "") {
+                inputInvalido(inputInventario, "Este campo es requerido");
+            } else {
+                /*inputInventario.classList.add("is-valid");*/
+                limpiarInvalido(inputInventario);
+            }
+        });
+
+
+
+        /* MENSAJE PARA INPUT INVALIDO */
+        function inputInvalido(elemento, mensaje) {
+            //const mensajeInvalido = input.nextElementSibling;
+
+            //mensajeInvalido.textContent = mensaje;
+            //input.classList.remove("is-valid");
+            //input.classList.add("is-invalid");
+
+            elemento.classList.add("is-invalid");
+
+            if ($(elemento).hasClass("select2-hidden-accessible")) {
+                $(elemento).next('.select2-container').addClass("is-invalid");
+            }
+
+            let feedback = elemento.parentElement.querySelector(".invalid-feedback");
+            if (feedback) feedback.textContent = mensaje;
+        }
+        function limpiarInvalido(elemento) {
+            //const mensajeInvalido = input.nextElementSibling;
+
+            //input.classList.remove("is-invalid");
+
+            elemento.classList.remove("is-invalid");
+
+            elemento.classList.remove("is-invalid");
+
+            if ($(elemento).hasClass("select2-hidden-accessible")) {
+                $(elemento).next('.select2-container').removeClass("is-invalid");
+            }
+        }
+
+
+
+        /*// GENERAR CODIGO DE INVENTARIO //*/
+        const btnGenerarCodInventario = document.getElementById("btnGenerarCodInv");
+        const inputCodInventario = document.getElementById("txt_New_CodInventario");
+        const lblInfoCodInventario = document.getElementById("infoCodInv");
+
+        btnGenerarCodInventario.addEventListener("click", function () {
+
+            inputCodInventario.value = generarCodInventario();
+            limpiarInvalido(inputCodInventario);
+            lblInfoCodInventario.classList.remove("d-none");
+        });
+
+        function generarCodInventario() {
+            const ahora = new Date();
+            //console.log(ahora);
+
+            const dd = String(ahora.getDate()).padStart(2, "0");
+            const mm = String(ahora.getMonth()+1).padStart(2, "0");
+            const yy = String(ahora.getFullYear()).slice(-2);
+
+            const hh = String(ahora.getHours()).padStart(2, "0");
+            const min = String(ahora.getMinutes()).padStart(2, "0");
+
+            return `INV_${dd}${mm}${yy}_${hh}${min}`;
+        }
+
+
+        /* ACTIVAR SELECT2 */
+        $(document).ready(function () {
+            //$('#cbxAlmacen_NewInv').select2({
+            //    width: '100%',
+            //    language: 'es'
+            //});
+            //$('#cbxUbicacion_NewInv').select2({
+            //    theme: "bootstrap-5",
+            //    width: '100%',
+            //    language: 'es'
+            //});
+            $('#cbxProducto_NewInv').select2({
+                width: '100%',
+                language: 'es'
+            });
+        });
+
+        // Evento para cuando se abre el desplegable de Select2
+        $('#cbxProducto_NewInv').on('select2:open', function (e) {
+            const searchField = $('.select2-search__field')[0];
+            if (searchField) {
+                // Evento keyup en el campo de búsqueda
+                searchField.addEventListener('keyup', function () {
+                    const term = $(this).val();
+                    //console.log(term);
+                    if (term.length >= 2) { // O la cantidad de caracteres que desees para activar la búsqueda
+                        LoadCbxProdInv(term);
+                    } else if (term.length === 0) {
+                        // Opcional: Puedes recargar el combo con todos los valores o dejarlo vacío
+                        LoadCbxProdInv('');
+                        //$("#cbxProducto_NewInv").empty().append('<option value="">-- Escribe para buscar --</option>');
+                    }
+                });
+            }
+        });
+    </script>
+}

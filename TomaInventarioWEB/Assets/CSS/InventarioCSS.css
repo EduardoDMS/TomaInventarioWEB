@@ -1,0 +1,370 @@
+﻿.NewInvPrincipal {
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    display: none;
+}
+
+#CrearInvPrincipal .nav-link {
+    color: #6d6969;
+}
+
+.tab-pane {
+    color: #000;
+}
+
+.card-body {
+    background-color: #e3be8b;
+}
+
+
+#CrearInv_Importar #content_mensajes3 {
+    width: 100%;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: red;
+    padding-top: 0;
+
+}
+
+#NewInvPrincipal .cardForm_cabecera {
+    display: flex;
+    justify-content: space-between;
+}
+
+#rowConteos {
+    max-width: 100%;
+}
+
+    #rowConteos button {
+        min-height: 3.5rem;
+        border-radius: 5px;
+        color: #3bb5fe;
+        align-items: center;
+        display: flex;
+        font-weight: 900;
+        max-height: 70px;
+        max-width: 158px;
+        margin: 5px 10px 5px 0;
+    }
+
+#iconConteo1, #iconConteo2, #iconConteo3 {
+    min-width: 3.5rem;
+    min-height: 3.5rem;
+    border: 3px solid #3bb5fe;
+    margin-right: 5px;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    font-weight: 900;
+    border-top-style: groove;
+    border-left-style: groove;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+}
+
+#btnCerrarInventario, #btnExportExcel, #btnUsuarios {
+    margin-right: 10px;
+    color: #fff !important;
+}
+
+    #btnCerrarInventario i, #btnExportExcel i {
+        margin-right: 5px;
+    }
+
+#tbl_Inventario {
+    table-layout: auto;
+    margin-top: 3.5rem;
+}
+
+th,
+td {
+    white-space: pre-wrap !important;
+    word-wrap: break-word;
+}
+
+#ConfirmarConteo {
+    margin-top: 15px;
+}
+
+.list-group-item {
+    background-color: transparent;
+    /*border: none;*/
+    font-weight: 500;
+}
+
+.col_Prod {
+    max-width: 400px;
+}
+
+.headBlue {
+    color: #164c69;
+}
+
+.Font-W_700 {
+    font-weight: 700;
+    color: #164c69;
+}
+
+
+.Gestor-ColConteo {
+    border: 1px solid #000;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rec {
+    min-height: 8rem;
+    min-width: 15rem;
+    color: #fff;
+    position: relative;
+    margin: 1rem;
+    width: 20rem
+    /*margin-top: 3rem;*/
+}
+
+    .rec:hover {
+        color: #000;
+        /* .circleIcon
+        {
+            color: #000;
+        }*/
+    }
+
+.span_ttlGrafic {
+    font-weight: 900;
+    position: absolute;
+    top: 10px;
+    right: 25%;
+    left: 25%;
+    font-size: 80%;
+}
+
+.rec i {
+    font-weight: 900;
+}
+
+.circleIcon {
+    min-width: 3.5rem;
+    min-height: 3.5rem;
+    border: 3px solid #fff;
+    margin-right: 5px;
+    border-radius: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-style: groove;
+    border-left-style: groove;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+    position: absolute;
+    width: 4.5rem;
+    height: 4.5rem;
+    bottom: 15px;
+}
+
+.spanSquareGraph {
+    font-weight: 900;
+    position: absolute;
+    bottom: 25%;
+    right: 15px;
+    font-size: 100%;
+    text-decoration: underline 3px;
+}
+
+#ContentCharts {
+    /*height: 40rem;*/
+    /*background: radial-gradient(to left, #1e90ff, #aec9d7);*/
+    background: #e8f8f9;
+    /*background: radial-gradient(circle, #0dcaf0 0%, rgba(162, 162, 187, 1) 100%);*/
+    border-radius: 2rem;
+    border: 5px solid #e1e1e1;
+    border-top-style: groove;
+    border-left-style: groove;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+    overflow-x: auto;
+}
+
+#rowChart {
+    min-height: 40rem;
+}
+
+#Chart1, #Chart2, #Chart3 {
+    margin: 20px 0 20px 0;
+    min-width: 15rem;
+    max-width: 51.4rem;
+}
+
+#colChart2 {
+    display: none;
+}
+
+#ContentCharts::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+#ContentCharts::-webkit-scrollbar-thumb {
+    background-color: rgba(3, 102, 214, 0.3);
+}
+
+#colChart1, #colChart2, #colChart3 {
+    max-width: 50%;
+}
+
+#dataSquare1 {
+    max-width: 10rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#rowChart .form-switch {
+    margin-left: 2rem;
+}
+
+#ContentCharts .Graficos_row {
+    justify-content: center;
+    border: 0 0 5px 0;
+    border-color: #e1e1e1;
+    border-left-style: groove;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+}
+
+#ContentCharts .Graficos_col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    Flex-wrap: wrap;
+    margin-top: 3rem;
+}
+#ContentReports {
+    background: #e8f8f9;
+    border-radius: 2rem;
+    border: 5px solid #e1e1e1;
+    border-top-style: groove;
+    border-left-style: groove;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+    overflow: hidden;
+}
+
+    #ContentReports .container {
+        border: 2px outset #dee2e6;
+        border-radius: 0.2rem;
+        padding-inline: 0;
+        background-color: #ffffff;
+    }
+
+#lisGroup_report {
+    margin: 2px;
+}
+
+    #lisGroup_report li {
+        border-radius: 0;
+    }
+
+#col_filtros {
+    padding: 20px;
+    min-width: 17.875rem;
+}
+
+    #col_filtros .row {
+        padding-inline: 20px;
+    }
+
+#ttlSelectReport, #ttlFiltrosReport {
+    font-weight: 500;
+    font-size: 1.4rem;
+    width: 100%;
+    background-color: #00b8ff;
+    border-top-left-radius: 0.2rem;
+    border-top-right-radius: 0.2rem;
+    padding-inline: 15px;
+}
+
+#colTableReport {
+    overflow-x: hidden;
+}
+
+.divFiltros {
+    padding-top: 10px;
+    padding-inline: 20px;
+}
+
+.tblReportContent {
+    overflow-x: auto;
+    /*display: flex;*/
+}
+
+    .tblReportContent::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    .tblReportContent::-webkit-scrollbar-thumb {
+        background-color: rgba(3, 102, 214, 0.3);
+    }
+
+.divTbl {
+    display: none;
+    overflow-x: auto;
+}
+
+    .divTbl table {
+        margin-top: 4rem;
+    }
+
+.btnExportReport {
+    margin: 1rem;
+}
+
+datalist {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+option {
+    padding: 0;
+}
+
+.rowGreen {
+    background-color: #b4cdafa3 !important;
+}
+
+.rowYellow {
+    background-color: #f7ed72ad !important;
+}
+
+#tbl_Inventario thead th {
+    text-align: center
+}
+
+.Act_header {
+    color: #164c69;
+}
+.GestorPrincipal {
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    display: none;
+}
+
+#GestorInvTab .nav-link {
+    color: #6d6969;
+}
+
+.tab-pane {
+    color: #000;
+}
+
+.card-body {
+    /*background-color: #e3be8b;*/
+}

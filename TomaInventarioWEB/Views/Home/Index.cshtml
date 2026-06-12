@@ -1,0 +1,387 @@
+﻿@{
+    ViewBag.Title = "Dashboard - Gestión de Almacenes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+<link href="~/Content/matdash/css/styles.css" rel="stylesheet" />*@
+<link href="~/Content/css/dashboard-custom.css" rel="stylesheet" />
+<link href="~/Content/matdash/libs/apexcharts/dist/apexcharts.css" rel="stylesheet" />
+
+<!-- KPIs Principales -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-4 pb-4">
+                <div class="row">
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="card primary-gradient">
+                            <div class="card-body text-center px-9 pb-4">
+                                <div class="d-flex align-items-center justify-content-center round-48 rounded text-bg-primary flex-shrink-0 mb-3 mx-auto">
+                                    <i class="ti ti-building-warehouse fs-6"></i>
+                                </div>
+                                <h6 class="fw-normal fs-3 mb-1 text-black">Total Almacenes</h6>
+                                <h4 id="kpiAlmacenes" class="mb-3 d-flex align-items-center justify-content-center gap-1 text-black">
+                                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                                </h4>
+                                <a href="@Url.Action("AlmacenesMant", "Mantenimiento")" class="btn btn-white btn-sm fs-2 fw-semibold">Ver Detalle</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="card warning-gradient">
+                            <div class="card-body text-center px-9 pb-4">
+                                <div class="d-flex align-items-center justify-content-center round-48 rounded text-bg-warning flex-shrink-0 mb-3 mx-auto">
+                                    <i class="ti ti-checklist fs-6"></i>
+                                </div>
+                                <h6 class="fw-normal fs-3 mb-1 text-black">Total Inventarios</h6>
+                                <h4 id="kpiInventarios" class="mb-3 d-flex align-items-center justify-content-center gap-1 text-black">
+                                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                                </h4>
+                                <a href="@Url.Action("Historico_Inventariado", "Reportes")" class="btn btn-white btn-sm fs-2 fw-semibold">Ver Detalle</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card secondary-gradient">
+                            <div class="card-body text-center px-9 pb-4">
+                                <div class="d-flex align-items-center justify-content-center round-48 rounded text-bg-secondary flex-shrink-0 mb-3 mx-auto">
+                                    <i class="ti ti-package fs-6"></i>
+                                </div>
+                                <h6 class="fw-normal fs-3 mb-1 text-black">Total Productos</h6>
+                                <h4 id="kpiProductos" class="mb-3 d-flex align-items-center justify-content-center gap-1 text-black">
+                                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                                </h4>
+                                <a href="@Url.Action("ProductosMant", "Mantenimiento")" class="btn btn-white btn-sm fs-2 fw-semibold">Ver Detalle</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico y Últimos Inventarios -->
+<div class="row">
+    <!-- Gráfico de Inventarios por Mes -->
+    <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="card-title fw-semibold mb-1">Inventarios por Mes</h5>
+                        <p class="card-subtitle text-muted mb-0">Resumen anual de inventarios realizados</p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-light-primary dropdown-toggle" type="button" id="btnAnioActual" data-bs-toggle="dropdown">
+                            <i class="ti ti-calendar me-1"></i> <span id="anioSeleccionado">2025</span>
+                        </button>
+                        <ul class="dropdown-menu" id="listaAnios">
+                            <!-- Los años se cargarán dinámicamente con JavaScript -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="me-n1">
+                    <div id="graficoInventarios"></div>
+                </div>
+                <div class="pt-4 mt-4 border-top">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <div class="hstack gap-3">
+                                <span class="d-flex align-items-center justify-content-center round-48 flex-shrink-0 bg-success-subtle rounded">
+                                    <i class="ti ti-checklist fs-7 text-success"></i>
+                                </span>
+                                <div>
+                                    <span class="text-muted d-block fs-2">Total del Año</span>
+                                    <h6 id="totalAnio" class="fw-bolder mb-0">
+                                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="hstack gap-3">
+                                <span class="d-flex align-items-center justify-content-center round-48 flex-shrink-0 bg-primary-subtle rounded">
+                                    <i class="ti ti-calendar-stats fs-7 text-primary"></i>
+                                </span>
+                                <div>
+                                    <span class="text-muted d-block fs-2">Promedio Mensual</span>
+                                    <h6 id="promedioMensual" class="fw-bolder mb-0">
+                                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Últimos Inventarios -->
+    <div class="col-lg-6 col-md-12">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="card-title fw-semibold mb-1">Últimos Inventarios</h5>
+                        <p class="card-subtitle text-muted mb-0">Actividad reciente</p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="fs-2 fw-semibold">Código</th>
+                                <th class="fs-2 fw-semibold">Almacén</th>
+                                <th class="fs-2 fw-semibold text-center">Conteo</th>
+                                <th class="fs-2 fw-semibold">Fecha</th>
+                                <th class="fs-2 fw-semibold text-center">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyInventarios">
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                                    <span class="ms-2">Cargando inventarios...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="@Url.Action("Historico_Inventariado", "Reportes")" class="btn btn-light-primary btn-sm">
+                        Ver Todos <i class="ti ti-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @*<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
+    <script src="~/Content/matdash/libs/apexcharts/dist/apexcharts.min.js"></script>
+
+
+    <script nonce="@nonce">
+        var chartInventarios = null;
+        var anioActual = new Date().getFullYear();
+
+        function cargarAniosDropdown() {
+            var listaAnios = $('#listaAnios');
+            listaAnios.empty();
+
+            for (var i = 0; i < 5; i++) {
+                var anio = anioActual - i;
+                var item = '<li><a class="dropdown-item anio-item" href="#" data-anio="' + anio + '">' + anio + '</a></li>';
+                listaAnios.append(item);
+            }
+
+            $('#anioSeleccionado').text(anioActual);
+
+            $('#btnAnioActual').off('click').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $('#listaAnios').parent().toggleClass('show');
+                $('#listaAnios').toggleClass('show');
+            });
+
+            $(document).off('click.dropdown').on('click.dropdown', function (e) {
+                //console.log(e);
+                //if (!$(e.target).closest('.dropdown').length) {
+                //    $('.dropdown-menu').removeClass('show');
+                //    $('.dropdown').removeClass('show');
+                //}
+            });
+
+            $('.anio-item').off('click').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var anioSeleccionado = $(this).data('anio');
+
+                $('.dropdown-menu').removeClass('show');
+                $('.dropdown').removeClass('show');
+
+                cambiarAnio(anioSeleccionado);
+            });
+        }
+
+        function cargarDatosDashboard(anio) {
+            if (!anio) {
+                anio = new Date().getFullYear();
+            }
+
+            // Mostrar loading (opcional)
+            // $('#loading').show();
+
+            $.ajax({
+                url: '@Url.Action("ObtenerDatosDashboard", "Home")',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    // idEmpresa: 1,
+                    anio: anio
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var data = response.data;
+
+                        actualizarKPIs(data.KPIs);
+
+                        actualizarGrafico(data.InventariosPorMes);
+
+                        actualizarTablaInventarios(data.UltimosInventarios);
+
+                        actualizarEstadisticas(data.Estadisticas);
+
+                    } else {
+                        console.error('Error:', response.message);
+                        // Mostrar mensaje de error al usuario
+                        // toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error AJAX:', error);
+                    // Mostrar mensaje de error al usuario
+                    // toastr.error('Error al cargar los datos del dashboard');
+                },
+                complete: function () {
+                    // Ocultar loading
+                    // $('#loading').hide();
+                }
+            });
+        }
+
+        function cambiarAnio(anio) {
+            anioActual = anio;
+            $('#anioSeleccionado').text(anio);
+            cargarDatosDashboard(anio);
+        }
+        function actualizarKPIs(kpis) {
+            $('#kpiAlmacenes').text(kpis.TotalAlmacenes);
+            $('#kpiInventarios').text(kpis.TotalInventarios);
+            $('#kpiProductos').text(kpis.TotalProductos.toLocaleString('es-PE'));
+        }
+
+        function actualizarGrafico(inventariosPorMes) {
+            var meses = inventariosPorMes.map(function (item) { return item.NombreMes; });
+            var cantidades = inventariosPorMes.map(function (item) { return item.CantidadInventarios; });
+
+            var options = {
+                series: [{
+                    name: 'Inventarios',
+                    data: cantidades
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 280,
+                    fontFamily: 'inherit',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 6,
+                        columnWidth: '50%',
+                        dataLabels: {
+                            position: 'top'
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    offsetY: -20,
+                    style: {
+                        fontSize: '12px',
+                        colors: ["#304758"]
+                    }
+                },
+                colors: ['#5D87FF'],
+                xaxis: {
+                    categories: meses,
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
+                    },
+                    labels: {
+                        style: {
+                            fontSize: '13px',
+                            colors: '#a1aab2'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            fontSize: '13px',
+                            colors: '#a1aab2'
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: 'rgba(0,0,0,0.1)',
+                    strokeDashArray: 3,
+                    xaxis: {
+                        lines: {
+                            show: false
+                        }
+                    }
+                },
+                tooltip: {
+                    theme: 'light',
+                    y: {
+                        formatter: function (val) {
+                            return val + " inventarios";
+                        }
+                    }
+                }
+            };
+
+            if (chartInventarios !== null) {
+                chartInventarios.destroy();
+            }
+
+            chartInventarios = new ApexCharts(document.querySelector("#graficoInventarios"), options);
+            chartInventarios.render();
+        }
+
+        function actualizarTablaInventarios(inventarios) {
+            var tbody = $('#tbodyInventarios');
+            tbody.empty();
+
+            if (inventarios.length === 0) {
+                tbody.append('<tr><td colspan="5" class="text-center py-4 text-muted">No hay inventarios recientes</td></tr>');
+                return;
+            }
+
+            inventarios.forEach(function (inv) {
+                var row = '<tr>' +
+                    '<td><span class="fw-semibold fs-2">' + inv.COD_INVENTARIO + '</span></td>' +
+                    '<td class="fs-2">' + inv.NombreAlmacen + '</td>' +
+                    '<td class="text-center"><span class="badge bg-' + inv.ColorConteo + '-subtle text-' + inv.ColorConteo + ' fs-1">' + inv.EtiquetaConteo + '</span></td>' +
+                    '<td class="fs-2">' + inv.FechaFormato + '</td>' +
+                    '<td class="text-center"><span class="badge bg-' + inv.ColorEstado + ' fs-1">' + inv.DescripcionEstado + '</span></td>' +
+                    '</tr>';
+                tbody.append(row);
+            });
+        }
+
+        function actualizarEstadisticas(estadisticas) {
+            $('#totalAnio').text(estadisticas.TotalInventariosAnio + ' Inventarios');
+            $('#promedioMensual').text(Math.round(estadisticas.PromedioMensual) + ' Inventarios');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            cargarAniosDropdown();
+
+            cargarDatosDashboard(anioActual);
+        });
+    </script>
+}

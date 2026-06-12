@@ -1,0 +1,522 @@
+﻿@{
+    ViewBag.Title = "Reporte por Ubicación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+<link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
+<link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">
+
+<!-- Sección Seleccionar Inventario -->
+@*<div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3 fw-semibold">
+                        <i class="ti ti-map-pin me-2"></i>
+                        Seleccionar Inventario para Reporte de Ubicación
+                    </h5>
+
+                    <div class="row align-items-end">
+                        <div class="col-md-8">
+                            <label for="cbxInventariosCerrados" class="form-label fw-semibold">Inventario Cerrado</label>
+                            <select class="select2 form-control" id="cbxInventariosCerrados">
+                                @foreach (var item in ViewBag.ListInventariosCerrados)
+                                {
+                                    <option value="@item.vchValue">@item.vchdesc</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-primary w-100" id="btnCargarInventario">
+                                <i class="ti ti-check me-1"></i> Cargar Inventario
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+@*<div class="row align-items-end">
+        <div class="col-md-12">
+            <label for="cbxInventariosCerrados" class="form-label fw-semibold">Inventario Cerrado</label>
+            <select class="select2 form-control" id="cbxInventariosCerrados">
+                @foreach (var item in ViewBag.ListInventariosCerrados)
+                {
+                    <option value="@item.vchValue">@item.vchdesc</option>
+                }
+            </select>
+        </div>
+    </div>*@
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3 fw-semibold">
+                    <i class="ti ti-clipboard-check me-2"></i>
+                    Seleccionar Inventario para Reporte Ubicación
+                </h5>
+
+                <div class="row align-items-end">
+                    <div class="col-md-12">
+                        <label for="cbxInventariosCerrados" class="form-label fw-semibold">Inventario</label>
+                        <select class="select2 form-control" id="cbxInventariosCerrados">
+                            @foreach (var item in ViewBag.ListInventariosCerrados)
+                            {
+                                <option value="@item.vchValue">@item.vchdesc</option>
+                            }
+                        </select>
+                    </div>
+                    @*<div class="col-md-4">
+                            <button type="button" class="btn btn-primary w-100" id="btnCargarInventario">
+                                <i class="ti ti-check me-1"></i> Cargar Reporte
+                            </button>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Reporte por Ubicación -->
+<div id="seccionReporte" class="row d-none">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0 fw-semibold text-white">
+                    <i class="ti ti-map-pin me-2"></i>REPORTE POR UBICACIÓN
+                </h5>
+                <small class="text-white">Exporta tu reporte por ubicación exacta</small>
+
+            </div>
+
+            <div class="card-body">
+                <!-- Información del Inventario -->
+                <div class="row mb-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="fw-semibold mb-0">Información del Inventario</h6>
+                        <span class="badge bg-info-subtle text-info" id="badgeEstadoInventario">-</span>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="hstack gap-3">
+                            <span class="d-flex align-items-center justify-content-center round-48 bg-primary-subtle rounded">
+                                <i class="ti ti-barcode fs-6 text-primary"></i>
+                            </span>
+                            <div>
+                                <span class="text-muted">Inventario</span>
+                                <h5 class="mt-1 fw-medium mb-0" id="txtResumenCodInventario">-</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="hstack gap-3">
+                            <span class="d-flex align-items-center justify-content-center round-48 bg-secondary-subtle rounded">
+                                <i class="ti ti-building-warehouse fs-6 text-secondary"></i>
+                            </span>
+                            <div>
+                                <span class="text-muted">Almacén</span>
+                                <h5 class="mt-1 fw-medium mb-0" id="txtResumenNombreAlmacen">-</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="hstack gap-3">
+                            <span class="d-flex align-items-center justify-content-center round-48 bg-success-subtle rounded">
+                                <i class="ti ti-numbers fs-6 text-success"></i>
+                            </span>
+                            <div>
+                                <span class="text-muted">Conteo Actual</span>
+                                <h5 class="mt-1 fw-medium mb-0" id="txtResumenConteoActual">-</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="hstack gap-3">
+                            <span class="d-flex align-items-center justify-content-center round-48 bg-info-subtle rounded">
+                                <i class="ti ti-calendar-check fs-6 text-info"></i>
+                            </span>
+                            <div>
+                                <span class="text-muted">Último Conteo Finalizado </span>
+                                <h5 class="mt-1 fw-medium mb-0" id="txtResumenUltimoConteo">-</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Búsqueda por Ubicación -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="customSearch" class="form-label fw-semibold">
+                            <i class="ti ti-search me-1"></i>Búsqueda por Ubicación
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white">
+                                <i class="ti ti-search"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control"
+                                   id="customSearch"
+                                   placeholder="Buscar ubicación...">
+                            <button class="btn btn-outline-secondary d-none"
+                                    type="button"
+                                    id="btnLimpiarBusqueda">
+                                <i class="ti ti-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="table-responsive">
+                    <table id="tblReporteUbicacion" class="table table-hover table-bordered align-middle text-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Ubicación</th>
+                                <th>Lote</th>
+                                <th>Serie</th>
+                                <th class="text-end">Stock Inicial</th>
+                                <th class="text-center">Último Conteo</th>
+                                <th class="text-end">Stock Conteo</th>
+                                <th class="text-end">Diferencial</th>
+                                <th>Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="table-secondary fw-bold">
+                            <tr>
+                                <td colspan="5" class="text-end">TOTALES:</td>
+                                <td class="text-end" id="footerStockInicial">0</td>
+                                <td class="text-center">-</td>
+                                <td class="text-end" id="footerStockConteo">0</td>
+                                <td class="text-end" id="footerDiferencial">0</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+    <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
+    <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
+    <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
+    <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
+    <script src="~/Content/matdash/js/forms/select2.init.js"></script>
+
+    <script nonce="@nonce">
+
+
+
+        let tblReporteUbicacion;
+        let inventarioSeleccionado = {
+            codigo: '',
+            nombre: '',
+            ultimoConteo: 0,
+            estado: ''
+        };
+
+        $(document).ready(function () {
+            inicializarComponentes();
+            inicializarEventos();
+        });
+
+        function inicializarComponentes() {
+            $('#cbxInventariosCerrados').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '-- Seleccione un inventario --',
+                allowClear: false,
+                language: {
+                    noResults: function () {
+                        return "No se encontraron resultados";
+                    },
+                    searching: function () {
+                        return "Buscando...";
+                    }
+                }
+            });
+            $('#cbxInventariosCerrados').on('change', function () {
+                let selectedValue = $(this).val();
+                let selectedText = $('#cbxInventariosCerrados option:selected').text();
+
+                if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
+                    inventarioSeleccionado.codigo = selectedValue;
+                    inventarioSeleccionado.nombre = selectedText;
+                    cargarDatosInventario();
+                }
+            });
+        }
+
+        function inicializarEventos() {
+            $('#btnCargarInventario').click(function () {
+                let selectedValue = $('#cbxInventariosCerrados').val();
+                let selectedText = $('#cbxInventariosCerrados option:selected').text();
+
+                if (!selectedValue || selectedValue === '-1' || selectedValue === '') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atención',
+                        text: 'Debe seleccionar un inventario válido'
+                    });
+                    return;
+                }
+
+                inventarioSeleccionado.codigo = selectedValue;
+                inventarioSeleccionado.nombre = selectedText;
+
+                cargarDatosInventario();
+            });
+
+            $('#btnLimpiarFiltros').click(function () {
+                $('#customSearch').val('');
+                $('#btnLimpiarBusqueda').addClass('d-none');
+                reloadTableReporte();
+            });
+
+            $('#btnExportarExcel').click(function () {
+                exportarExcel();
+            });
+
+            $('#customSearch').on('keyup', function () {
+                if (typeof tblReporteUbicacion !== 'undefined') {
+                    tblReporteUbicacion.search(this.value).draw();
+                }
+            });
+
+            $('#customSearch').on('keyup change', function () {
+                //if ($(this).val().length > 0) {
+                //    $('#btnLimpiarBusqueda').removeClass('d-none');
+                //} else {
+                //    $('#btnLimpiarBusqueda').addClass('d-none');
+                //}
+            });
+
+            $('#btnLimpiarBusqueda').on('click', function () {
+                $('#customSearch').val('');
+                $('#btnLimpiarBusqueda').addClass('d-none');
+                if (typeof tblReporteUbicacion !== 'undefined') {
+                    tblReporteUbicacion.search('').draw();
+                }
+            });
+        }
+
+        function CargarTablaReporteUbicacion(codInventario) {
+            if (typeof tblReporteUbicacion !== 'undefined') {
+                tblReporteUbicacion.destroy();
+            }
+
+            tblReporteUbicacion = $('#tblReporteUbicacion').DataTable({
+                "serverSide": true,
+                "ajax": {
+                    "url": "@Url.Action("ObtenerDatosReporteUbicacion", "ReportePrincipal")",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.codInventario = codInventario;
+                        d.busqueda = $('#customSearch').val();
+                        //toggle_Loadingtb('tbLoading', true);
+                    },
+                    "complete": function (response) {
+                        toggle_Loadingtb('tbLoading', false);
+
+                        if (response.responseJSON) {
+                            if (response.responseJSON.error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.responseJSON.error
+                                });
+                            }
+
+                            if (response.responseJSON.listFooter && response.responseJSON.listFooter.length > 0) {
+                                CargarFooterReporte(response.responseJSON.listFooter);
+                            }
+
+                            // Cargar información del inventario
+                            if (response.responseJSON.infoInventario && response.responseJSON.infoInventario.length >= 8) {
+                                let info = response.responseJSON.infoInventario;
+                                $('#txtResumenNombreAlmacen').text(info[0] || '-');
+                                $('#txtResumenFechaRegistro').text(info[1] || '-');
+                                $('#txtResumenUltimoConteo').text(info[5] || '-');
+                                $('#txtResumenConteoActual').text(info[6] || '-');
+
+
+                                let estado = info[4] || '-';
+                                $('#badgeEstadoInventario').text(estado);
+                                $('#badgeEstadoInventario').removeClass('bg-success-subtle text-success bg-warning-subtle text-warning');
+                                if (estado === 'CERRADO') {
+                                    $('#badgeEstadoInventario').addClass('bg-success-subtle text-success');
+                                } else {
+                                    $('#badgeEstadoInventario').addClass('bg-warning-subtle text-warning');
+                                }
+
+                                inventarioSeleccionado.ultimoConteo = info[5];
+                                inventarioSeleccionado.estado = estado;
+                            }
+                        }
+                    },
+                    "error": function(xhr, error, thrown) {
+                        toggle_Loadingtb('tbLoading', false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al cargar datos',
+                            text: 'Ocurrió un error al cargar la información'
+                        });
+                    }
+                },
+                "columns": [
+                    { "data": "Cod_Producto", "title": "CÓDIGO" },
+                    { "data": "Dsc_Producto", "title": "PRODUCTO" },
+                    { "data": "Cod_ubicacion", "title": "UBICACIÓN" },
+                    { "data": "Lote_Producto", "title": "LOTE" },
+                    { "data": "Serie_Producto", "title": "SERIE" },
+                    {
+                        "data": "Stock_inicial",
+                        "title": "STOCK INICIAL",
+                        "className": "text-end",
+                        "render": function (data) {
+                            return data != null ? Math.round(parseFloat(data)).toString() : '0';
+                        }
+                    },
+                    {
+                        "data": "Ultimo_Conteo_Finalizado",
+                        "title": "ÚLTIMO CONTEO",
+                        "className": "text-center",
+                        "render": function (data) {
+                            return '<span class="badge bg-primary-subtle text-primary">Conteo ' + (data || '0') + '</span>';
+                        }
+                    },
+                    {
+                        "data": "Stock_Ultimo_Conteo",
+                        "title": "STOCK CONTEO",
+                        "className": "text-end",
+                        "render": function (data) {
+                            return data != null ? Math.round(parseFloat(data)).toString() : '0';
+                        }
+                    },
+                    {
+                        "data": "Stock_Diferencial",
+                        "title": "DIFERENCIAL",
+                        "className": "text-end",
+                        "render": function (data) {
+                            if (data == null) return '0';
+                            let value = Math.round(parseFloat(data));
+                            let clase = value > 0 ? 'text-success fw-bold' : value < 0 ? 'text-danger fw-bold' : '';
+                            return '<span class="' + clase + '">' + value + '</span>';
+                        }
+                    },
+                    { "data": "Cod_Usuario_Registro", "title": "USUARIO" }
+                ],
+                "paging": true,
+                "pageLength": 10,
+                "searching": false,
+                "lengthChange": true,
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                "responsive": false,
+                "language": españolTbl
+            });
+        }
+
+        function CargarFooterReporte(listFooter) {
+            if (listFooter && listFooter.length >= 3) {
+                $('#footerStockInicial').text(formatNumber(listFooter[0]));
+                $('#footerStockConteo').text(formatNumber(listFooter[1]));
+
+                let diferencial = listFooter[2];
+                let diferencialFormatted = formatNumber(diferencial);
+                let clase = diferencial > 0 ? 'text-success fw-bold' : diferencial < 0 ? 'text-danger fw-bold' : '';
+                $('#footerDiferencial').html('<span class="' + clase + '">' + diferencialFormatted + '</span>');
+
+                // Estadísticas adicionales
+                if (listFooter.length >= 7) {
+                    $('#txtResumenConDiferencias').text(formatNumber(listFooter[3]));
+                    //$('#txtResumenAjustesPositivos').text(formatNumber(listFooter[5]));
+                    //$('#txtResumenAjustesNegativos').text(formatNumber(listFooter[6]));
+                }
+            }
+        }
+
+        function cargarDatosInventario() {
+            $('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
+            $('#seccionResumen').removeClass('d-none');
+            CargarTablaReporteUbicacion(inventarioSeleccionado.codigo);
+            $('#seccionReporte').removeClass('d-none');
+        }
+
+        function exportarExcel() {
+            if (!inventarioSeleccionado.codigo) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: 'Debe seleccionar un inventario primero'
+                });
+                return;
+            }
+
+            let busqueda = $('#customSearch').val() || '';
+
+            Swal.fire({
+                title: 'Generando Excel...',
+                html: 'Por favor espere',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let baseUrl = '@Url.Action("ExportarExcelReporteUbicacion", "ReportePrincipal")';
+            let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
+                         '&busqueda=' + encodeURIComponent(busqueda);
+
+            window.location.href = baseUrl + params;
+
+            setTimeout(function() {
+                Swal.close();
+            }, 500);
+        }
+
+        function formatNumber(value) {
+            if (value == null || value === '') return '0';
+            return Math.round(parseFloat(value)).toString();
+        }
+
+        function toggle_Loadingtb(idLoading, mostrar) {
+            if (mostrar) {
+                Swal.fire({
+                    title: 'Cargando...',
+                    html: 'Por favor espere',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            } else {
+                Swal.close();
+            }
+        }
+
+    </script>
+}

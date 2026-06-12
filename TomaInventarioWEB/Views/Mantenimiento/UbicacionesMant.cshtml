@@ -1,0 +1,245 @@
+﻿
+@{
+    ViewBag.Title = "UbicacionesMant";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+
+@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+<link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
+<link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">*@
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h5 class="mb-0 fw-semibold text-white">Gestión de Ubicaciones</h5>
+                <small class="opacity-75">Organice las ubicaciones de sus almacenes</small>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Import_Modal">
+                    <i class="ti ti-upload"></i>Importar 
+                </button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Add_ubicacion">
+                    <i class="ti ti-plus"></i>Agregar  
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 mb-4">
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-semibold">
+                    <i class="ti ti-map-pin me-1"></i>Ubicación
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="txtUbicacion"
+                       maxlength="20"
+                       placeholder="Buscar por código o nombre..." />
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label fw-semibold">
+                    <i class="ti ti-toggle-right me-1"></i>Estado
+                </label>
+                <select class="form-select" id="cbxActivo">
+                    <option value="">Todos</option>
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-semibold">
+                    <i class="ti ti-building-warehouse me-1"></i>Almacén
+                </label>
+                @Html.DropDownList("cbxAlmacen", new SelectList(ViewBag.ListaAlmacenes, "intValue", "vchdesc"), new { @Class = " form-select select2_", })
+            </div>
+
+            <div class="col-lg-4 col-md-6 d-flex align-items-end gap-2">
+                <button id="btn_filtrar" class="btn btn-primary flex-fill">
+                    <i class="ti ti-search me-2"></i>Buscar
+                </button>
+                <button id="btn_limpiar" class="btn btn-outline-secondary flex-fill">
+                    <i class="ti ti-eraser me-2"></i>Limpiar
+                </button>
+            </div>
+
+        </div>
+
+
+        <hr class="my-4">
+        <div class="table-responsive">
+            <table id="dtTabla" class="table table-striped table-hover w-100">
+                <thead>
+                    <tr>
+                        <th scope="col"> Acciones</th>
+                        <th scope="col">Código</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col" class="text-center">Estado</th>
+                        <th scope="col">Cantidad de Almacén Asociado</th>
+
+                    </tr>
+                <thead>
+                <tbody>
+                    <tr>
+                        <td class="d-none">Cargando...</td>
+                        <td class="d-none">Cargando...</td>
+                        <td class="d-none">Cargando...</td>
+                        <td class="d-none">Cargando...</td>
+                        <td class="d-none">Cargando...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+@Html.Partial("~/Views/Mantenimiento/Modals/ModalsUbicacionesMant.cshtml")
+@*@Html.Partial("~/Views/Shared/Modals_Generales.cshtml")*@
+
+
+@section scripts{
+    <script src="~/Assets/JS/MantenimientosJS/UbicacionMant/UbicacionMantJS.js"></script>
+    <script src="~/Assets/JS/MantenimientosJS/UbicacionMant/UbicacionTable.js"></script>
+
+
+
+    <script nonce="@nonce">
+
+
+        $('#cbxAlmacen').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            height: '100%'
+        });
+        $('.select2_M').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            height: '100%',
+            multiple: true
+        });
+        function downTemplate() {
+            window.location.href = "@Url.Content("~/")Importacion/DescargarExcelUbicaciones"
+           }
+
+    jQuery(document).ready(function () {
+        $('#btn_Import').click(function () {
+            const fileInput = $("#fileInput")[0];
+
+            if (!fileInput.files || !fileInput.files[0]) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Archivo requerido',
+                    text: 'Por favor selecciona un archivo antes de continuar',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3085d6'
+                });
+                return;
+            }
+
+            const btnImport = $(this);
+            const originalText = btnImport.html();
+
+            btnImport.prop('disabled', true).html(
+                '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Importando...'
+            );
+
+            Swal.fire({
+                title: 'Procesando archivo',
+                text: 'Por favor espera mientras importamos las ubicaciones',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const formData = new FormData();
+            formData.append("archivo", fileInput.files[0]);
+
+            $.ajax({
+                url: '@Url.Action("SubirArchivo_Ubicaciones", "Importacion")',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    Swal.close();
+
+                    if (response.HUBO_ERROR === true) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al importar',
+                            text: response.MENSAJE_ERROR || 'Ocurrió un error durante la importación. Por favor verifica el archivo e intenta nuevamente.',
+                            confirmButtonText: 'Entendido',
+                            confirmButtonColor: '#d33'
+                        });
+                    } else {
+                        $('#Import_Modal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open').css('padding-right', '');
+
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Importación completada!',
+                                text: 'Las ubicaciones se procesaron correctamente. Revisa los detalles a continuación.',
+                                confirmButtonText: 'Ver resultados',
+                                confirmButtonColor: '#28a745',
+                                timer: 2500,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed || result.isDismissed) {
+                                    Charge_RImport_Modal(response.Entity);
+                                }
+                            });
+                        }, 800);
+                    }
+
+                    $("#fileInput").val("");
+                    ActualizarTabla();
+                },
+                error: function (xhr, status, error) {
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        html: 'No se pudo completar la importación.<br>Por favor verifica tu conexión e intenta nuevamente.',
+                        confirmButtonText: 'Reintentar',
+                        confirmButtonColor: '#d33'
+                    });
+                },
+                complete: function () {
+                    btnImport.prop('disabled', false).html(originalText);
+                }
+            });
+        });
+    });
+
+
+
+    </script>
+
+    @*<script src="~/Content/matdash/libs/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>*@
+}

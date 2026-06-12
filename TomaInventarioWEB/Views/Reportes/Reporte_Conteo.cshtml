@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Reporte_Conteo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+<div class="card">
+    <div class="card-header card__cabecera">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 card-cabecera__mobile">
+            <div class="card-titulo__mobile">
+                <h4 class="mb-1 fw-semibold text-white">Reporte Conteos</h4>
+                <h7 class="text-white opacity-75">Realice una exportación del inventario por Conteos</h7>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Seleccion Almacen -->
+        <div class="row mb-3 pb-3 border-bottom">
+            <div class="col-md-6 d-flex align-items-center gap-2">
+                <label for="cbxInventarioP" class="form-label contenedor__subtitulo flex-shrink-0">Seleccionar un Almacen</label>
+                <select id="cbxInventarioP" class="form-select">
+                </select>
+            </div>
+            <div id="cntInfo1" class="col-md-6 d-flex align-items-center d-none">
+                <div class="p-2 d-flex bg-white text-primary border rounded-1 fs-4 fw-medium">
+                    Total de inventarios
+                    <span id="spanCantInv" class="badge ms-2 text-bg-primary fs-4">00</span>
+                </div>
+                <button id="exportConteoExcel" class="btn btn-success ms-auto">Descargar Excel</button>
+            </div>
+        </div>
+        <div id="cntInfo2" class="d-none">
+            <!-- Filtros -->
+            <div class="row align-items-center mb-3 pb-3 border-bottom">
+                <div class="accordion px-0" id="accordionFiltros">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <h6 class="fs-4 mb-0">Filtros de búsqueda </h6>
+                                <small class="text-muted ms-1">(Opcional)</small>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body row">
+                                <div class="col-md-3 mb-2">
+                                    <label for="dtmIni" class="form-label fw-semibold mb-1">Fecha Inicio</label>
+                                    <input type="date" class="form-control" id="dtmIni" />
+                                </div>
+                                <div class="col-md-3 border-end mb-2">
+                                    <label for="dtmFin" class="form-label fw-semibold mb-1">Fecha Fin</label>
+                                    <i class="ti ti-info-circle text-primary"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       data-bs-html="true"
+                                       data-bs-title="Es necesario ingresar <strong>un rango de fecha.</strong>">
+                                    </i>
+                                    <input type="date" class="form-control" id="dtmFin" />
+                                </div>
+                                <div class="col-md-2 border-end mb-2">
+                                    <label for="slcEstado" class="form-label">Estado</label>
+                                    <select id="slcEstado" class="form-select">
+                                        <option selected>Todos</option>
+                                        <option>Abierto</option>
+                                        <option>Cerrado</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 border-end mb-2">
+                                    <label for="slcConteo" class="form-label">Conteo</label>
+                                    <select id="slcConteo" class="form-select">
+                                        <option selected>Todos</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center align-items-end mb-2">
+                                    <button id="btn_limpiar" class="btn btn-secondary">
+                                        <i class="ti ti-eraser me-2"></i>Limpiar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabla inventarios -->
+            <div class="row align-items-center">
+                <div class="table-responsive">
+                    <table id="tbl_Historico" class="table table-hover w-100 dataTable">
+                        <thead class="table-light">
+
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Assets/JS/ReportesJS/CentralReportes.js"></script>
+    
+    <script nonce="@nonce">
+
+        /*// VARIABLES GLOBALES CUANDOS SE SELECCIONA UNA FILA //*/
+        let almacenSelect;
+        let codInventarioSelect;
+        let nroConteoSelect;
+        let estaSelectInv;
+
+        /*// EXPORTAR INFORME DETALLADO //*/
+        const btnExportConteoExcel = document.getElementById("exportConteoExcel");
+
+        btnExportConteoExcel.addEventListener("click", function () {
+
+            if (!estaSelectInv) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Selecciona un Inventario',
+                    text: 'Debe seleccionar una fila de la tabla antes de descargar el Excel.',
+                });
+
+                return;
+            }
+
+            // GENERAR REPORTE
+        });
+
+    </script>
+}

@@ -1,0 +1,284 @@
+﻿/*Bloque: Card*/
+/*.cardForm_cabecera {
+    font-size:1.5rem;
+}
+.cardForm {
+    margin: 0 ;
+    border: 8px;
+    border-top-style: groove;
+    border-left-style: groove;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+    border-color: #a48356;
+}
+
+.card-header {
+    flex-wrap: wrap;
+    background-color: #a48356;
+    color:#ffffff;
+    font-weight:500;
+}
+.card-body {*/
+    /*padding-inline: 2rem;*/
+    /*background-color: #deb276;
+
+}
+.custom_card_footer {
+    border-top: 3px groove;
+    border-color: #a48356;
+    overflow:hidden;
+}*/
+/*Bloque: Tabla*/
+/*#dtTabla_wrapper {
+    overflow-x: auto;
+}
+.dataTables_wrapper {
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgb(85 74 101) 0px 0px 0px 1px;
+    overflow-x:auto;
+}
+th {
+    background-color: #b7d4ea;
+    color:#ffffff
+}
+.dataTables_length {
+margin-bottom:5px;
+}
+table {
+    overflow:hidden;
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgb(85 74 101) 0px 0px 0px 1px;
+}
+.RowError {
+    background-color: #c71b1bc9 !important;
+    color: #ffffff;
+}
+.RowSuccess {
+    background-color: #51c71bc9 !important;
+    color: #ffffff;
+}
+th,
+td {
+    white-space: pre-wrap !important;
+    word-wrap: break-word;
+}*/
+/*Bloque: Inputs*/
+/*.input-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+}
+.input-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #999;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    overflow: visible;
+    max-height: 11px;
+    pointer-events: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top: solid 1px;
+    border-left: solid 1px;
+    border-right: solid 1px;*/
+    /*box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgb(85 74 101) 0px 0px 0px 1px;*/
+/*}
+
+.input-text {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgb(85 74 101) 0px 0px 0px 1px;
+}
+
+.select2, input[type="text"], input[type="password"], input[type="number"], select {
+    min-width: 8rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgb(85 74 101) 0px 0px 0px 1px;
+}
+
+
+.input-text:focus + .input-label,
+.input-text:valid + .input-label {
+    top: -10px;
+    left: 5px;
+    color: #333;
+    font-size: 12px;
+    background-color: #fff;
+    padding: 0 5px;
+}
+
+.input-labelD {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #999;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.input-labelD {
+    top: -10px;
+    left: 5px;
+    color: #333;
+    font-size: 12px;
+    background-color: #fff;
+    padding: 0 5px;
+}
+
+.select-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #999;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.select-label {
+    top: -10px;
+    left: 5px;
+    color: #333;
+    font-size: 12px;
+    background-color: #fff;
+    padding: 0 5px;
+    z-index: 10;
+    max-height: 11px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top: solid 1px;
+    border-left: solid 1px;
+    border-right: solid 1px;
+}*/
+
+/*Bloque: Tabs*/
+/*#content_tabs {
+    background-color: #fff;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgb(85 74 101) 0px 0px 0px 1px;
+}
+#pills-tabCapa1 .nav-item {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    
+}
+#pills-tabCapa1 .nav-item button{
+    width: 98%;
+}
+.tab_panel {
+    border-radius: 1rem;
+    padding: 1rem;*/
+    /*overflow: hidden;*/
+    /*overflow-x: auto;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgb(85 74 101) 0px 0px 0px 1px;
+}
+.tab-content {
+    width: 100%;
+    
+}
+    .tab-content .dataTables_wrapper {
+        color: #000;
+        box-shadow:none;
+    }
+#cardtables {
+visibility:hidden;
+}
+.d-flex {
+    flex-wrap: wrap;
+}
+#cardtables .card-body {
+    padding-inline: 0;
+}
+
+#col_filtros {
+    border-left: 5px;
+    
+    border-bottom: 5px;
+    border-color: #e1e1e1;
+    border-left-style: ridge;
+    border-bottom-style: ridge;
+    border-right-style: ridge;
+}
+.lineaDivisora {
+    border-right: 0;
+    border-bottom: 3px solid #d1d1d1;
+}
+
+@media screen and (min-width: 768px) {
+    #col_filtros {
+        border-left: 0;
+        border-bottom: 5px;
+    }
+    #cardtables .card-body {
+        padding-inline: 2rem;
+    }
+    .d-flex {
+        flex-wrap: nowrap;
+    }
+    .cardForm {
+        margin: 0 1rem;
+    }
+    .lineaDivisora {
+        border-right: 3px solid #d1d1d1;
+        border-bottom: 0;
+    }
+  
+}*/
+
+/*Bloque: Inventario Menu Principal*/
+/*.Inv_grid_btn {
+    display: flex;
+    flex-wrap: wrap;*/
+    /*background-color: antiquewhite;*/
+    /*position: absolute;
+    width: 50%;
+    height: 50%;*/
+    /*padding: 3rem;*/
+    /*right: 25%;
+    top: 25%;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 50px;
+}
+
+    .Inv_grid_btn button {
+        margin: 1rem;
+        min-height: 11rem;
+        min-width: 11rem;
+        position: relative;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+
+        .Inv_grid_btn button .spantext {
+            position: absolute;
+            bottom: 15px;
+            right: 0px;
+            width: 100%;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .Inv_grid_btn button .spanIcon {
+            position: absolute;
+            left: 0;
+            top: 15px;
+            font-size: 5rem;
+            width: 100%;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .Inv_grid_btn button .SubspanIcon {
+            position: absolute;
+            right: 5%;
+            bottom: 15px;
+            font-size: 1rem;
+            color: #fff;
+            font-weight: 700;
+        }*/

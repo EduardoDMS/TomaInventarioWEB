@@ -1,0 +1,243 @@
+﻿
+<br />
+<div id="ContentReports">
+    <div class="row">
+        <div class="col-sm-3" id="col_filtros">
+            <div class="row">
+                <div class="container">
+                    <label id="ttlSelectReport">Seleccionar Tipo de reporte</label>
+                    <ul class="list-group" id="lisGroup_report">
+                        <li class="list-group-item">
+                            <input class="form-check-input me-1" type="radio" name="listGroupReport" value=0 id="1RadioReport" checked>
+                            <label class="form-check-label" for="1RadioReport">Reporte Diferencial</label>
+                        </li>
+                        <li class="list-group-item">
+                            <input class="form-check-input me-1" type="radio" name="listGroupReport" value=1 id="2RadioReport">
+                            <label class="form-check-label" for="2RadioReport">Reporte de Productos</label>
+                        </li>
+                        <li class="list-group-item">
+                            <input class="form-check-input me-1" type="radio" name="listGroupReport" value=2 id="3RadioReport">
+                            <label class="form-check-label" for="3RadioReport">Reporte de Ubicaciones</label>
+                        </li>
+                        <li class="list-group-item">
+                            <input class="form-check-input me-1" type="radio" name="listGroupReport" value=3 id="4RadioReport">
+                            <label class="form-check-label" for="4RadioReport">Reporte de Lecturas de Usuario</label>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <br />
+            <div class="row">
+                <div class="container" >
+                    <label id="ttlFiltrosReport">Filtros de Reporte</label>
+                    <div id="filtrosdif" class="divFiltros">
+                        <label for="RangeReport1" class="form-label">N° de Conteo</label>
+                        <input type="range" class="form-range" min="1" max="3" step="1" value="1" list="rangeMarker" id="RangeReport1">
+                        <datalist id="rangeMarker">
+                            <option value="1" label='1'>1</option>
+                            <option value="2" label='2'>2</option>
+                            <option value="3" label='3'>3</option>
+                        </datalist>
+
+                    </div>
+                    <div id="filtrosProd" class="divFiltros">
+                        <br />
+                        <div class="input-wrapper ">
+                            <input type="text" class="input-text form-control" id="txtCodProduct" autocomplete="off" maxlength="20">
+                            <label for="txtCodProduct" class="input-label">Cód. de Producto</label>
+                        </div>
+                    </div>
+                    <div id="filtrosUbic" class="divFiltros">
+                        <br />
+                        <div class="input-wrapper ">
+                            <input type="text" class="input-text form-control" id="txtCodUbicacion" autocomplete="off" maxlength="20">
+                            <label for="txtCodUbicacion" class="input-label">Cód. de Ubicación</label>
+                        </div>
+
+                        <label for="RangeReport3" class="form-label">N° de Conteo</label>
+                        <input type="range" class="form-range" min="1" max="3" step="1" value="1" list="rangeMarker3" id="RangeReport3">
+                        <datalist id="rangeMarker3">
+                            <option value="1" label='1'>1</option>
+                            <option value="2" label='2'>2</option>
+                            <option value="3" label='3'>3</option>
+                        </datalist>
+
+                        <div class="input-wrapper margin-top2Rem" >
+
+                            <input type="text" class="input-text form-control" id="txtCodUsuario1" autocomplete="off" maxlength="20">
+                            <label for="txtCodUsuario1" class="input-label">Cód. Usuario</label>
+                        </div>
+
+                    </div>
+                    <div id="filtrosLectxUsuario" class="divFiltros">
+                        <br />
+                        <div class="input-wrapper ">
+                            <input type="text" class="input-text form-control" id="txtCodUsuario2" autocomplete="off" maxlength="20">
+                            <label for="txtCodUsuario2" class="input-label">Cód. Usuario</label>
+                        </div>
+                    </div>
+                    
+                    @*<button class="btn btn-primary margin1Rem"  id="Gestor_btnGenerarReporte" onclick="GenerarReporte();">Generar Reporte</button>*@
+                    <button class="btn btn-primary margin1Rem"  id="Gestor_btnGenerarReporte" >Generar Reporte</button>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="col" id="colTableReport" >
+            <div id="contenedorTblDiv1" class="divTbl">
+                @*<button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport1" onclick="ExportExcelReport()">*@
+                <button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport1" ">
+                    <span id=""><i class="fa-solid fa-file-excel fa-xl"></i></span>
+                Exportar</button>
+                <div class="tblReportContent">
+                    <table id="Tbl_report1" class="display responsive nowrap Width100" >
+                        <thead>
+                            <tr>
+                            </tr>
+                        <thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                @*IQFARMA*@
+                                @*<th></th>
+                                <th></th>
+                                <th></th>*@
+                                @*FIN IQFARMA*@
+                                @*<th></th>*@
+                                <th>Total:</th>
+                                <th id="Report1Ini">0</th>
+                                <th id="Report1Fin">0</th>
+                                <th id="Report1Dif">0</th>
+
+                            </tr>
+
+                        </tfoot>
+                    </table>
+                </div>
+
+                
+            </div>
+            <div id="contenedorTblDiv2" class="divTbl">
+                <button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport2">
+                    @*<button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport2" onclick="ExportExcelReport()">*@
+                    <span id=""><i class="fa-solid fa-file-excel fa-xl"></i></span>
+                    Exportar
+                </button>
+                <div class="tblReportContent">
+                    <table id="Tbl_report2" class="display responsive nowrap Width100" >
+                        <thead>
+                            <tr>
+                            </tr>
+                        <thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                @*IQFARMA*@
+                                @*<th></th>
+                                <th></th>
+                                <th></th>*@
+                                @*FIN IQFARMA*@
+                                <th>Total:</th>
+                                <th id="Report2Cant">0</th>
+                                <th></th>
+
+
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div id="contenedorTblDiv3" class="divTbl">
+                @*<button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport3" onclick="ExportExcelReport()" >*@
+                <button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport3"  >
+                    <span id=""><i class="fa-solid fa-file-excel fa-xl"></i></span>
+                    Exportar
+                </button>
+                <div class="tblReportContent">
+                    <table id="Tbl_report3" class="display responsive nowrap Width100" >
+                        <thead>
+                            <tr>
+                            </tr>
+                        <thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                @*IQFARMA*@
+                                @*<th></th>
+                                <th></th>
+                                <th></th>*@
+                                @*FIN IQFARMA*@
+                                @*<th></th>*@
+                                <th></th>
+                                <th>Total:</th>
+                                <th id="Report3Cant">0</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+            <div id="contenedorTblDiv4" class="divTbl">
+                @*<button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport4" onclick="ExportExcelReport()">*@
+                <button class="btn btn-success btn-lg  btnExportReport" id="btnExportReport4" >
+                    <span id=""><i class="fa-solid fa-file-excel fa-xl"></i></span>
+                    Exportar
+                </button>
+                <div class="tblReportContent">
+                    <table id="Tbl_report4" class="display responsive nowrap Width100" >
+                        <thead>
+                            <tr>
+                            </tr>
+                        <thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                @*IQFARMA*@
+                                @*<th></th>
+                                <th></th>
+                                <th></th>*@
+                                @*FIN IQFARMA*@
+                                @*<th></th>*@
+                                <th></th>
+                                <th>Total:</th>
+                                <th id="Report4Cant">0</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            </div>
+
+    </div>
+
+
+</div>

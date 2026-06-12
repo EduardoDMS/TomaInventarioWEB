@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso - Toma de Inventario</title>
+    <link rel="shortcut icon" href="~/Assets/IMG/LogoAlmacen.png">
+
+
+    <!-- BootStrap -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Matdash Icons -->
+    <link rel="stylesheet" href="~/Content/matdash/fonts/tabler-icons/tabler-icons.min.css" />
+
+    <!-- Matdash Fonts -->
+    <link rel="stylesheet" href="~/Content/matdash/css/fonts.css" />
+
+    <!-- Mis Estilos-->
+    <link href="~/Assets/CSS/Estilos-generales_nuevo.css" rel="stylesheet" />
+    <link href="~/Assets/CSS/Login_nuevo.css" rel="stylesheet" />
+
+    <!-- Sweet Alert 2-->
+    <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+
+    <div class="login__background">
+        @RenderBody()
+    </div>
+
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,191 @@
+﻿/* ----- SIDEBAR ----- */
+.sidebar__contenedor {
+    position: fixed;
+    left: 0;
+    width: 7rem;
+    height: calc(100vh - 80px);
+    /*height:100vh;*/
+    background-color: var(--color-fondo-blanco);
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: var(--sombra-desplazada);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+    .sidebar__contenedor.oculto {
+        transform: translateX(-7rem);
+    }
+
+.sidebar__item {
+    width: 5.5rem;
+    height: 5.5rem;
+    border: 2px solid var(--color-primario);
+    border-radius: var(--radio-borde-redondo);
+    color: var(--color-primario);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .sidebar__item:hover,
+    .sidebar__item.active {
+        background-color: var(--color-primario);
+        color: var(--color-texto-blanco);
+    }
+
+    .sidebar__item small{
+        font-weight:800;
+    }
+
+    .sidebar__item i {
+        font-size: 2.2rem;
+    }
+
+.sidebar__icono-colapso {
+    position: absolute;
+    font-size: 3rem;
+    color: var(--color-primario);
+    top: 50%;
+    right: -0.6rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .sidebar__icono-colapso:hover {
+        transform: translateY(-50%) scale(1.2);
+    }
+
+    .sidebar__icono-colapso.oculto {
+        right: -2.5rem;
+        transform: translateY(-50%) scaleX(-1);
+    }
+
+        .sidebar__icono-colapso.oculto:hover {
+            transform: translateY(-50%) scaleX(-1) scale(1.2);
+        }
+
+/* ----- SUBMENUS ----- */
+.submenu__principal {
+    position: fixed;
+    left: 0;
+    width: 17rem;
+    height: calc(100vh - 80px);
+    background-color: var(--color-fondo-blanco);
+    border-radius: var(--radio-borde-redondo);
+    box-shadow: var(--sombra-desplazada);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+}
+
+    .submenu__principal.active {
+        transform: translateX(7.5rem);
+    }
+
+.submenu__secundario {
+    display: none;
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+/* .submenu::-webkit-scrollbar {
+    display: none;
+} */
+.submenu__secundario.active {
+    display: block;
+}
+
+.submenu__secundario--item {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--color-primario);
+    border-radius: var(--radio-borde-redondo);
+    color: var(--color-primario);
+    text-decoration: none;
+    text-align: center;
+    justify-content: center;
+    min-height: 7rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+    .submenu__secundario--item:hover {
+        background-color: var(--color-primario);
+        color: var(--color-texto-blanco);
+    }
+
+.submenu__titulo {
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.submenu__descripcion {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Pantalla pequeña */
+@media screen and (max-width:480px) {
+    .sidebar__contenedor {
+        transform: translateX(-7rem);
+    }
+
+        .sidebar__contenedor.oculto {
+            transform: translateX(0);
+        }
+
+    .sidebar__icono-colapso {
+        right: -2.5rem;
+        transform: translateY(-50%) scaleX(-1);
+    }
+
+        .sidebar__icono-colapso:hover {
+            transform: translateY(-50%) scaleX(-1) scale(1.2);
+        }
+
+        .sidebar__icono-colapso.ocultoFlecha {
+            right: -0.6rem;
+            transform: translateY(-50%) scaleX(1);
+        }
+
+            .sidebar__icono-colapso.ocultoFlecha:hover {
+                transform: translateY(-50%) scaleX(1) scale(1.2);
+            }
+}
+
+/* Pantalla mediana */
+@media screen and (min-width:1024px) {
+    .sidebar__icono-colapso {
+        font-size: 2.5rem;
+    }
+
+        .sidebar__icono-colapso.ocultoFlecha {
+            right: -2rem;
+            transform: translateY(-50%) scaleX(-1);
+        }
+}
+
+/* Pantalla grande */
+@media screen and (min-width:1440px) {
+    .sidebar__icono-colapso {
+        font-size: 3.5rem;
+    }
+
+        .sidebar__icono-colapso.ocultoFlecha {
+            right: -3rem;
+            transform: translateY(-50%) scaleX(-1);
+        }
+}

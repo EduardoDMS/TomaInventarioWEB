@@ -1,0 +1,74 @@
+﻿<div class="card shadow-sm d-none" id="cardtables">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="card-title mb-1">
+                    <i class="ti ti-table-import text-primary me-2"></i>
+                    Importación - Resultado
+                </h4>
+                <p class="text-muted mb-0 fs-3">Revisa los datos importados de tus archivos</p>
+            </div>
+        </div>
+
+        <!-- Tabs Horizontales: Maestro / Inventario -->
+        <div id="content_tabs">
+            <ul class="nav nav-pills gap-2 mb-4" id="pills-tabCapa1" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-pill px-4 py-2 fw-semibold"
+                            id="pills-home-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pills-home"
+                            type="button"
+                            role="tab"
+                            aria-controls="pills-home"
+                            aria-selected="true">
+                        <i class="ti ti-database me-2"></i>
+                        Maestro
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill px-4 py-2 fw-semibold"
+                            id="pills-profile-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pills-profile"
+                            type="button"
+                            role="tab"
+                            aria-controls="pills-profile"
+                            aria-selected="false">
+                        <i class="ti ti-clipboard-list me-2"></i>
+                        Inventario
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Contenido de Tabs -->
+            <div class="tab-content" id="pills-tabCapa1Content">
+                <!-- Tab Maestro -->
+                <div class="tab-pane fade show active"
+                     id="pills-home"
+                     role="tabpanel"
+                     aria-labelledby="pills-home-tab">
+                    @Html.Partial("~/Views/Importacion/ImportacionTablasMaestro.cshtml")
+                </div>
+
+                <!-- Tab Inventario -->
+                <div class="tab-pane fade"
+                     id="pills-profile"
+                     role="tabpanel"
+                     aria-labelledby="pills-profile-tab">
+                    @Html.Partial("~/Views/Importacion/ImportacionTablasInventario.cshtml")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-light text-center py-3">
+        <button type="button" id="btnNuevaImportacion" class="btn btn-primary btn-lg px-5">
+            <i class="ti ti-reload me-2"></i>
+            Nueva Importación
+        </button>
+    </div>
+</div>
+
+
+

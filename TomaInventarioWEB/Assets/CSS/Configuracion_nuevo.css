@@ -1,0 +1,82 @@
+﻿/*.card__cabecera {
+    background-color: var(--color-primario);
+    color: var(--color-titulo) !important;
+}*/
+
+.empresa__contenedor-imagen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--color-bordes);
+}
+
+.empresa__imagen {
+    display: flex;
+    width: 7rem;
+    height: 7rem;
+    border: 5px solid var(--color-primario);
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    /*margin: 1rem 0 2rem 0;*/
+    font-size: 5rem;
+    color: var(--color-primario);
+}
+
+    /*.empresa__imagen i {
+        font-size: 5rem;
+        color: var(--color-primario);
+    }*/
+
+.color__primario-dms {
+    color: var(--color-temaDMS);
+}
+
+.color__primario-naranja {
+    color: var(--color-temaNaranja);
+}
+
+.color__primario-verde {
+    color: var(--color-temaVerde);
+}
+
+.color__primario-purpura {
+    color: var(--color-temaPurpura);
+}
+
+.color__primario-marron {
+    color: var(--color-temaMarron);
+}
+
+.contenedor__tema {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4rem;
+    padding: 0.5rem 0.375rem;
+    border: 1px solid var(--color-bordes);
+    border-radius: 15px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out;
+}
+
+    .contenedor__tema:hover {
+        transform: scale(1.1);
+    }
+
+
+
+/* Pantalla pequeña */
+@media screen and (max-width:480px) {
+
+    .empresa__contenedor-imagen{
+        border:none;
+    }
+
+    .empresa__imagen {
+        width: 5.5rem;
+        height: 5.5rem;
+        font-size: 4rem;
+    }
+}

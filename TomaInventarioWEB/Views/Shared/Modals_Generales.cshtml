@@ -1,0 +1,163 @@
+﻿<link href="~/Assets/CSS/Modals_general.css" rel="stylesheet" />
+@* MODAL SUCCESS *@
+<div class="modal fade" id="success_modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+            @*<a class="close btn-close" data-bs-dismiss="modal">&times;</a>*@
+            <a type="button" class="close " data-bs-dismiss="modal" aria-label="Close"> &times;</a>
+            <div class="page-body">
+                <div class="head">
+                    <h3 class="margin-top5Px">Proceso realizado con éxito</h3>
+                    <h4 id="txtvar">El tal ha sido tal</h4>
+                </div>
+
+                <h1 class="TextCenter">
+                    <div class="checkmark-circle">
+                        <div class="background"></div>
+                        <div class="checkmark draw"></div>
+                    </div>
+                </h1>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* MODAL ALERT *@
+<div class="modal fade" id="alert_modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+            <a type="button" class="close " data-bs-dismiss="modal" aria-label="Close"> &times;</a>
+            <div class="page-body">
+                <div class="head">
+                    <h3 class="margin-top5Px">Confirmar Proceso</h3>
+                    <h4 id="txtvarAlert">¿Estas seguro de tal?</h4>
+                </div>
+
+                <h1 class="TextCenter">
+                    <div class="checkmark-circle">
+                        <div class="background"></div>
+                        <div class="exclamation draw"></div>
+                        <div class="dotfill dot "></div>
+                    </div>
+                </h1>
+                <br />
+                <div class="row TextCenter" >
+                    <div class="col d-grid "><button type="button" class="btn btn-info btn-lg text-white" id="btn-yes-no" data-answer="true">SI</button> </div>
+                    <div class="col d-grid "><button type="button" class="btn btn-info btn-lg text-white" id="btn-yes-no" data-answer="false" data-bs-dismiss="modal">NO</button></div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+@* MODAL ALERT2 *@
+<div class="modal fade" id="alert_modal2" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+            <a type="button" class="close " data-bs-dismiss="modal" aria-label="Close"> &times;</a>
+            <div class="page-body">
+                <div class="head">
+                    <h3 class="margin-top5Px" >¡Aviso!</h3>
+                    <h4 id="txtvarAlert2">¿Estas seguro de tal?</h4>
+                </div>
+
+                <h1 class="TextCenter">
+                    <div class="checkmark-circle">
+                        <div class="background"></div>
+                        <div class="exclamation draw"></div>
+                        <div class="dotfill dot "></div>
+                    </div>
+                </h1>
+               
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@*MODAL ERROR *@
+<div class="modal fade" id="error_modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+            <a type="button" class="close " data-bs-dismiss="modal" aria-label="Close"> &times;</a>
+            <div class="page-body margin-bottom5Px" >
+                <div class="head">
+                    <h3 class="margin-top5Px" >Proceso Erroneo</h3>
+
+                </div>
+
+                <h1 class="TextCenter">
+                    <div class="checkmark-circle">
+                        <div class="background"></div>
+                        <div class="markRight drawRight"></div>
+                        <div class="markLeft drawLeft"></div>
+                    </div>
+                </h1>
+                <div class="TextCenter  font-size_1-5rem">Mensaje de Error:</div>
+            </div>
+            <div id="txtvarError">Error_Mensaje</div>
+        </div>
+
+    </div>
+
+</div>
+
+
+@*MODAL RESULT_IMPORT*@
+<div class="modal fade" id="RImport_modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content custom_modal_content">
+            <div class="modal-header custom_modal_head">
+                <h1 class="modal-title fs-5" id="ttl_ImportModal">Resultado de Importación</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body custom_modal_body Width100" >
+                <table id="RImport_Tbl" class="display responsive nowrap Width100" >
+                    <thead>
+                        <tr>
+
+                            
+                        </tr>
+                    <thead>
+                    <tbody>
+                        <tr>
+                            
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@*MODAL LOADING
+    <!--<div class="modal fade" id="loading_modal" role="dialog">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">-->
+                <button  id="closeLoading"  type="button" class="close " data-bs-dismiss="modal" aria-label="Close"> &times;</button>
+                <!--<img style="width: 50%; align-self: center;" src="~/Assets/IMG/loading2.gif" />
+            </div>
+        </div>
+    </div>-->
+*@
+

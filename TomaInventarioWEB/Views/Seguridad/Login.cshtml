@@ -1,0 +1,219 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Login.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+
+<!--<div class="Cont_form">
+    <div class="grid_img">
+
+        <img class="img-fluid" src="~/Assets/IMG/icon-user2.png" alt="~/Assets/IMG/Image_not_available.png" />
+        <img />
+    </div>
+    <div class="grid_tittle">
+
+    </div>
+    <div class="grid_form">
+        
+        <div class="row rowform">
+            <div class="col colform">
+
+                <div class=" input-group Input_user">
+                    <input type="text" class=" input_login" id="name" autocomplete="off" placeholder="Usuario"  required>-->
+                    @*<label>Usuario</label>*@
+                    <!--<div class="input-group-append">
+                        <span class="input-group-text" id="#input_user_icon">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="input-group Input_pass">
+                    <input type="password" class="password input_login" id="pass" placeholder="Contraseña"  required>-->
+                    @*<label>Contraseña</label>*@
+                    <!--<div class="input-group-append">
+                        <span class="input-group-text" id="input_pass_icon">-->
+                            @*<i class="fas fa-key"></i>*@
+                            <!--<i class="togglePassword fa-solid fa-eye-slash"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>-->
+            @*<div class="col-md-4" style="display: flex; justify-content: center; ">
+                <div style="display:flex; justify-content: center; align-items: center;">
+                    <button type="button" onclick="Autenticar();" class="btn btn-success btn-lg  btn-ingresar" id="btn_login">
+                        <span>Ingresar</span> <i class="fa-solid fa-right-long"></i>
+                    </button>
+
+                </div>
+            </div>*@
+        <!--</div>
+        
+        <div class="row " >
+            <div class="col colbtnLogin" >
+                <div >-->
+                    @*<button type="button" onclick="Autenticar();" class="btn btn-success btn-lg  btn-ingresar" id="btn_login">*@
+                    <!--<button type="button"  class="btn btn-success btn-lg  btn-ingresar" id="btn_login">
+                        <span>Ingresar</span>
+                    </button>
+
+                </div>
+
+                <div class="center" >
+                    <div class="lds-ring">
+                        <div> </div>
+                        <div> </div>
+                        <div> </div>
+                        <div> </div>
+                    </div>
+                </div>
+                <div class="grid-content" id="content-mensajes" ></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="Logo_img">
+    <img class="img-fluid" src="~/Assets/IMG/LogoALmacenBanner.png" />
+</div>-->
+
+<main class="h-100 d-flex justify-content-center align-items-center">
+    <section class="col-md-9 col-xl-4 login__contenedor d-flex flex-column justify-content-between px-5">
+        <!-- LOGO INICIO -->
+        <div class="d-flex flex-column mb-3">
+            <img class="login__logo" src="~/Assets/IMG/LogoALmacenBanner.png" alt="Logo de Toma de Inventario">
+            <small class="login__eslogan">
+                “Simplificamos tu inventario, maximizamos tu
+                tiempo”
+            </small>
+        </div>
+        <!-- LOGO FIN -->
+
+        <!-- TITULO INICIO -->
+        <h1 class="login__bienvenida">¡Hola, de nuevo!</h1>
+        <!-- <h1 class="login__bienvenida mt-3">Te damos la bienvenida, de nuevo</h1> -->
+        <!-- TITULO FIN -->
+
+        <!-- FORMULARIO INICIO -->
+        <form id="loginIngreso">
+            <div class="mb-4">
+                <div class="login__input">
+                    @*<i class="ti ti-user icon-left"></i>*@
+                    <label class="form-label fw-bold" for="usuario">Usuario</label>
+                    <input id="usuario" class="form-control" type="text" placeholder="Ingrese su usuario">
+                    <div class="invalid-feedback">
+                        Debe ingresar un usuario.
+                    </div>
+                </div>
+                @*<div class="text-end">
+                <small>
+                    No tienes una cuenta?
+                    <a class="login__enlace" href="https://www.dms.com.pe/contactenos/">Registrate</a>
+                </small>
+            </div>*@
+            </div>
+            <div class="mb-5">
+                <div class="login__input">
+                    <label class="form-label fw-bold" for="usuario">Contraseña</label>
+                    @*<i class="ti ti-lock icon-left"></i>*@
+                    <i class="ti ti-eye icon-right togglePassword"></i>
+                    <input id="contrasena" class="form-control" type="password" placeholder="Ingrese su contraseña">
+                    <div class="invalid-feedback" data-mensajeOriginal="Debe ingresar una contraseña.">
+                        Debe ingresar una contraseña.
+                    </div>
+                </div>
+                @*<div class="text-end">
+                <small>
+                    Olvidaste tu
+                    <a class="login__enlace" href="https://www.dms.com.pe/contactenos/">contraseña?</a>
+                </small>
+            </div>*@
+            </div>
+        </form>       
+        <div class="mb-4">
+            <button id="btn-login" class="login__boton" type="submit">
+                <span class="login__texto">Ingresar</span>
+                @*<div class="login__validando">
+                    <span class="spinner-border"></span>
+                    <span role="status">Validando...</span>
+                </div>*@
+            </button>
+        </div>
+        <!-- FORMULARIO FIN -->
+    </section>
+</main>
+@section scripts{
+    @*<script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
+    <script src="~/Assets/JS/LoginJS.js"></script>
+    
+    <script nonce="@nonce">
+
+        const formLogin = document.querySelector("#loginIngreso");
+        const botonLogin = document.querySelector("#btn-login");
+        /*const validando = document.querySelector(".login__validando");*/
+
+        document.getElementById("usuario").focus();
+
+        $("#btn-login").on("click", function () {
+            Autenticar();
+        });
+
+        function Autenticar() {
+
+            // validar inputs
+            if (!validarFormulario(formLogin)) {
+                return;
+            }
+
+            const modelUser = {
+                user: document.getElementById("usuario")?.value.trim() || "",
+                pass: document.getElementById("contrasena")?.value.trim() || ""
+            };
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "@Url.Content("~/")Seguridad/ValidarAcceso",
+                data: JSON.stringify(modelUser),
+                async: true,
+                success: function (response) {
+                    console.log(response);
+                    if (response[0] == false) {
+                        if (!localStorage.getItem("primeraImportacion")) {
+                            localStorage.setItem("primeraImportacion", "true");
+                            @*window.location.href = "@Url.Content("~/Importacion/ImportacionArchivos")";
+                            localStorage.setItem("menuActivo", "ajustes");*@
+                            window.location.href = "@Url.Content("~/Home/Index")";
+                            localStorage.setItem("menuActivo", "inicio");
+                        } else {
+                            window.location.href = "@Url.Content("~/Home/Index")";
+                            localStorage.setItem("menuActivo", "inicio");
+                        }
+
+                    }
+                    else {
+                        alertaLoginErrorBackend(response[1]);
+                    }
+                },
+                error: function (result) {
+                    alertaLoginErrorInesperado(result);
+                }
+            });
+
+            //setTimeout(function () {
+
+            //    var succ = ValidarCampos(modelUser);
+
+            //    if (succ) {
+
+
+            //    } else {
+            //        ocultarValidando();
+            //    }
+            //}, 2000);
+        }
+    </script>
+}

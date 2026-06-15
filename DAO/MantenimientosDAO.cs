@@ -65,7 +65,7 @@ namespace DAO
             return Lista_result;
 
         }
-        public Response CreateUsuario(string nombre, string apellido, string clave, string perfil, string idAlmacen)
+        public Response CreateUsuario(string cod_Usuario, string nombre, string apellido, string clave, string perfil, string idAlmacen)
         {
             Response response = new Response();
             SqlConnection con = null;
@@ -79,6 +79,7 @@ namespace DAO
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear();
+                        cmd.Parameters.Add("@cod_usuario", SqlDbType.VarChar,50).Value = cod_Usuario; //agregado
                         cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 200).Value = nombre;
                         cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 200).Value = apellido;
                         cmd.Parameters.Add("@clave", SqlDbType.VarChar, 100).Value = clave;
@@ -91,7 +92,7 @@ namespace DAO
                             Console.WriteLine($"{p.ParameterName} = {p.Value}");
 
                         con.Open();
-                        cmd.ExecuteReader();
+                        cmd.ExecuteNonQuery();
 
                         response.MENSAJE_ERROR = (string)cmd.Parameters["@msg"].Value ?? "";
                         response.HUBO_ERROR = (bool)cmd.Parameters["@Hubo_error"].Value;
@@ -170,7 +171,7 @@ namespace DAO
             return response;
 
         }
-        public Response UpdateUsuario(int idUsuario, string apellidoUsuario, string nombreUsuario, string clave, string perfil, string idAlmacen, bool activo)
+        public Response UpdateUsuario(int idUsuario, string cod_usuario, string apellidoUsuario, string nombreUsuario, string clave, string perfil, string idAlmacen, bool activo)
         {
             Response response = new Response();
             SqlConnection con = null;
@@ -186,6 +187,7 @@ namespace DAO
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear(); // Ver el tema de los tamaños existe una incongruencia  
                         cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
+                        cmd.Parameters.Add("@cod_usuario", SqlDbType.VarChar,20).Value = cod_usuario;
                         cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 20).Value = apellidoUsuario;// se agrego este campo de apellido para que se pueda actualizar el apellido del usuario, se agrego en el stored procedure y en el metodo createUsuario
                         cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 20).Value = nombreUsuario;// se modifico este campo de nombre a usuario para que sea mas entendible
                         cmd.Parameters.Add("@clave", SqlDbType.VarChar, 20).Value = clave;
@@ -197,7 +199,7 @@ namespace DAO
                         cmd.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
                         con.Open();
-                        cmd.ExecuteReader();
+                        cmd.ExecuteNonQuery();
 
                         response.MENSAJE_ERROR = (string)cmd.Parameters["@msg"].Value ?? "";
                         response.HUBO_ERROR = (bool)cmd.Parameters["@Hubo_error"].Value;

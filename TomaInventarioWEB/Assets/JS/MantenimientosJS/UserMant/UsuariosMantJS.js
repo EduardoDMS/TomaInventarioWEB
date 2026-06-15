@@ -45,6 +45,7 @@
             valid = false;
         }
 
+
         if (obj.perfil === 'OPE') {
             if (!validarCampo('#cbxAlmacen_add')) {
                 valid = false;
@@ -137,7 +138,7 @@
         });
     }
 
-    // ===== COMBOS EDITAR =====
+    // ===== COMBOS EDITAR ===== document
     function combosEditUser() {
         var DivcbxAlmacen_edit = $('#Div_cbxAlmacen_edit');
         var txtAlmacen_edit = $('#txtAlmacen_edit');
@@ -241,7 +242,7 @@
         var obj = new Object();
         obj.nombre = document.getElementById('NombreInput').value.trim(); // se agrego este campo
         obj.apellido = document.getElementById('ApellidoInput').value.trim(); // se agrego este campo
-        obj.usuario = document.getElementById('txtUsuario_add').value.trim();
+        obj.cod_usuario = document.getElementById('txtUsuario_add').value.trim();
         obj.clave = document.getElementById('txtPass_add').value.trim();
         obj.perfil = document.getElementById('cbxPerfil_add').value;
         obj.idAlmacen = $('#cbxAlmacen_add').val();
@@ -253,7 +254,7 @@
             btnAdd.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Guardando...');
             // cambiar para que el front end resiva nombre y apellido 
             let _url = "CreateUsuario";
-            console.log("Payload enviado:", obj);
+            
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
@@ -261,6 +262,7 @@
                 url: _url,
                 data: JSON.stringify(obj),
                 success: function (response) {
+                    console.log("Payload enviado:", obj);
                     if (response.HUBO_ERROR) {
                         Swal.fire({
                             icon: 'error',
@@ -478,9 +480,9 @@ $("#btn_SaveEdit").on("click", function () {
 function saveEdit() {
     var obj = new Object();
     obj.idUsuario = IDTemp;
-    obj.Nombre = document.getElementById('txtUsuario_nombre').value.trim();
-    obj.Apellido = document.getElementById('txtUsuario_apellido').value.trim();
-    obj.usuario = document.getElementById('txtUsuario_edit').value.trim();
+    obj.nombreUsuario = document.getElementById('txtUsuario_nombre').value.trim();
+    obj.apellidoUsuario = document.getElementById('txtUsuario_apellido').value.trim(); // Apellido
+    obj.cod_usuario = document.getElementById('txtUsuario_edit').value.trim(); // cambio aqui <========================================================================
     obj.clave = document.getElementById('txtPass_edit').value.trim();
     obj.perfil = document.getElementById('cbxPerfil_edit').value;
     obj.idAlmacen = $('#cbxAlmacen_edit').val();

@@ -157,7 +157,121 @@
             </div>
 
             <div class="modal-body py-4">
-                <div class="mb-4">
+                <!-- DATOS DEL USUARIO -->
+                <div>
+                    <label class="form-label fw-bold fs-4">Información básica</label>
+
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">
+                                Nombre <span class="text-danger">*</span>
+                            </label>
+                            <div>
+                                <input id="txtUsuario_nombre" type="text" class="form-control" autocomplete="off" maxlength="20" />
+                                <div class="invalid-feedback">
+                                    El nombre es obligatorio
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">
+                                Apellido <span class="text-danger">*</span>
+                            </label>
+                            <div>
+                                <input id="txtUsuario_apellido" type="text" class="form-control" autocomplete="off" maxlength="20" />
+                                <div class="invalid-feedback">
+                                    El apellido es obligatorio
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cbxPerfil_edit" class="form-label fw-semibold">
+                            Perfil<span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="cbxPerfil_edit">
+                            <option value="ADM">Administrador - Acceso a plataforma Web</option>
+                            <option value="OPE">Operador - Acceso a aplicación Android</option>
+                        </select>
+                        @*<small class="form-text text-muted d-block mt-1">
+                    <i class="ti ti-info-circle fs-4"></i> Seleccione el nivel de acceso del usuario
+                </small>*@
+                    </div>
+
+                    <div class="alert alert-warning d-flex align-items-start mb-4 d-none" role="alert" id="txtAlmacen_add">
+                        <i class="ti ti-alert-triangle me-2 fs-5 flex-shrink-0"></i>
+                        <div>
+                            <strong>Almacén requerido para operadores</strong><br>
+                            <small>Para asignar el perfil de Operador, primero debe crear un almacén.</small><br>
+                            <a href="@Url.Action("AlmacenesMant", "Mantenimiento")" class="alert-link">
+                                <i class="ti ti-plus fs-4"></i> Crear Almacén Ahora
+                            </a>
+                        </div>
+                    </div>
+
+                    <div id="Div_cbxAlmacen_edit" class="d-none">
+                        <label for="cbxAlmacen_edit" class="form-label fw-semibold">
+                            Almacén Asignado <span class="text-danger">*</span>
+                        </label>
+                        @Html.DropDownList("cbxAlmacen_edit", new SelectList(ViewBag.ListaAlmacenes, "intValue", "vchdesc"), "Seleccione un almacén", new { @Class = "form-select select2_" })
+                        <div class="invalid-feedback position-absolute">
+                            Debe seleccionar un almacén para el operador
+                        </div>
+                        <small class="form-text text-muted d-block mt-1">
+                            <i class="ti ti-info-circle fs-4"></i> El operador trabajará en este almacén
+                        </small>
+                    </div>
+                </div>
+                <hr />
+                <!-- CREDENCIALES DE ACCESO -->
+                <div>
+                    <label class="form-label fw-bold fs-4">Información de acceso</label>
+
+                    <div class="mb-4">
+                        <label for="txtUsuario_edit" class="form-label fw-semibold">
+                            Usuario
+                            <small class="form-text text-muted">
+                                <i class="ti ti-info-circle fs-4" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Se genera automaticamente a partir del nombre y apellido del usuario."></i>
+                            </small>
+                            @*<span class="text-black">generado</span>*@
+                        </label>
+                        <div>
+                            <input type="text"
+                                   class="form-control"
+                                   id="txtUsuario_edit"
+                                   autocomplete="off"
+                                   maxlength="20"
+                                   readonly
+                                   disabled
+                                   @*placeholder="Ejemplo: jperez"*@ />
+                        </div>
+                        <div class="invalid-feedback">
+                            El nombre de usuario es obligatorio
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="txtPass_edit" class="form-label fw-semibold">
+                            Contraseña <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password"
+                                   class="form-control"
+                                   id="txtPass_edit"
+                                   autocomplete="off"
+                                   placeholder="Ingrese una contraseña" />
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassEdit">
+                                <i class="ti ti-eye"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">
+                            La contraseña es obligatoria
+                        </div>
+                    </div>
+                </div>
+                <!--////////-->
+                @*<div class="mb-4">
                     <label for="txtUsuario_edit" class="form-label fw-semibold">
                         Nombre de Usuario <span class="text-danger">*</span>
                     </label>
@@ -169,11 +283,11 @@
                     <div class="invalid-feedback">
                         El nombre de usuario es obligatorio
                     </div>
-                </div>
+                </div>*@
 
-                <div class="mb-4">
+                @*<div class="mb-4">
                     <label for="txtPass_edit" class="form-label fw-semibold">
-                       Contraseña <span class="text-danger">*</span>
+                        Contraseña <span class="text-danger">*</span>
                     </label>
                     <div class="input-group">
                         <input type="password"
@@ -191,19 +305,19 @@
                     <small class="form-text text-muted d-block mt-1">
                         <i class="ti ti-info-circle fs-4"></i> Deje en blanco para mantener la contraseña actual
                     </small>
-                </div>
+                </div>*@
 
-                <div class="mb-4">
+                @*<div class="mb-4">
                     <label for="cbxPerfil_edit" class="form-label fw-semibold">
-                       Perfil de Acceso <span class="text-danger">*</span>
+                        Perfil de Acceso <span class="text-danger">*</span>
                     </label>
                     <select class="form-select" id="cbxPerfil_edit">
                         <option value="ADM">Administrador - Acceso total al sistema</option>
                         <option value="OPE">Operador - Acceso limitado a operaciones</option>
                     </select>
-                </div>
+                </div>*@
 
-                <div class="alert alert-warning d-flex align-items-start mb-4 d-none" role="alert" id="txtAlmacen_edit">
+                @*<div class="alert alert-warning d-flex align-items-start mb-4 d-none" role="alert" id="txtAlmacen_edit">
                     <i class="ti ti-alert-triangle me-2 fs-5 flex-shrink-0"></i>
                     <div>
                         <strong>Almacén requerido para operadores</strong><br>
@@ -212,20 +326,9 @@
                             <i class="ti ti-plus fs-4"></i> Crear Almacén Ahora
                         </a>
                     </div>
-                </div>
+                </div>*@
 
-                <div id="Div_cbxAlmacen_edit" class="d-none">
-                    <label for="cbxAlmacen_edit" class="form-label fw-semibold">
-                        Almacén Asignado <span class="text-danger">*</span>
-                    </label>
-                    @Html.DropDownList("cbxAlmacen_edit", new SelectList(ViewBag.ListaAlmacenes, "intValue", "vchdesc"), "Seleccione un almacén", new { @Class = "form-select select2_" })
-                    <div class="invalid-feedback position-absolute">
-                        Debe seleccionar un almacén para el operador
-                    </div>
-                    <small class="form-text text-muted d-block mt-1">
-                        <i class="ti ti-info-circle fs-4"></i> El operador trabajará en este almacén
-                    </small>
-                </div>
+                
 
                 <div class="mb-3">
                     <div class="card bg-light">
@@ -233,7 +336,7 @@
                             <div class="form-check form-switch mb-0">
                                 <input class="form-check-input" type="checkbox" role="switch" id="chkActivo_edit" checked>
                                 <label class="form-check-label fw-semibold" for="chkActivo_edit">
-                                   Usuario Activo
+                                    Usuario Activo
                                 </label>
                                 <small class="d-block text-muted mt-1">
                                     Desactive esta opción para bloquear el acceso sin eliminar el usuario

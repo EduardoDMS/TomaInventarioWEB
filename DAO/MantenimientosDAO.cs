@@ -1,12 +1,8 @@
 ﻿using BE;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace DAO
@@ -14,7 +10,8 @@ namespace DAO
     public class MantenimientosDAO
     {
         #region Mant Usuarios
-        public List<UsuarioBE> ListarUsuarios(string perfil, string usuario) {
+        public List<UsuarioBE> ListarUsuarios(string perfil, string usuario)
+        {
             List<UsuarioBE> Lista_result = new List<UsuarioBE>();
             Response response = new Response();
             SqlConnection conexion = null;
@@ -41,7 +38,7 @@ namespace DAO
                             while (reader.Read())
                             {
                                 UsuarioBE entity = new UsuarioBE();
-                                entity.IdUsuario= (reader["ID_USUARIO"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_USUARIO"].ToString());
+                                entity.IdUsuario = (reader["ID_USUARIO"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_USUARIO"].ToString());
                                 entity.Usuario = (reader["COD_USUARIO"] == DBNull.Value) ? String.Empty : reader["COD_USUARIO"].ToString();
                                 entity.Perfil = (reader["Perfil"] == DBNull.Value) ? String.Empty : reader["Perfil"].ToString();
                                 entity.vchActivo = (reader["Estado"] == DBNull.Value) ? String.Empty : reader["Estado"].ToString();
@@ -66,7 +63,7 @@ namespace DAO
             }
 
             return Lista_result;
-        
+
         }
         public Response CreateUsuario(string nombre, string apellido, string clave, string perfil, string idAlmacen)
         {
@@ -116,7 +113,8 @@ namespace DAO
             return response;
         }
 
-        public Response GetUsuario(int idUsuario) {
+        public Response GetUsuario(int idUsuario)
+        {
             List<UsuarioBE> Lista_result = new List<UsuarioBE>();
             Response response = new Response();
             SqlConnection conexion = null;
@@ -133,7 +131,7 @@ namespace DAO
                         comando.Parameters.Clear();
 
                         comando.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
-                        
+
                         conexion.Open();
 
                         using (reader = comando.ExecuteReader())
@@ -189,7 +187,7 @@ namespace DAO
                         cmd.Parameters.Clear(); // Ver el tema de los tamaños existe una incongruencia  
                         cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
                         cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 20).Value = apellidoUsuario;// se agrego este campo de apellido para que se pueda actualizar el apellido del usuario, se agrego en el stored procedure y en el metodo createUsuario
-                        cmd.Parameters.Add("@@nombre_usuario", SqlDbType.VarChar, 20).Value = nombreUsuario;// se modifico este campo de nombre a usuario para que sea mas entendible
+                        cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 20).Value = nombreUsuario;// se modifico este campo de nombre a usuario para que sea mas entendible
                         cmd.Parameters.Add("@clave", SqlDbType.VarChar, 20).Value = clave;
                         cmd.Parameters.Add("@perfil", SqlDbType.VarChar, 3).Value = perfil;
                         //cmd.Parameters.Add("@idAlmacen", SqlDbType.Int).Value = idAlmacen;
@@ -294,7 +292,7 @@ namespace DAO
                         cmd.Parameters.Clear();
                         cmd.Parameters.Add("@codAlmacen", SqlDbType.VarChar, 20).Value = codAlmacen;
                         cmd.Parameters.Add("@dscAlmacen", SqlDbType.VarChar, 200).Value = descAlmacen;
-                        
+
                         cmd.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
                         con.Open();
@@ -413,7 +411,7 @@ namespace DAO
         public Response GetAPIAlmacen()
         {
             //string Stringresult;
-            Response response = new Response();    
+            Response response = new Response();
             SqlConnection conexion = null;
             SqlCommand comando = null;
             SqlDataReader reader = null;
@@ -680,7 +678,7 @@ namespace DAO
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
 
-                        comando.Parameters.Add("@codUbicacion", SqlDbType.VarChar,20).Value = CodUbicacion;
+                        comando.Parameters.Add("@codUbicacion", SqlDbType.VarChar, 20).Value = CodUbicacion;
                         conexion.Open();
 
                         using (reader = comando.ExecuteReader())
@@ -692,7 +690,7 @@ namespace DAO
                                 entity.vchDSC_Ubicacion = (reader["DSC_UBICACION"] == DBNull.Value) ? String.Empty : reader["DSC_UBICACION"].ToString();
                                 entity.intActivo = (reader["FLG_ACTIVO"] == DBNull.Value) ? 0 : Int32.Parse(reader["FLG_ACTIVO"].ToString());
                                 entity.intIdAlmacen = (reader["ID_ALMACEN"] == DBNull.Value) ? -1 : Int32.Parse(reader["ID_ALMACEN"].ToString());
-                                
+
                                 Lista_result.Add(entity);
                             }
                         }
@@ -761,7 +759,7 @@ namespace DAO
         #endregion
 
         #region Mant Productos
-        public Response ListarProductos( int activo, string vchProducto, string start, string length, string order)
+        public Response ListarProductos(int activo, string vchProducto, string start, string length, string order)
         {
             List<ProductoBE> Lista_result = new List<ProductoBE>();
             Response response = new Response();
@@ -799,7 +797,7 @@ namespace DAO
                                 entity.idProducto = (reader["ID_PRODUCTO"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_PRODUCTO"].ToString());
                                 entity.vchCodProducto = (reader["COD_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["COD_PRODUCTO"].ToString();
                                 entity.vchDescripcion = (reader["DSC_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["DSC_PRODUCTO"].ToString();
-                                entity.intActivo = (reader["FLG_ACTIVO"] == DBNull.Value) ? 0: Int32.Parse(reader["FLG_ACTIVO"].ToString());
+                                entity.intActivo = (reader["FLG_ACTIVO"] == DBNull.Value) ? 0 : Int32.Parse(reader["FLG_ACTIVO"].ToString());
                                 entity.vchActivo = (reader["vchActivo"] == DBNull.Value) ? String.Empty : reader["vchActivo"].ToString();
                                 Lista_result.Add(entity);
                             }
@@ -915,7 +913,7 @@ namespace DAO
             return response;
 
         }
-        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo,int UM)
+        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo, int UM)
         {
             Response response = new Response();
             SqlConnection con = null;
@@ -1023,7 +1021,7 @@ namespace DAO
                         comando.Parameters.Add("@CodProducto", SqlDbType.VarChar, 50).Value = producto.PRODUCTO_CODIGO;
                         comando.Parameters.Add("@DSCProducto", SqlDbType.VarChar, 200).Value = producto.PRODUCTO_NOMBRE;
                         comando.Parameters.Add("@CODUM", SqlDbType.VarChar, 100).Value = producto.UNIDADMEDIDA_CODIGO;
-                        
+
 
                         comando.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         comando.Parameters.Add("@msg", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -1069,13 +1067,13 @@ namespace DAO
                         comando.Parameters.Clear();
                         comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString();
                         conexion.Open();
-                        
+
                         using (reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 ProductoBE entity = new ProductoBE();
-                                ImportBE Importobj= new ImportBE();
+                                ImportBE Importobj = new ImportBE();
                                 entity.vchCodProducto = (reader["Cod_Producto"] == DBNull.Value) ? String.Empty : reader["Cod_Producto"].ToString();
                                 entity.vchDescripcion = (reader["Desc_Producto"] == DBNull.Value) ? String.Empty : reader["Desc_Producto"].ToString();
                                 Importobj.Objeto = entity;
@@ -1198,7 +1196,7 @@ namespace DAO
                                 entity.IntUniMed = (reader["IntUniMed"] == DBNull.Value) ? 0 : Int32.Parse(reader["IntUniMed"].ToString());
                                 entity.vchCodUniMed = (reader["vchCodUniMed"] == DBNull.Value) ? String.Empty : reader["vchCodUniMed"].ToString();
                                 entity.vchDesUniMed = (reader["vchDesUniMed"] == DBNull.Value) ? String.Empty : reader["vchDesUniMed"].ToString();
-                                
+
                                 entity.IntEstado = (reader["IntEstado"] == DBNull.Value) ? 0 : Int32.Parse(reader["IntEstado"].ToString());
                                 entity.vchEstado = (reader["vchActivo"] == DBNull.Value) ? String.Empty : reader["vchActivo"].ToString();
                                 Lista_result.Add(entity);
@@ -1465,7 +1463,7 @@ namespace DAO
 
         }
 
-        public List<ImportBE> ImportarUsuarios_Maestro(XmlDocument xml_import,string UserReg)
+        public List<ImportBE> ImportarUsuarios_Maestro(XmlDocument xml_import, string UserReg)
         {
             Response response = new Response();
 
@@ -1494,7 +1492,7 @@ namespace DAO
                                 entity.Usuario = (reader["Cod_Usuario"] == DBNull.Value) ? String.Empty : reader["Cod_Usuario"].ToString();
                                 entity.Perfil = (reader["Perfil_Usuario"] == DBNull.Value) ? String.Empty : reader["Perfil_Usuario"].ToString();
                                 Importobj.Objeto = entity;
-                                Importobj.Flg_pass = (reader["pass"] == DBNull.Value) ? 0 : Int32.Parse(reader["pass"].ToString()) ; 
+                                Importobj.Flg_pass = (reader["pass"] == DBNull.Value) ? 0 : Int32.Parse(reader["pass"].ToString());
                                 Importobj.Mensaje = (reader["Mensaje"] == DBNull.Value) ? String.Empty : reader["Mensaje"].ToString();
                                 Lista_result.Add(Importobj);
                             }
@@ -1682,7 +1680,7 @@ namespace DAO
 
         }
 
-        public List<ImportBE> ImportarDetInventario_Inventario(XmlDocument xml_import, string UserReg,int pass)
+        public List<ImportBE> ImportarDetInventario_Inventario(XmlDocument xml_import, string UserReg, int pass)
         {
             Response response = new Response();
 
@@ -1703,7 +1701,7 @@ namespace DAO
                         comando.Parameters.Add("@Pass", SqlDbType.Int).Value = pass;
                         conexion.Open();
                         comando.ExecuteNonQuery();
-                            //using (reader = comando.ExecuteReader())
+                        //using (reader = comando.ExecuteReader())
                         //{
                         //    while (reader.Read())
                         //    {
@@ -1826,13 +1824,13 @@ namespace DAO
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
                         comando.Parameters.Add("@UserReg", SqlDbType.VarChar, 50).Value = UserReg;
-                        
+
                         conexion.Open();
                         comando.ExecuteNonQuery();
-                        
+
                     }
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -1845,7 +1843,7 @@ namespace DAO
                 if (comando != null) comando.Dispose();
                 if (reader != null) reader.Dispose();
             }
-            
+
 
         }
 

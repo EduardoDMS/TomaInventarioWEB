@@ -192,7 +192,7 @@
         $('#togglePassAdd i').removeClass('ti-eye-off').addClass('ti-eye');
     });
 
-    // ===== GENERAR USUARIO =====
+    // ===== GENERAR USUARIO CREAR =====
     var nombreInput = document.getElementById('NombreInput');
     var apellidoInput = document.getElementById('ApellidoInput');
     var usuarioGenerado = document.getElementById('txtUsuario_add');
@@ -213,6 +213,28 @@
 
     nombreInput.addEventListener("input", GenerarUsuario);
     apellidoInput.addEventListener("input", GenerarUsuario);
+
+    // ===== GENERAR USUARIO EDITAR =====
+    var nombreInput_edit = document.getElementById('txtUsuario_nombre');
+    var apellidoInput_edit = document.getElementById('txtUsuario_apellido');
+    var usuarioGenerado_edit = document.getElementById('txtUsuario_edit');
+
+    function GenerarUsuario_edit() {
+        let nombre = nombreInput_edit.value.trim().replace(/\s+/g, '');
+        let apellidoCompleto = apellidoInput_edit.value.trim();
+        let primerApellido = apellidoCompleto.split(' ')[0];
+
+        if (nombre.length > 0 || apellidoCompleto.length > 0) {
+            let usuario = nombre.charAt(0).toUpperCase() + primerApellido.toLowerCase();
+
+            usuarioGenerado_edit.value = usuario;
+        } else {
+            usuarioGenerado_edit.value = "";
+        }
+    }
+
+    nombreInput_edit.addEventListener("input", GenerarUsuario_edit);
+    apellidoInput_edit.addEventListener("input", GenerarUsuario_edit);
 
     // ===== BOTÓN AGREGAR =====
     document.getElementById('btn_Add').addEventListener('click', function (e) {
@@ -299,7 +321,10 @@ function editar(id) {
         data: JSON.stringify(obj),
         success: function (response) {
             var objUsuario = response.Entity;
+            console.log(response);
 
+            document.getElementById('txtUsuario_nombre').value = objUsuario[0].Nombre;
+            document.getElementById('txtUsuario_apellido').value = objUsuario[0].Apellido;
             document.getElementById('txtUsuario_edit').value = objUsuario[0].Usuario;
             document.getElementById('txtPass_edit').value = objUsuario[0].Contraseña;
             document.getElementById('cbxPerfil_edit').value = objUsuario[0].Perfil;
@@ -412,7 +437,15 @@ function ValidarEdit(obj) {
         }
     };
 
-    if (!validarCampoEdit('#txtUsuario_edit', 'El nombre de usuario es requerido')) {
+    if (!validarCampoEdit('#txtUsuario_nombre', 'El nombre es requerido')) {
+        valid = false;
+    }
+
+    if (!validarCampoEdit('#txtUsuario_apellido', 'El apellido es requerido')) {
+        valid = false;
+    }
+
+    if (!validarCampoEdit('#txtUsuario_edit', 'El usuario es requerido')) {
         valid = false;
     }
 
@@ -445,6 +478,8 @@ $("#btn_SaveEdit").on("click", function () {
 function saveEdit() {
     var obj = new Object();
     obj.idUsuario = IDTemp;
+    obj.Nombre = document.getElementById('txtUsuario_nombre').value.trim();
+    obj.Apellido = document.getElementById('txtUsuario_apellido').value.trim();
     obj.usuario = document.getElementById('txtUsuario_edit').value.trim();
     obj.clave = document.getElementById('txtPass_edit').value.trim();
     obj.perfil = document.getElementById('cbxPerfil_edit').value;

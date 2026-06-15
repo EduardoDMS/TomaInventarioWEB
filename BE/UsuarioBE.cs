@@ -23,5 +23,7 @@ namespace BE
         public string vchActivo { get; set; }
         public int IdAlmacen { get; set; }
         public List<string> ListvchIdAlmacen { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
     }
 }

@@ -17,18 +17,17 @@ namespace BL
         {
             return new MantenimientosDAO().ListarUsuarios(perfil, usuario);
         }
-        public Response CreateUsuario(string nombre, string apellido, string clave, string perfil, List<string> ListidAlmacen)
+        public Response CreateUsuario(string cod_Usuario, string nombre, string apellido,string clave, string perfil, List<string> ListidAlmacen)
         {
             string listaIdAlmacenes = string.Join(",", ListidAlmacen ?? new List<string>());
-            return new MantenimientosDAO().CreateUsuario(nombre, apellido, clave, perfil, listaIdAlmacenes);
+            return new MantenimientosDAO().CreateUsuario(cod_Usuario, nombre, apellido, clave, perfil, listaIdAlmacenes);
         }
-
 
         public Response GetUsuario(int idUsuario)
         {
             return new MantenimientosDAO().GetUsuario(idUsuario);
         }
-        public Response UpdateUsuario(int idUsuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> ListidAlmacen, bool activo)
+        public Response UpdateUsuario(int idUsuario,string cod_usuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> ListidAlmacen, bool activo)
         {
             string listaIdAlmacenes = "";
             if (ListidAlmacen != null)
@@ -38,7 +37,7 @@ namespace BL
                     listaIdAlmacenes = listaIdAlmacenes + "," + ListidAlmacen[i];
                 }
             }
-            return new MantenimientosDAO().UpdateUsuario(idUsuario, nombreUsuario, apellidoUsuario, clave, perfil, listaIdAlmacenes, activo);
+            return new MantenimientosDAO().UpdateUsuario(idUsuario, cod_usuario, nombreUsuario, apellidoUsuario, clave, perfil, listaIdAlmacenes, activo);
         }
         #endregion
 

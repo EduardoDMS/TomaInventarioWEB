@@ -215,24 +215,25 @@ namespace TomaInventarioWEB.Controllers
                 var json = Json(new { data = UserList });
                 return json;
             }
+            
             [HttpPost]
-            public JsonResult CreateUsuario(string usuario, string clave, string perfil, List<string> idAlmacen)
+            public JsonResult CreateUsuario(string nombre, string apellido, string clave, string perfil, List<string> idAlmacen)
             {
-            var response = new MantenimientosBL().CreateUsuario(usuario, clave, perfil, idAlmacen);
-
-            return Json(response);
-
+                var response = new MantenimientosBL().CreateUsuario(nombre, apellido, clave, perfil, idAlmacen);
+                return Json(response);
             }
+            
             [HttpPost]
             public JsonResult GetUsuario(int idUsuario)
             {
                 var response = new MantenimientosBL().GetUsuario(idUsuario);
                 return Json(response);
             }
+            
             [HttpPost]
-            public JsonResult UpdateUsuario(int idUsuario, string usuario, string clave, string perfil, List<string> idAlmacen, bool activo)
+            public JsonResult UpdateUsuario(int idUsuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> idAlmacen, bool activo)
             {
-                var response = new MantenimientosBL().UpdateUsuario(idUsuario, usuario, clave, perfil, idAlmacen, activo);
+                var response = new MantenimientosBL().UpdateUsuario(idUsuario, nombreUsuario, apellidoUsuario, clave, perfil, idAlmacen, activo);
                 return Json(response);
             }
 

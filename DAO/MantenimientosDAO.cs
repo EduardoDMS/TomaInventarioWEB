@@ -25,7 +25,7 @@ namespace DAO
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (comando = new SqlCommand("WEB_ListarUsuarios_2024", conexion))
+                    using (comando = new SqlCommand("WEB_ListarUsuarios_2024", conexion)) // aun sirve este procedure
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
@@ -68,41 +68,54 @@ namespace DAO
             return Lista_result;
         
         }
-        public Response CreateUsuario(string usuario,string clave,string perfil,string idAlmacen) { 
+        public Response CreateUsuario(string nombre, string apellido, string clave, string perfil, string idAlmacen)
+        {
             Response response = new Response();
             SqlConnection con = null;
             SqlCommand cmd = null;
             SqlDataReader reader = null;
-
-            try {
-                using (con= new SqlConnection(Connection.AppStringConection())) {
-                    using (cmd= new SqlCommand("WEB_createUsuarios_2024", con)) { 
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_createUsuarios_2026", con))
+                    {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear();
-                        cmd.Parameters.Add("@usuario", SqlDbType.VarChar, 20).Value = usuario;
-                        cmd.Parameters.Add("@clave", SqlDbType.VarChar, 20).Value = clave;
-                        cmd.Parameters.Add("@perfil", SqlDbType.VarChar, 3).Value = perfil;
-                        cmd.Parameters.Add("@vchidAlmacen", SqlDbType.VarChar,-1).Value = idAlmacen;
+                        cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 200).Value = nombre;
+                        cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 200).Value = apellido;
+                        cmd.Parameters.Add("@clave", SqlDbType.VarChar, 100).Value = clave;
+                        cmd.Parameters.Add("@perfil", SqlDbType.VarChar, 10).Value = perfil;
+                        cmd.Parameters.Add("@vchidAlmacen", SqlDbType.VarChar, -1).Value = idAlmacen;
                         cmd.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
+
+                        foreach (SqlParameter p in cmd.Parameters)
+                            Console.WriteLine($"{p.ParameterName} = {p.Value}");
+
                         con.Open();
                         cmd.ExecuteReader();
-                        
+
                         response.MENSAJE_ERROR = (string)cmd.Parameters["@msg"].Value ?? "";
                         response.HUBO_ERROR = (bool)cmd.Parameters["@Hubo_error"].Value;
                     }
                 }
-            }catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 response.MENSAJE_ERROR = e.Message.ToString();
                 response.HUBO_ERROR = true;
             }
             finally
             {
                 if (con != null) { con.Close(); con.Dispose(); }
+                if (cmd != null) cmd.Dispose();
                 if (reader != null) reader.Dispose();
+
             }
             return response;
         }
+
         public Response GetUsuario(int idUsuario) {
             List<UsuarioBE> Lista_result = new List<UsuarioBE>();
             Response response = new Response();
@@ -114,7 +127,7 @@ namespace DAO
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (comando = new SqlCommand("WEB_GetUsuario_2024", conexion))
+                    using (comando = new SqlCommand("Web_GetUsuario_2026", conexion))
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
@@ -128,6 +141,8 @@ namespace DAO
                             while (reader.Read())
                             {
                                 UsuarioBE entity = new UsuarioBE();
+                                entity.Nombre = (reader["NOMBRE_USUARIO"] == DBNull.Value) ? String.Empty : reader["NOMBRE_USUARIO"].ToString();
+                                entity.Apellido = (reader["APELLIDO_USUARIO"] == DBNull.Value) ? String.Empty : reader["APELLIDO_USUARIO"].ToString();
                                 entity.Usuario = (reader["COD_USUARIO"] == DBNull.Value) ? String.Empty : reader["COD_USUARIO"].ToString();
                                 entity.Contraseña = (reader["CLAVE_USUARIO"] == DBNull.Value) ? String.Empty : reader["CLAVE_USUARIO"].ToString();
                                 entity.Perfil = (reader["PERFIL_USUARIO"] == DBNull.Value) ? String.Empty : reader["PERFIL_USUARIO"].ToString();
@@ -157,7 +172,7 @@ namespace DAO
             return response;
 
         }
-        public Response UpdateUsuario(int idUsuario, string usuario, string clave, string perfil, string idAlmacen, bool activo)
+        public Response UpdateUsuario(int idUsuario, string apellidoUsuario, string nombreUsuario, string clave, string perfil, string idAlmacen, bool activo)
         {
             Response response = new Response();
             SqlConnection con = null;
@@ -168,12 +183,13 @@ namespace DAO
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("WEB_updateUsuario_2024", con))
+                    using (cmd = new SqlCommand("WEB_updateUsuario_2026", con)) // WEB_updateUsuario_2024
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Clear();
+                        cmd.Parameters.Clear(); // Ver el tema de los tamaños existe una incongruencia  
                         cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
-                        cmd.Parameters.Add("@usuario", SqlDbType.VarChar, 20).Value = usuario;
+                        cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 20).Value = apellidoUsuario;// se agrego este campo de apellido para que se pueda actualizar el apellido del usuario, se agrego en el stored procedure y en el metodo createUsuario
+                        cmd.Parameters.Add("@@nombre_usuario", SqlDbType.VarChar, 20).Value = nombreUsuario;// se modifico este campo de nombre a usuario para que sea mas entendible
                         cmd.Parameters.Add("@clave", SqlDbType.VarChar, 20).Value = clave;
                         cmd.Parameters.Add("@perfil", SqlDbType.VarChar, 3).Value = perfil;
                         //cmd.Parameters.Add("@idAlmacen", SqlDbType.Int).Value = idAlmacen;

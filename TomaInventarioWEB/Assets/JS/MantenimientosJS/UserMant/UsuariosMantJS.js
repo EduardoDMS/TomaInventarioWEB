@@ -217,6 +217,8 @@
     // ===== BOTÓN AGREGAR =====
     document.getElementById('btn_Add').addEventListener('click', function (e) {
         var obj = new Object();
+        obj.nombre = document.getElementById('NombreInput').value.trim(); // se agrego este campo
+        obj.apellido = document.getElementById('ApellidoInput').value.trim(); // se agrego este campo
         obj.usuario = document.getElementById('txtUsuario_add').value.trim();
         obj.clave = document.getElementById('txtPass_add').value.trim();
         obj.perfil = document.getElementById('cbxPerfil_add').value;
@@ -227,8 +229,9 @@
         if (_valid) {
             const btnAdd = $('#btn_Add');
             btnAdd.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Guardando...');
-
+            // cambiar para que el front end resiva nombre y apellido 
             let _url = "CreateUsuario";
+            console.log("Payload enviado:", obj);
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",

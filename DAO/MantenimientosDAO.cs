@@ -65,6 +65,72 @@ namespace DAO
             return Lista_result;
 
         }
+
+        public int ContarUsuariosOperador()
+        {
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+
+            try 
+            { 
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("sp_ContarUsuariosOperador_2026", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        con.Open();
+
+                        object resultado = cmd.ExecuteScalar();
+
+                        return resultado != null
+                        ? Convert.ToInt32(resultado)
+                        : 0;
+                    }                
+                }
+
+            }
+            catch (Exception) {throw;}
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                    con.Dispose();
+                }
+            }
+
+        }
+
+        public int ContarUsuariosAdministrador()
+        {
+            SqlCommand cmd = null;
+            SqlConnection con = null;
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("sp_ContarUsuariosAdmin_2026", con))
+                    {
+                        cmd.CommandType= CommandType.StoredProcedure;
+                        con.Open();
+                        object resultado = cmd.ExecuteScalar();
+
+                        return resultado != null ? Convert.ToInt32(resultado) : 0;
+                    }
+                }
+            }
+            catch (Exception) {throw;}
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                    con.Dispose();
+                }
+            }
+        }
+
+
         public Response CreateUsuario(string cod_Usuario, string nombre, string apellido, string clave, string perfil, string idAlmacen)
         {
             Response response = new Response();
@@ -660,6 +726,45 @@ namespace DAO
         //    return Lista_result;
 
         //}
+
+
+
+
+        public int ContarUbicaciones()
+        {
+            SqlCommand cmd = null;
+            SqlConnection con = null;
+
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("sp_ContarUbicaciones_2026", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        con.Open();
+
+                        object resultado = cmd.ExecuteScalar();
+
+                        return resultado != null ? Convert.ToInt32(resultado) : 0;
+                    }
+                }
+            }
+            catch (Exception )
+            {
+                throw;
+            }
+            finally
+            { 
+                if(con != null)
+                {
+                    con.Close(); 
+                    con.Dispose();
+                }
+            }
+        }
+
+
         public Response CreateUbicacion(string codUbicacion, string dscUbicacion, string idAlmacen)
         {
             Response response = new Response();
@@ -860,6 +965,40 @@ namespace DAO
             return response;
 
         }
+
+
+        public int ContarProductos()
+        {
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        con.Open();
+
+                        object resultado = cmd.ExecuteScalar();
+
+                        return resultado != null ? Convert.ToInt32(resultado) : 0;
+                    }
+                }
+            }
+            catch (Exception) { throw; }
+            finally
+            {
+                if(con != null)
+                {
+                    con.Close(); con.Dispose();
+                }
+            }
+        }
+
+
+
         public Response CreateProducto(string codProducto, string descProducto, int UM)
         {
             Response response = new Response();

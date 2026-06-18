@@ -664,6 +664,39 @@ namespace DAO
             return response;
         }
 
+         public int ContarInventarios()
+        {
+            SqlCommand cmd = null;
+            SqlConnection con = null;
+
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("sp_ContarInventariosPreparados_2026", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        con.Open();
+
+                        object resultado = cmd.ExecuteScalar();
+
+                        return resultado != null ? Convert.ToInt32(resultado) : 0;
+                    }
+                }
+            }
+            catch(Exception) { throw; }
+            finally
+            {
+                if(con != null)
+                {
+                    con.Close();
+                    con.Dispose();
+                }
+            }
+        }
+
+
+
         public Response InsertInv_InvDetalle(XmlDocument xml_import, string UserReg, string CodInv, int Id_almacen)
         {
             Response response = new Response();
@@ -907,9 +940,9 @@ namespace DAO
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
+                throw;
             }
             finally
             {

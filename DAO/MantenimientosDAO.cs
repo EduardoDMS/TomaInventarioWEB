@@ -79,7 +79,7 @@ namespace DAO
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear();
-                        cmd.Parameters.Add("@cod_usuario", SqlDbType.VarChar,50).Value = cod_Usuario; //agregado
+                        cmd.Parameters.Add("@cod_usuario", SqlDbType.VarChar, 50).Value = cod_Usuario; //agregado
                         cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 200).Value = nombre;
                         cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 200).Value = apellido;
                         cmd.Parameters.Add("@clave", SqlDbType.VarChar, 100).Value = clave;
@@ -187,7 +187,7 @@ namespace DAO
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear(); // Ver el tema de los tamaños existe una incongruencia  
                         cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
-                        cmd.Parameters.Add("@cod_usuario", SqlDbType.VarChar,20).Value = cod_usuario;
+                        cmd.Parameters.Add("@cod_usuario", SqlDbType.VarChar, 20).Value = cod_usuario;
                         cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 20).Value = apellidoUsuario;// se agrego este campo de apellido para que se pueda actualizar el apellido del usuario, se agrego en el stored procedure y en el metodo createUsuario
                         cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 20).Value = nombreUsuario;// se modifico este campo de nombre a usuario para que sea mas entendible
                         cmd.Parameters.Add("@clave", SqlDbType.VarChar, 20).Value = clave;
@@ -276,6 +276,43 @@ namespace DAO
 
             return Lista_result;
 
+        }
+
+        public int ContarAlmacenes()
+        {
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("sp_ContarAlmacenes_2026", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        con.Open();
+
+                        object resultado = cmd.ExecuteScalar();
+
+                        return resultado != null
+                            ? Convert.ToInt32(resultado)
+                            : 0;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                    con.Dispose();
+                }
+            }
         }
         public Response CreateAlmacen(string codAlmacen, string descAlmacen)
         {

@@ -204,7 +204,7 @@
         let primerApellido = apellidoCompleto.split(' ')[0];
 
         if (nombre.length > 0 || apellidoCompleto.length > 0) {
-            let usuario = nombre.charAt(0).toUpperCase() + primerApellido.toLowerCase();
+            let usuario = nombre.charAt(0).toUpperCase() + nombre.charAt(1).toLowerCase() + primerApellido.toLowerCase();
 
             usuarioGenerado.value = usuario;
         } else {
@@ -226,7 +226,7 @@
         let primerApellido = apellidoCompleto.split(' ')[0];
 
         if (nombre.length > 0 || apellidoCompleto.length > 0) {
-            let usuario = nombre.charAt(0).toUpperCase() + primerApellido.toLowerCase();
+            let usuario = nombre.charAt(0).toUpperCase() + nombre.charAt(1).toLowerCase() + primerApellido.toLowerCase();
 
             usuarioGenerado_edit.value = usuario;
         } else {
@@ -236,6 +236,20 @@
 
     nombreInput_edit.addEventListener("input", GenerarUsuario_edit);
     apellidoInput_edit.addEventListener("input", GenerarUsuario_edit);
+
+    // ===== VALIDAR INPUTS SOLO LETRAS =====
+    document.querySelectorAll('.onlyText').forEach(campo => {
+
+        campo.addEventListener('input', function () {
+
+            this.value = this.value.replace(
+                /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
+                ''
+            );
+
+        });
+
+    });
 
     // ===== BOTÓN AGREGAR =====
     document.getElementById('btn_Add').addEventListener('click', function (e) {

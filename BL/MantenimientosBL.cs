@@ -1,23 +1,29 @@
 ﻿using BE;
 using DAO;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using TomaInventario.BL.Licencias;
 
 namespace BL
 {
     public class MantenimientosBL
     {
+        private readonly LicenciaService _licencia;
+
+        public MantenimientosBL()
+        {
+            _licencia = new LicenciaService(new LicenciaJsonProvider());
+        }
+
+
         #region Mant Usuario
         public List<UsuarioBE> ListarUsuarios(string perfil, string usuario)
         {
             return new MantenimientosDAO().ListarUsuarios(perfil, usuario);
         }
-        public Response CreateUsuario(string cod_Usuario, string nombre, string apellido,string clave, string perfil, List<string> ListidAlmacen)
+        public Response CreateUsuario(string cod_Usuario, string nombre, string apellido, string clave, string perfil, List<string> ListidAlmacen)
         {
             string listaIdAlmacenes = string.Join(",", ListidAlmacen ?? new List<string>());
             return new MantenimientosDAO().CreateUsuario(cod_Usuario, nombre, apellido, clave, perfil, listaIdAlmacenes);
@@ -27,7 +33,7 @@ namespace BL
         {
             return new MantenimientosDAO().GetUsuario(idUsuario);
         }
-        public Response UpdateUsuario(int idUsuario,string cod_usuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> ListidAlmacen, bool activo)
+        public Response UpdateUsuario(int idUsuario, string cod_usuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> ListidAlmacen, bool activo)
         {
             string listaIdAlmacenes = "";
             if (ListidAlmacen != null)
@@ -48,6 +54,17 @@ namespace BL
         }
         public Response CreateAlmacen(string codAlmacen, string descAlmacen)
         {
+            int total = new MantenimientosDAO().ContarAlmacenes();
+
+            if (!_licencia.ValidarAlmacenes(total))
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de almacenes alcanzado"
+                };
+            }
+
             return new MantenimientosDAO().CreateAlmacen(codAlmacen, descAlmacen);
         }
         public Response GetAlmacen(int idAlmacen)
@@ -62,22 +79,25 @@ namespace BL
         {
             return new MantenimientosDAO().GetAPIAlmacen();
         }
-        public Response CargarAlmacenesAPIExterna (List<AlmacenAPI>ListAlmacen)
+        public Response CargarAlmacenesAPIExterna(List<AlmacenAPI> ListAlmacen)
         {
             MantenimientosDAO dao = new MantenimientosDAO();
             Response responseFinal = new Response();
             int error = 0;
             List<AlmacenAPI> ListAlmacenError = new List<AlmacenAPI>();
-            for (int i = 0; i < ListAlmacen.Count; i++) {
+            for (int i = 0; i < ListAlmacen.Count; i++)
+            {
                 responseFinal = dao.CargarAlmacenesAPIExterna(ListAlmacen[i]);
-                if (responseFinal.HUBO_ERROR == true) {
+                if (responseFinal.HUBO_ERROR == true)
+                {
                     error++;
                     ListAlmacenError.Add(ListAlmacen[i]);
                 }
             }
-            if (error > 0) {
+            if (error > 0)
+            {
                 responseFinal.HUBO_ERROR = true;
-                responseFinal.MENSAJE_ERROR = "Hubo "+ error.ToString() +" errores al registrar.";
+                responseFinal.MENSAJE_ERROR = "Hubo " + error.ToString() + " errores al registrar.";
                 responseFinal.Entity = ListAlmacenError;
             }
             return responseFinal;
@@ -93,7 +113,7 @@ namespace BL
                             new XElement("DSC_ALMACEN", item.ALMACEN_NOMBRE),
                             new XElement("COD_UBICACION", item.UBICACION_CODIGO),
                             new XElement("DSC_UBICACION", item.UBICACION_NOMBRE)
-                            
+
                         )
                     )
                 )
@@ -156,19 +176,19 @@ namespace BL
         #region Mant Productos
         public Response ListarProductos(int activo, string vchProducto, string start, string length, string order)
         {
-            return new MantenimientosDAO().ListarProductos(activo, vchProducto,start,length,order);
+            return new MantenimientosDAO().ListarProductos(activo, vchProducto, start, length, order);
         }
         public Response CreateProducto(string codProducto, string descProducto, int UM)
         {
-            return new MantenimientosDAO().CreateProducto(codProducto, descProducto,UM);
+            return new MantenimientosDAO().CreateProducto(codProducto, descProducto, UM);
         }
         public Response GetProducto(int id)
         {
             return new MantenimientosDAO().GetProducto(id);
         }
-        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo,int UM)
+        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo, int UM)
         {
-            return new MantenimientosDAO().UpdateProducto(id, codProducto, descProducto,usuario, activo, UM);
+            return new MantenimientosDAO().UpdateProducto(id, codProducto, descProducto, usuario, activo, UM);
         }
 
         public List<ImportBE> ImportarProductos(string xml)
@@ -272,11 +292,11 @@ namespace BL
             return new MantenimientosDAO().ImportarInventario_Inventario(xmlDoc, UserReg);
         }
 
-        public List<ImportBE> ImportarDetInventario_Inventario(string xml, string UserReg,int pass)
+        public List<ImportBE> ImportarDetInventario_Inventario(string xml, string UserReg, int pass)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
-            return new MantenimientosDAO().ImportarDetInventario_Inventario(xmlDoc, UserReg,pass);
+            return new MantenimientosDAO().ImportarDetInventario_Inventario(xmlDoc, UserReg, pass);
         }
 
         public Response Select_DET_INV_IMPORT(string start, string length, string order, string search)

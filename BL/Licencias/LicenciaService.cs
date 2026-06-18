@@ -11,11 +11,43 @@
             _config = _provider.Obtener();
         }
 
-        // VALIDACIONES
+        // ALMACENES
         public bool ValidarAlmacenes(int totalActual)
         {
             return totalActual < _config.AlmacenesMax;
         }
+
+        // UBICACIONES
+        public bool ValidarUbicaciones(int totalActual)
+        {
+            return totalActual < _config.UbicacionesMax;
+        }
+
+        // PRODUCTOS
+        public bool ValidarProductos(int totalActual)
+        {
+            return totalActual < _config.ProductosMax;
+        }
+
+        // USUARIOS OPERADORES
+        public bool ValidarUsuarioOperador(int totalActual)
+        {
+            return totalActual < _config.UsuariosOpeMax;
+        }
+
+        // USUARIOS ADMINISTRADORES
+        public bool ValidarUsuarioAdministrador(int totalActual)
+        {
+            return totalActual < _config.UsuariosAdmiMax;
+        }
+
+        // INVENTARIOS PREPARADOS
+        public bool ValidarInventariosPreparados(int totalActual)
+        {
+            return totalActual < _config.InventariosPreparadosMax;
+        }
+
+
 
         // VALIDARPRODUCTOS
         //public bool ValidarAlmacenes()

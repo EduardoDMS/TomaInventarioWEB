@@ -25,6 +25,27 @@ namespace BL
         }
         public Response CreateUsuario(string cod_Usuario, string nombre, string apellido, string clave, string perfil, List<string> ListidAlmacen)
         {
+            int totalAdmin = new MantenimientosDAO().ContarUsuariosAdministrador();
+            int totalOpe = new MantenimientosDAO().ContarUsuariosOperador();
+
+            if (!_licencia.ValidarUsuarioAdministrador(totalAdmin) && perfil == "ADM")
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de usuarios administradores alcanzado"
+                };
+            }
+
+            if (!_licencia.ValidarUsuarioOperador(totalOpe) && perfil == "OPE")
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de usuarios operadores alcanzado"
+                };
+            }
+
             string listaIdAlmacenes = string.Join(",", ListidAlmacen ?? new List<string>());
             return new MantenimientosDAO().CreateUsuario(cod_Usuario, nombre, apellido, clave, perfil, listaIdAlmacenes);
         }
@@ -35,6 +56,27 @@ namespace BL
         }
         public Response UpdateUsuario(int idUsuario, string cod_usuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> ListidAlmacen, bool activo)
         {
+            int totalAdmin = new MantenimientosDAO().ContarUsuariosAdministrador();
+            int totalOpe = new MantenimientosDAO().ContarUsuariosOperador();
+
+            if (!_licencia.ValidarUsuarioAdministrador(totalAdmin) && perfil == "ADM")
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de usuarios administradores alcanzado"
+                };
+            }
+
+            if (!_licencia.ValidarUsuarioOperador(totalOpe) && perfil == "OPE")
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de usuarios operadores alcanzado"
+                };
+            }
+
             string listaIdAlmacenes = "";
             if (ListidAlmacen != null)
             {
@@ -137,7 +179,18 @@ namespace BL
 
         public Response CreateUbicacion(string codUbicacion, string dscUbicacion, List<string> ListidAlmacen)
         {
+            int total = new MantenimientosDAO().ContarUbicaciones();
             string listaIdAlmacenes = "";
+
+            if (!_licencia.ValidarUbicaciones(total))
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de ubicaciones alcanzado"
+                };
+            }
+
             if (ListidAlmacen != null)
             {
                 for (int i = 0; ListidAlmacen.Count() > i; i++)
@@ -145,6 +198,7 @@ namespace BL
                     listaIdAlmacenes = listaIdAlmacenes + "," + ListidAlmacen[i];
                 }
             }
+
             return new MantenimientosDAO().CreateUbicacion(codUbicacion, dscUbicacion, listaIdAlmacenes);
         }
         public Response GetUbicacion(string CodUbicacion)
@@ -180,6 +234,17 @@ namespace BL
         }
         public Response CreateProducto(string codProducto, string descProducto, int UM)
         {
+            int total = new MantenimientosDAO().ContarProductos();
+
+            if (!_licencia.ValidarProductos(total))
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de productos alcanzado"
+                };
+            }
+
             return new MantenimientosDAO().CreateProducto(codProducto, descProducto, UM);
         }
         public Response GetProducto(int id)

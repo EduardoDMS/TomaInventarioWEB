@@ -2,9 +2,9 @@
   "CodigoCliente": "DMS",
   "NombreEmpresa": "DMS PERU SAC",
   "AlmacenesMax": 5,
-  "UbicacionesMax": 10,
+  "UbicacionesMax": 3,
   "ProductosMax": 20,
   "UsuariosAdmiMax": 2,
   "UsuariosOpeMax": 3,
-  "InventariosPreparadosMax": 10
+  "InventariosPreparadosMax": 5
 }

@@ -2,11 +2,19 @@
 using DAO;
 using System.Collections.Generic;
 using System.Xml;
+using TomaInventario.BL.Licencias;
 
 namespace BL
 {
     public class InventarioBL
     {
+        private readonly LicenciaService _licencia;
+
+        public InventarioBL()
+        {
+            _licencia = new LicenciaService(new LicenciaJsonProvider());
+        }
+
         public Response ListarInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, string start, string legnth, string order, string search)
         {
             return new InventarioDAO().ListarInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3, start, legnth, order, search);
@@ -77,6 +85,17 @@ namespace BL
 
         public Response InsertInv_InvDetalle(string xmlData, string UserReg, string CodInv, int Id_Almacen)
         {
+            int total = new InventarioDAO().ContarInventarios();
+
+            if (!_licencia.ValidarInventariosPreparados(total))
+            {
+                return new Response
+                {
+                    HUBO_ERROR = true,
+                    MENSAJE_ERROR = "Limite de inventarios preparados alcanzado"
+                };
+            }
+
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlData);
             return new InventarioDAO().InsertInv_InvDetalle(xmlDoc, UserReg, CodInv, Id_Almacen);

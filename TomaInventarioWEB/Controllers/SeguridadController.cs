@@ -1,11 +1,7 @@
 ﻿using BE;
 using BL;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using UTIL;
 
 namespace TomaInventarioWEB.Controllers
 {
@@ -15,18 +11,22 @@ namespace TomaInventarioWEB.Controllers
         [GenerateNonce]
         public ActionResult Login()
         {
+            //var provider = new LicenciaJsonProvider();
+            //LicenciaConfig licencia = provider.Obtener();
+            //Console.Write(licencia);
             return View();
         }
 
         public ActionResult ValidarAcceso(string user, string pass)
         {
             var responseAcceso = new SeguridadBL().ValidarAcceso(user, pass);
-            var objRspt = new Object[] { responseAcceso.HUBO_ERROR,responseAcceso.MENSAJE_ERROR,""};
+            var objRspt = new Object[] { responseAcceso.HUBO_ERROR, responseAcceso.MENSAJE_ERROR, "" };
 
             if (responseAcceso.HUBO_ERROR) { return Json(objRspt); }
-            else {
+            else
+            {
                 UsuarioLoginBE objUserLog = new UsuarioLoginBE();
-                objUserLog = (UsuarioLoginBE) new SeguridadBL().ObtenerUsuarioLog(user, pass).Entity;
+                objUserLog = (UsuarioLoginBE)new SeguridadBL().ObtenerUsuarioLog(user, pass).Entity;
                 Session["UserID"] = objUserLog.IdUsuario;
                 Session["UserName"] = objUserLog.Usuario;
                 Session["UserPerfil"] = objUserLog.Perfil;
@@ -43,8 +43,9 @@ namespace TomaInventarioWEB.Controllers
             return RedirectToAction("Login", "Seguridad");
         }
 
-        public JsonResult afkSession() {
-            string idstring=(Session["UserID"] == null )? String.Empty: Session["UserID"].ToString(); 
+        public JsonResult afkSession()
+        {
+            string idstring = (Session["UserID"] == null) ? String.Empty : Session["UserID"].ToString();
             return Json(idstring);
         }
 

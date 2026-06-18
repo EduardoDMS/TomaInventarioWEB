@@ -4366,6 +4366,7 @@
     <Content Include="Content\matdash\fonts\manrope\manrope-latin-700-normal.woff2" />
     <Content Include="Content\matdash\fonts\manrope\manrope-latin-800-normal.woff2" />
     <Content Include="ConnectionStrings.config" />
+    <Content Include="licencia.json" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />

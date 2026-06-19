@@ -23,10 +23,22 @@
             return totalActual < _config.UbicacionesMax;
         }
 
+        //  OBTENER UBICACIONES 
+        public int ObtenerLimiteUbicaciones()
+        {
+            return _config.UbicacionesMax;
+        }
+
         // PRODUCTOS
         public bool ValidarProductos(int totalActual)
         {
             return totalActual < _config.ProductosMax;
+        }
+
+        //OBTENER PRODUCTOS LIMITE
+        public int ObtenerProductosLimites()
+        {
+            return _config.ProductosMax;
         }
 
         // USUARIOS OPERADORES
@@ -47,6 +59,7 @@
             return totalActual < _config.InventariosPreparadosMax;
         }
 
+        
 
 
         // VALIDARPRODUCTOS

@@ -14,6 +14,7 @@ namespace BE
         public string vchActivo { get; set; }
         public int intActivo { get; set; }
         public int intUM { get; set; }
+        public string vchCodUniMed { get; set; } // agregado, si ocurre un error, eliminar esta propiedad y usar intUM
     }
     public class ProductoBEAPI
     {

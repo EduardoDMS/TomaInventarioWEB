@@ -376,6 +376,6 @@ function Charge_RImport_Modal(Jsondata) {
         "lengthChange": true,
         "responsive": true,
         "language": españolTbl,
-        "order": [[4, "asc"]] // Ordenar por estado (errores primero)
+        "order": [[4, "desc"]] // Ordenar por estado (errores primero)
     });
 }

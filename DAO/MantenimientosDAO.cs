@@ -1227,7 +1227,7 @@ namespace DAO
         }
 
 
-        public List<ImportBE> ImportarProductos(XmlDocument xml_import)
+        public List<ImportBE> ImportarProductos(XmlDocument xml_import, int limiteProductos)
         {
             Response response = new Response();
 
@@ -1239,11 +1239,12 @@ namespace DAO
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (comando = new SqlCommand("WEB_ImportProductosXML_2024", conexion))
+                    using (comando = new SqlCommand("WEB_ImportProductosXML_2026", conexion))
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
                         comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString();
+                        comando.Parameters.Add("@LimiteProductos", SqlDbType.Int).Value = limiteProductos;
                         conexion.Open();
 
                         using (reader = comando.ExecuteReader())
@@ -1254,6 +1255,7 @@ namespace DAO
                                 ImportBE Importobj = new ImportBE();
                                 entity.vchCodProducto = (reader["Cod_Producto"] == DBNull.Value) ? String.Empty : reader["Cod_Producto"].ToString();
                                 entity.vchDescripcion = (reader["Desc_Producto"] == DBNull.Value) ? String.Empty : reader["Desc_Producto"].ToString();
+                                entity.vchCodUniMed = (reader["Cod_Unidad_Medida"] == DBNull.Value) ? String.Empty : reader["Cod_Unidad_Medida"].ToString();
                                 Importobj.Objeto = entity;
                                 Importobj.Flg_pass = (reader["Flg_Pass"] == DBNull.Value) ? 0 : Int32.Parse(reader["Flg_Pass"].ToString());
                                 Importobj.Mensaje = (reader["Desc_Error"] == DBNull.Value) ? String.Empty : reader["Desc_Error"].ToString();
@@ -1266,8 +1268,11 @@ namespace DAO
             }
             catch (Exception e)
             {
-                response.MENSAJE_ERROR = e.Message.ToString();
-                response.HUBO_ERROR = true;
+                Lista_result.Add(new ImportBE
+                {
+                    Flg_pass = 0,
+                    Mensaje = "Error al importar: " + e.Message
+                });
             }
             finally
             {
@@ -1280,7 +1285,8 @@ namespace DAO
 
         }
 
-        public List<ImportBE> ImportarUbicaciones(XmlDocument xml_import)
+
+        public List<ImportBE> ImportarUbicaciones(XmlDocument xml_import, int limiteUbicaciones)
         {
             Response response = new Response();
 
@@ -1292,11 +1298,12 @@ namespace DAO
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (comando = new SqlCommand("WEB_ImportUbicacionXML_2024", conexion))
+                    using (comando = new SqlCommand("WEB_ImportUbicacionXML_2026", conexion))
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
                         comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString();
+                        comando.Parameters.Add("@limiteUbicaciones",SqlDbType.Int).Value = limiteUbicaciones;
                         conexion.Open();
 
                         using (reader = comando.ExecuteReader())
@@ -1320,8 +1327,11 @@ namespace DAO
             }
             catch (Exception e)
             {
-                response.MENSAJE_ERROR = e.Message.ToString();
-                response.HUBO_ERROR = true;
+                Lista_result.Add(new ImportBE
+                {
+                    Flg_pass = 0,
+                    Mensaje = "Error al importar: " + e.Message
+                });
             }
             finally
             {

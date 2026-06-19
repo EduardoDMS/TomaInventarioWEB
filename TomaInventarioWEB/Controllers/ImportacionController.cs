@@ -280,9 +280,9 @@ namespace TomaInventarioWEB.Controllers
                 {
                     filteredTable.Columns.Add("DSC_PRODUCTO", originalTable.Columns["DSC_PRODUCTO"].DataType);
                 }
-                if (originalTable.Columns.Contains("COD_UNIDAD MEDIDA"))
+                if (originalTable.Columns.Contains("COD_UNIDAD_MEDIDA"))
                 {
-                    filteredTable.Columns.Add("COD_UNIDAD MEDIDA", originalTable.Columns["COD_UNIDAD MEDIDA"].DataType);
+                    filteredTable.Columns.Add("COD_UNIDAD_MEDIDA", originalTable.Columns["COD_UNIDAD_MEDIDA"].DataType);
                 }
 
                 // Filtrar las filas y copiar los datos
@@ -301,9 +301,9 @@ namespace TomaInventarioWEB.Controllers
                         newRow["DSC_PRODUCTO"] = row["DSC_PRODUCTO"];
                         hasContent = true;
                     }
-                    if (filteredTable.Columns.Contains("COD_UNIDAD MEDIDA") && originalTable.Columns.Contains("COD_UNIDAD MEDIDA") && !string.IsNullOrWhiteSpace(row["COD_UNIDAD MEDIDA"]?.ToString()))
+                    if (filteredTable.Columns.Contains("COD_UNIDAD_MEDIDA") && originalTable.Columns.Contains("COD_UNIDAD_MEDIDA") && !string.IsNullOrWhiteSpace(row["COD_UNIDAD_MEDIDA"]?.ToString()))
                     {
-                        newRow["COD_UNIDAD MEDIDA"] = row["COD_UNIDAD MEDIDA"];
+                        newRow["COD_UNIDAD_MEDIDA"] = row["COD_UNIDAD_MEDIDA"];
                         hasContent = true;
                     }
 
@@ -445,7 +445,7 @@ namespace TomaInventarioWEB.Controllers
                         DataTable dataTable = dataSet.Tables[0];
 
 
-                        // Calcular el número total de registros
+                        // Calcular el número total de registros ConvertDataTable
                         int totalRecords = dataTable.Rows.Count;
 
                         if (totalRecords > 0)

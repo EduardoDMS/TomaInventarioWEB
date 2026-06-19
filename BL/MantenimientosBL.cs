@@ -222,7 +222,8 @@ namespace BL
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
-            return new MantenimientosDAO().ImportarUbicaciones(xmlDoc);
+            int limiteUbicaciones = _licencia.ObtenerLimiteUbicaciones();
+            return new MantenimientosDAO().ImportarUbicaciones(xmlDoc,limiteUbicaciones);
         }
 
         #endregion
@@ -260,7 +261,8 @@ namespace BL
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
-            return new MantenimientosDAO().ImportarProductos(xmlDoc);
+            int limiteProductos = _licencia.ObtenerProductosLimites();
+            return new MantenimientosDAO().ImportarProductos(xmlDoc,limiteProductos);
         }
 
         public Response GetAPIProductos()

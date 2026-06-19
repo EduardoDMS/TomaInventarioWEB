@@ -192,7 +192,7 @@ function Charge_RImport_Modal(Jsondata) {
         RImport_tabla = $('#RImport_Tbl').DataTable({
             "data": Jsondata,
             "createdRow": function (row, data, dataIndex) {
-                if (data.Flg_pass == 0) {
+                if (data.Flg_pass == 0 || data.Flg_Pass == 0) {
                     $(row).addClass('table-danger');
                 } else {
                     $(row).addClass('table-success');
@@ -209,7 +209,7 @@ function Charge_RImport_Modal(Jsondata) {
                     "title": "Descripción"
                 },
                 {
-                    "data": "Objeto.intUM",
+                    "data": "Objeto.vchCodUniMed",
                     "title": "U.M.",
                     "className": "text-center",
                     "render": function (data, type, row, meta) {
@@ -228,7 +228,7 @@ function Charge_RImport_Modal(Jsondata) {
                     "title": "Estado",
                     "className": "text-center",
                     "render": function (data, type, row, meta) {
-                        if (data.Flg_pass == 0) {
+                        if (data.Flg_pass == 0 || data.Flg_Pass == 0) {
                             return '<span class="badge bg-danger"><i class="ti ti-x fs-4"></i> Error</span>';
                         } else {
                             return '<span class="badge bg-success"><i class="ti ti-check fs-4"></i> Éxito</span>';
@@ -242,7 +242,7 @@ function Charge_RImport_Modal(Jsondata) {
             "lengthChange": true,
             "responsive": true,
             "language": españolTbl,
-            "order": [[4, "asc"]] // Ordenar por estado (errores primero)
+            "order": [[4, "desc"]] // Ordenar por estado (errores primero)
         });
 
         // Mostrar el modal de resultados después de cerrar el de importación

@@ -1,26 +1,24 @@
 ﻿using BE;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAO
 {
     public class SeguridadDAO
     {
-        public Response ValidarAcceso(string user, string pass) { 
+        public Response ValidarAcceso(string user, string pass)
+        {
             Response response = new Response();
             SqlConnection conn = null;
             SqlCommand cmd = null;
             SqlDataReader reader = null;
             //UsuarioLoginBE entity = new UsuarioLoginBE();
-            try {
+            try
+            {
                 using (conn = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("WEB_ValidarUsuario_2024", conn))
+                    using (cmd = new SqlCommand("WEB_ValidarUsuario_2026", conn)) // se cambio el procedure wa
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear();
@@ -31,7 +29,7 @@ namespace DAO
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         response.MENSAJE_ERROR = (string)cmd.Parameters["@msg"].Value ?? "";
-                        response.HUBO_ERROR = (bool)cmd.Parameters["@Hubo_error"].Value ;
+                        response.HUBO_ERROR = (bool)cmd.Parameters["@Hubo_error"].Value;
                         //using (reader = cmd.ExecuteReader())
                         //{
                         //    while (reader.Read())
@@ -47,21 +45,22 @@ namespace DAO
                 //response.Entity = entity;
 
             }
-                catch (Exception e)
-                {
-                    response.MENSAJE_ERROR = e.Message.ToString();
-                    response.HUBO_ERROR = true;
-                }
-                finally
-                {
-                    if (conn != null) { conn.Close(); conn.Dispose(); }
-                    if (conn != null) conn.Dispose();
-                    if (reader != null) reader.Dispose();
-                }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (conn != null) { conn.Close(); conn.Dispose(); }
+                if (conn != null) conn.Dispose();
+                if (reader != null) reader.Dispose();
+            }
             return response;
         }
 
-        public Response ObtenerUsuarioLog(string user, string pass) {
+        public Response ObtenerUsuarioLog(string user, string pass)
+        {
             Response response = new Response();
             SqlConnection conn = null;
             SqlCommand cmd = null;
@@ -77,9 +76,9 @@ namespace DAO
                         cmd.Parameters.Clear();
                         cmd.Parameters.Add("@User", SqlDbType.VarChar, 20).Value = user;
                         cmd.Parameters.Add("@Pass", SqlDbType.VarChar, 50).Value = pass;
-                        
+
                         conn.Open();
-                        
+
                         using (reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

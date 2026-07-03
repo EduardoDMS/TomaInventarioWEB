@@ -131,6 +131,8 @@ namespace DAO
         }
 
 
+
+
         public Response CreateUsuario(string cod_Usuario, string nombre, string apellido, string clave, string perfil, string idAlmacen)
         {
             Response response = new Response();
@@ -976,7 +978,7 @@ namespace DAO
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("", con))
+                    using (cmd = new SqlCommand("sp_contarProductos_2026", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         con.Open();

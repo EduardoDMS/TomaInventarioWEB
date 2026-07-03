@@ -51,6 +51,9 @@
     <Compile Include="InventarioBL.cs" />
     <Compile Include="Licencias\ILicenciaProvider.cs" />
     <Compile Include="Licencias\LicenciaConfig.cs" />
+    <Compile Include="Licencias\LicenciaDbProvider.cs" />
+    <Compile Include="Licencias\LicenciaBL.cs" />
+    <Compile Include="Licencias\LicenciaInitializer.cs" />
     <Compile Include="Licencias\LicenciaJsonProvider.cs" />
     <Compile Include="Licencias\LicenciaService.cs" />
     <Compile Include="MantenimientosBL.cs" />

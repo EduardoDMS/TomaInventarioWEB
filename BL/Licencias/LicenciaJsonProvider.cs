@@ -16,7 +16,7 @@ namespace TomaInventario.BL.Licencias
             }
 
             string json = File.ReadAllText(ruta);
-
+            // debe ver un metodo obtener licencia config que devuelva un objeto de tipo LicenciaConfig
             return JsonConvert.DeserializeObject<LicenciaConfig>(json);
         }
     }

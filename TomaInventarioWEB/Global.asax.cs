@@ -1,3 +1,4 @@
+using BL.Licencias;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace TomaInventarioWEB
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            new LicenciaInitializer().Inicializar();// agregada la licencia :v
         }
         //protected void Session_End(object sender, EventArgs e)
         //{

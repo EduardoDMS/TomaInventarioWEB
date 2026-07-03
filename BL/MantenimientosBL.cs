@@ -14,9 +14,8 @@ namespace BL
 
         public MantenimientosBL()
         {
-            _licencia = new LicenciaService(new LicenciaJsonProvider());
+            _licencia = new LicenciaService(new LicenciaDbProvider());
         }
-
 
         #region Mant Usuario
         public List<UsuarioBE> ListarUsuarios(string perfil, string usuario)
@@ -54,39 +53,143 @@ namespace BL
         {
             return new MantenimientosDAO().GetUsuario(idUsuario);
         }
-        public Response UpdateUsuario(int idUsuario, string cod_usuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> ListidAlmacen, bool activo)
+        //public Response UpdateUsuario(int idUsuario, string cod_usuario, string nombreUsuario, string apellidoUsuario, string clave, string perfil, List<string> ListidAlmacen, bool activo)
+        //{
+        //    //int totalAdmin = new MantenimientosDAO().ContarUsuariosAdministrador();
+        //    //int totalOpe = new MantenimientosDAO().ContarUsuariosOperador();
+
+        //    //if (!_licencia.ValidarUsuarioAdministrador(totalAdmin) && perfil == "ADM")
+        //    //{
+        //    //    return new Response
+        //    //    {
+        //    //        HUBO_ERROR = true,
+        //    //        MENSAJE_ERROR = "Limite de usuarios administradores alcanzado"
+        //    //    };
+        //    //}
+
+        //    //if (!_licencia.ValidarUsuarioOperador(totalOpe) && perfil == "OPE")
+        //    //{
+        //    //    return new Response
+        //    //    {
+        //    //        HUBO_ERROR = true,
+        //    //        MENSAJE_ERROR = "Limite de usuarios operadores alcanzado"
+        //    //    };
+        //    //}
+
+        //    string listaIdAlmacenes = "";
+        //    if (ListidAlmacen != null)
+        //    {
+        //        for (int i = 0; ListidAlmacen.Count() > i; i++)
+        //        {
+        //            listaIdAlmacenes = listaIdAlmacenes + "," + ListidAlmacen[i];
+        //        }
+        //    }
+        //    return new MantenimientosDAO().UpdateUsuario(idUsuario, cod_usuario, nombreUsuario, apellidoUsuario, clave, perfil, listaIdAlmacenes, activo);
+        //}
+
+
+
+
+
+
+
+
+        public Response UpdateUsuario(int idUsuario,string cod_usuario,string nombreUsuario,string apellidoUsuario,string clave,string perfil,
+                    List<string> ListidAlmacen,bool activo)
         {
-            int totalAdmin = new MantenimientosDAO().ContarUsuariosAdministrador();
-            int totalOpe = new MantenimientosDAO().ContarUsuariosOperador();
+            var dao = new MantenimientosDAO();
 
-            if (!_licencia.ValidarUsuarioAdministrador(totalAdmin) && perfil == "ADM")
+            // =========================================================
+            // 1) OBTENER USUARIO ACTUAL
+            // =========================================================
+            var respUsuario = dao.GetUsuario(idUsuario);
+
+            if (respUsuario == null || respUsuario.HUBO_ERROR)
             {
                 return new Response
                 {
                     HUBO_ERROR = true,
-                    MENSAJE_ERROR = "Limite de usuarios administradores alcanzado"
+                    MENSAJE_ERROR = respUsuario?.MENSAJE_ERROR ?? "Error al obtener usuario actual"
                 };
             }
 
-            if (!_licencia.ValidarUsuarioOperador(totalOpe) && perfil == "OPE")
+            var listaUsr = respUsuario.Entity as List<BE.UsuarioBE>;
+            if (listaUsr == null || listaUsr.Count == 0)
             {
                 return new Response
                 {
                     HUBO_ERROR = true,
-                    MENSAJE_ERROR = "Limite de usuarios operadores alcanzado"
+                    MENSAJE_ERROR = "Usuario no encontrado"
                 };
             }
 
-            string listaIdAlmacenes = "";
-            if (ListidAlmacen != null)
+            var usuarioActual = listaUsr[0];
+
+            string perfilActual = (usuarioActual.Perfil ?? "").Trim().ToUpper();
+            string perfilNuevo = (perfil ?? "").Trim().ToUpper();
+
+            // =========================================================
+            // 2) VALIDAR LICENCIA SOLO SI CAMBIA DE PERFIL
+            //    (la licencia cuenta por PERFIL, no por ACTIVO)
+            // =========================================================
+
+            // Si cambia hacia ADM, validar límite de administradores
+            if (perfilNuevo == "ADM" && perfilActual != "ADM")
             {
-                for (int i = 0; ListidAlmacen.Count() > i; i++)
+                int totalAdmin = dao.ContarUsuariosAdministrador();
+
+                // Si ya se alcanzó el máximo de ADM, no permitir el cambio
+                if (!_licencia.ValidarUsuarioAdministrador(totalAdmin))
                 {
-                    listaIdAlmacenes = listaIdAlmacenes + "," + ListidAlmacen[i];
+                    return new Response
+                    {
+                        HUBO_ERROR = true,
+                        MENSAJE_ERROR = "Limite de usuarios administradores alcanzado"
+                    };
                 }
             }
-            return new MantenimientosDAO().UpdateUsuario(idUsuario, cod_usuario, nombreUsuario, apellidoUsuario, clave, perfil, listaIdAlmacenes, activo);
+
+            // Si cambia hacia OPE, validar límite de operadores
+            if (perfilNuevo == "OPE" && perfilActual != "OPE")
+            {
+                int totalOpe = dao.ContarUsuariosOperador();
+
+                // Si ya se alcanzó el máximo de OPE, no permitir el cambio
+                if (!_licencia.ValidarUsuarioOperador(totalOpe))
+                {
+                    return new Response
+                    {
+                        HUBO_ERROR = true,
+                        MENSAJE_ERROR = "Limite de usuarios operadores alcanzado"
+                    };
+                }
+            }
+
+            // =========================================================
+            // 3) ARMAR LISTA DE ALMACENES
+            // =========================================================
+            string listaIdAlmacenes = "";
+            if (ListidAlmacen != null && ListidAlmacen.Count > 0)
+            {
+                listaIdAlmacenes = string.Join(",", ListidAlmacen);
+            }
+
+            // =========================================================
+            // 4) ACTUALIZAR
+            // =========================================================
+            return dao.UpdateUsuario(
+                idUsuario,
+                cod_usuario,
+                nombreUsuario,
+                apellidoUsuario,
+                clave,
+                perfilNuevo,
+                listaIdAlmacenes,
+                activo
+            );
         }
+
+
         #endregion
 
         #region Mant Almacen

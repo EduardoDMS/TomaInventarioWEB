@@ -20,7 +20,7 @@ namespace DAO
             try {
                 using (conn = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("WEB_ValidarUsuario_2024", conn))
+                    using (cmd = new SqlCommand("WEB_ValidarUsuario_2026", conn)) // se cambio el procedure wa
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear();

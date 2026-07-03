@@ -12,7 +12,7 @@ namespace BL
 
         public InventarioBL()
         {
-            _licencia = new LicenciaService(new LicenciaJsonProvider());
+            _licencia = new LicenciaService(new LicenciaDbProvider());//newbdProvider
         }
 
         public Response ListarInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, string start, string legnth, string order, string search)

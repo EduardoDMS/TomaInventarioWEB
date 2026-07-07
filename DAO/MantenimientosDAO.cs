@@ -256,8 +256,9 @@ namespace DAO
                         cmd.Parameters.Clear(); // Ver el tema de los tamaños existe una incongruencia  
                         cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
                         cmd.Parameters.Add("@cod_usuario", SqlDbType.VarChar, 20).Value = cod_usuario;
+                        cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 20).Value = nombreUsuario;
                         cmd.Parameters.Add("@apellido_usuario", SqlDbType.VarChar, 20).Value = apellidoUsuario;// se agrego este campo de apellido para que se pueda actualizar el apellido del usuario, se agrego en el stored procedure y en el metodo createUsuario
-                        cmd.Parameters.Add("@nombre_usuario", SqlDbType.VarChar, 20).Value = nombreUsuario;// se modifico este campo de nombre a usuario para que sea mas entendible
+                        // se modifico este campo de nombre a usuario para que sea mas entendible
                         cmd.Parameters.Add("@clave", SqlDbType.VarChar, 20).Value = clave;
                         cmd.Parameters.Add("@perfil", SqlDbType.VarChar, 3).Value = perfil;
                         //cmd.Parameters.Add("@idAlmacen", SqlDbType.Int).Value = idAlmacen;
@@ -266,6 +267,11 @@ namespace DAO
                         cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = activo;
                         cmd.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
+
+                        // Depuración: imprimir parámetros antes de ejecutar
+                        foreach (SqlParameter p in cmd.Parameters)
+                            System.Diagnostics.Debug.WriteLine($"{p.ParameterName} = {p.Value}");
+
                         con.Open();
                         cmd.ExecuteNonQuery();
 

@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace TomaInventarioWEB.Controllers
 {
@@ -216,7 +217,8 @@ namespace TomaInventarioWEB.Controllers
                             {
                                 // Dividir el XML en bloques de 100 registros
                                 int startIndex = 0;
-                                int blockSize = 100;
+                                int blockSize = 500;
+                                var dataAccess = new InventarioBL();
 
                                 while (startIndex < totalRecords)
                                 {
@@ -231,7 +233,7 @@ namespace TomaInventarioWEB.Controllers
                                     string xmlDataBlock = ConvertDataTableToXml(blockRows);
 
                                     // Enviar el bloque de registros a ImportarEmpleados
-                                    var dataAccess = new InventarioBL();
+
                                     ListaResult.AddRange(dataAccess.ImportarDetalles(xmlDataBlock, IdAlmacen));
                                     //if (startIndex == 0)
                                     //{
@@ -249,6 +251,7 @@ namespace TomaInventarioWEB.Controllers
                             }
                         }
                         response.Entity = ListaResult;
+                        //response.Entity = ListaResult.Where(x => x.Flg_Pass == 0);
                     }
                 }
             }
@@ -259,7 +262,14 @@ namespace TomaInventarioWEB.Controllers
                 return Json(response);
             }
 
-            return Json(response);
+            //return Json(response);
+            // SOLUCION TEMPORAL - CAMBIAR EL FLUJO
+            return new JsonResult
+            {
+                Data = response,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue
+            };
         }
 
 
@@ -368,7 +378,8 @@ namespace TomaInventarioWEB.Controllers
                             {
                                 // Dividir el XML en bloques de 100 registros
                                 int startIndex = 0;
-                                int blockSize = 100;
+                                int blockSize = 500;
+                                var dataAccess = new MantenimientosBL();
 
                                 while (startIndex < totalRecords)
                                 {
@@ -383,7 +394,7 @@ namespace TomaInventarioWEB.Controllers
                                     string xmlDataBlock = ConvertDataTableToXml(blockRows);
 
                                     // Enviar el bloque de registros a ImportarEmpleados
-                                    var dataAccess = new MantenimientosBL();
+
                                     ListaResult.AddRange(dataAccess.ImportarProductos(xmlDataBlock));
                                     //if (startIndex == 0)
                                     //{
@@ -400,7 +411,10 @@ namespace TomaInventarioWEB.Controllers
 
                             }
                         }
-                        response.Entity = ListaResult;
+                        //response.Entity = ListaResult;
+                        //response.Entity = ListaResult.Where(x => x.Flg_pass == 0).ToList();
+                        response.Entity = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList();
+
                     }
                 }
             }
@@ -410,6 +424,7 @@ namespace TomaInventarioWEB.Controllers
                 response.MENSAJE_ERROR = "No se seleccionó ningún archivo o el archivo está vacío.";
                 return Json(response);
             }
+            //response.Entity = null;
 
             return Json(response);
         }
@@ -465,7 +480,8 @@ namespace TomaInventarioWEB.Controllers
                             {
                                 // Dividir el XML en bloques de 100 registros
                                 int startIndex = 0;
-                                int blockSize = 100;
+                                int blockSize = 500;
+                                var dataAccess = new MantenimientosBL();
 
                                 while (startIndex < totalRecords)
                                 {
@@ -480,7 +496,7 @@ namespace TomaInventarioWEB.Controllers
                                     string xmlDataBlock = ConvertDataTableToXml(blockRows);
 
                                     // Enviar el bloque de registros a ImportarEmpleados
-                                    var dataAccess = new MantenimientosBL();
+
                                     ListaResult.AddRange(dataAccess.ImportarUbicaciones(xmlDataBlock));
 
                                     // Incrementar el índice para el siguiente bloque
@@ -489,7 +505,8 @@ namespace TomaInventarioWEB.Controllers
 
                             }
                         }
-                        response.Entity = ListaResult;
+                        //response.Entity = ListaResult;
+                        response.Entity = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList();
                     }
                 }
             }
@@ -1058,8 +1075,6 @@ namespace TomaInventarioWEB.Controllers
             return Json(new { draw = draw, recordsFiltered = totalData, recordsTotal = totalData, data = lista });
 
         }
-
-
 
         #endregion
         public string ConvertDataTableToXml(DataTable dataTable)

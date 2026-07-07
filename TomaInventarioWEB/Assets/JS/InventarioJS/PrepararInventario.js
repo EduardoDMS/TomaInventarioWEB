@@ -56,7 +56,7 @@ function LoadCbxUbiInv(Id_Almacen) {
 
         async: false,
         success: function (response) {
-            console.log(response);
+            //console.log(response);
             let opcion = "";
             /*row += "<option value=''>--Seleccione--</option>";*/
             if (response.length === 0) {
@@ -149,7 +149,7 @@ function LoadCbxProdInv(dscProd) {
 $(document).on("select2:select", "#cbxAlmacen_NewInv", function (e) {
     limpiarInvalido(this);
     let idAlmacen = $(this).val();
-    console.log(e.params.data.id);
+    //console.log(e.params.data.id);
 
     LoadCbxUbiInv(idAlmacen);
 
@@ -433,8 +433,17 @@ function GuardarInventarioPreparado() {
     obj.xmlData = xml;
     obj.CodInv = CodInv;
     obj.Id_Almacen = Id_Almacen;
+    //var formData = new FormData();
+    //formData.append("xmlData", xml);
+    ///*formData.append("xmlData", "hola");*/
+    //formData.append("CodInv", CodInv);
+    //formData.append("Id_Almacen", Id_Almacen);
 
     let _url = 'InsertInv_InvDetalle';
+
+    //console.log(xml.length);
+    //alert((xml.length / 1024 / 1024).toFixed(2) + " MB");
+
     $.ajax({
         url: _url,
         type: 'POST',
@@ -476,6 +485,22 @@ function GuardarInventarioPreparado() {
             //$('#txtvarError').text('Error Solicitud Ajax');
             //$('#error_modal').modal('show');
         }
+        //error: function (xhr, status, error) {
+
+        //    console.log(xhr.status);
+        //    console.log(status);
+        //    console.log(error);
+        //    console.log(xhr.responseText);
+
+        //    Swal.fire({
+        //        icon: "error",
+        //        title: "Error",
+        //        html:
+        //            "<b>HTTP:</b> " + xhr.status +
+        //            "<br><b>Status:</b> " + status +
+        //            "<br><b>Error:</b> " + error
+        //    });
+        //}
     });
 }
 

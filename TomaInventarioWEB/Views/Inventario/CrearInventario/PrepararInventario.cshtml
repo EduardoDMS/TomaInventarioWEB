@@ -527,6 +527,17 @@
             formData.append("archivo", $("#CrearInv_fileInput")[0].files[0]);
             formData.append("IdAlmacen", $('#cbxAlmacen_NewInv').val());
 
+            Swal.fire({
+                title: 'Preparando inventario...',
+                html: 'Validando e importando los productos.<br><br>Por favor espere.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             /*toggle_Loadingtb('tbLoading', true);*/
             $.ajax({
                 url: '@Url.Action("SubirArchivo_Detalle", "Importacion")',
@@ -537,7 +548,7 @@
                 processData: false,
                 //async:false,
                 success: function (response) {
-
+                    //console.log(response);
                     /*$("#CrearInv_fileInput").val("");*/
                     if (response.HUBO_ERROR == true) {
                         Swal.fire("Error al importar su inventario", response.MENSAJE_ERROR, "warning");
@@ -559,12 +570,15 @@
                             /*console.timeEnd("noImportados");*/
                             modalProdNoImport.show();
                         }
+
+                        Swal.close();
                     }
                 },
                 complete: function (response) {
 
                     /*toggle_Loadingtb('tbLoading', false);*/
                     if (response.HUBO_ERROR) {
+                        Swal.close();
                         //Console.log("Error")
                         Swal.fire("Error", response.MENSAJE_ERROR, "error");
                     }

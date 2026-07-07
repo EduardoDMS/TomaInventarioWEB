@@ -516,8 +516,15 @@ namespace TomaInventarioWEB.Controllers
         }
         public ActionResult InsertInv_InvDetalle(string xmlData, string CodInv, int Id_Almacen)
         {
+            //System.Diagnostics.Debug.WriteLine("Entró al método");
             var response = new InventarioBL().InsertInv_InvDetalle(xmlData, Session["UserName"].ToString(), CodInv, Id_Almacen);
             return Json(response);
+            //return Json(new
+            //{
+            //    xml = xmlData?.Length,
+            //    cod = CodInv,
+            //    almacen = Id_Almacen
+            //});
         }
 
         private List<Dictionary<string, object>> ConvertDataTableToList(DataTable dt)

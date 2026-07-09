@@ -299,10 +299,78 @@
             </div>
 
             <div class="modal-body">
+
+                
+                <div class="d-flex justify-content-evenly gap-2 mb-3">
+                    <!-- TOTAL DE UBICACIONES NUEVAS (VERDE)-->
+                    <div class="card text-bg-success">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Nuevas</h4>
+                                </div>
+                                <div class="mx-3">
+                                    <h2 id="lblNuevos" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DE UBICACIONES ACTUALIZADAS (CELESTE)-->
+                    <div class="card text-bg-info">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Actualizadas</h4>
+                                </div>
+                                <div class="mx-3">
+                                    <h2 id="lblActualizados" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DE UBICACIONES ERRONEAS (ROJO)-->
+                    <div class="card text-bg-danger">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Erroneas</h4>
+                                </div>
+                                <div class="mx-3">
+                                    <h2 id="lblErrores" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DE UBICACIONES SIN CAMBIOS (GRIS)-->
+                    <div class="card text-bg-muted">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Sin cambios</h4>
+                                </div>
+                                <div class="mx-3">
+                                    <h2 id="lblSinCambios" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
                     <i class="ti ti-info-circle fs-5 me-2"></i>
                     <div>
-                        <strong>Tip:</strong> Los registros con errores están resaltados en rojo.
+                        <strong>Importante:</strong> Los registros con errores están resaltados en rojo.
                         Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel.
                     </div>
                 </div>

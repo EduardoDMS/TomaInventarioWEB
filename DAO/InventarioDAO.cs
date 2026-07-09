@@ -664,7 +664,7 @@ namespace DAO
             return response;
         }
 
-         public int ContarInventarios()
+        public int ContarInventarios()
         {
             SqlCommand cmd = null;
             SqlConnection con = null;
@@ -684,10 +684,10 @@ namespace DAO
                     }
                 }
             }
-            catch(Exception) { throw; }
+            catch (Exception) { throw; }
             finally
             {
-                if(con != null)
+                if (con != null)
                 {
                     con.Close();
                     con.Dispose();
@@ -696,8 +696,8 @@ namespace DAO
         }
 
 
-
-        public Response InsertInv_InvDetalle(XmlDocument xml_import, string UserReg, string CodInv, int Id_almacen)
+        // YA NO ENVIA string xmlData
+        public Response InsertInv_InvDetalle(Guid importacionId, string UserReg, string CodInv, int Id_almacen)
         {
             Response response = new Response();
 
@@ -709,11 +709,14 @@ namespace DAO
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (comando = new SqlCommand("WEB_CrearInventario_AND_Detalle_2024", conexion))
+                    using (comando = new SqlCommand("WEB_CrearInventario_AND_Detalle_2026", conexion))
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
-                        comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString();
+                        //comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString();
+                        //ENVIAR importacionId
+
+                        comando.Parameters.Add("@importacionId", SqlDbType.UniqueIdentifier).Value = importacionId;
                         comando.Parameters.Add("@UserReg", SqlDbType.VarChar, 50).Value = UserReg;
                         comando.Parameters.Add("@CodInv", SqlDbType.VarChar, 20).Value = CodInv;
                         comando.Parameters.Add("@Id_Almacen", SqlDbType.Int).Value = Id_almacen;
@@ -747,7 +750,8 @@ namespace DAO
         }
 
 
-        public List<DetInventarioImportBE> ImportarDetalles(XmlDocument xml_import, int IdAlmacen)
+        // AHORA SE ENVIA USERREG
+        public List<DetInventarioImportBE> ImportarDetalles(XmlDocument xml_import, int IdAlmacen, string UserReg, Guid importacionId)
         {
             Response response = new Response();
 
@@ -759,12 +763,14 @@ namespace DAO
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (comando = new SqlCommand("WEB_ImportDetallesXML_2024", conexion))
+                    using (comando = new SqlCommand("WEB_ImportDetallesXML_2026", conexion))
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
                         comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString();
                         comando.Parameters.Add("@IDAlmacen", SqlDbType.Int).Value = IdAlmacen;
+                        comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 50).Value = UserReg;
+                        comando.Parameters.Add("@importacionId", SqlDbType.UniqueIdentifier).Value = importacionId;
                         conexion.Open();
 
                         using (reader = comando.ExecuteReader())
@@ -777,7 +783,7 @@ namespace DAO
                                 Importobj.DSC_UBICACION = (reader["DSC_UBICACION"] == DBNull.Value) ? String.Empty : reader["DSC_UBICACION"].ToString();
                                 Importobj.COD_PRODUCTO = (reader["COD_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["COD_PRODUCTO"].ToString();
                                 Importobj.DSC_PRODUCTO = (reader["DSC_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["DSC_PRODUCTO"].ToString();
-
+                                Importobj.importacionId = Guid.Parse(reader["ImportacionId"].ToString());
                                 Importobj.LOTE_PRODUCTO = (reader["LOTE_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["LOTE_PRODUCTO"].ToString();
                                 Importobj.STOCK_ACTUAL = (reader["STOCK_ACTUAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_ACTUAL"].ToString());
                                 Importobj.Flg_Pass = (reader["Flg_Pass"] == DBNull.Value) ? 0 : Int32.Parse(reader["Flg_Pass"].ToString());

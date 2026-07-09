@@ -162,106 +162,85 @@ namespace TomaInventarioWEB.Controllers
         #region Importacion Detalle
         public JsonResult SubirArchivo_Detalle(HttpPostedFileBase archivo, int IdAlmacen)
         {
+            //SE CREA IMPORTACIONID Y SE ENVIA
+            Guid importacionId = Guid.NewGuid();
+
             Response response = new BE.Response();
             List<DetInventarioImportBE> ListaResult = new List<DetInventarioImportBE>();
-            if (archivo != null && archivo.ContentLength > 0)
-            {
-                string[] filename = archivo.FileName.Split('.');
-                string extension = filename[1];
-                if (extension != "xls" && extension != "xlsx")
-                {
-                    response.HUBO_ERROR = true;
-                    response.MENSAJE_ERROR = "La extensión del archivo no es valida.";
-                    return Json(response);
-                }
 
-                using (var stream = archivo.InputStream)
-                {
-                    using (var reader = ExcelReaderFactory.CreateReader(stream))
-                    {
-                        var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
-                        {
-                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration
-                            {
-                                UseHeaderRow = true
-                            }
-                        });
-
-                        // Obtener la tabla del DataSet (asumiendo que es la primera)
-                        DataTable dataTable = dataSet.Tables[0];
-
-                        foreach (DataColumn col in dataTable.Columns)
-                        {
-                            System.Diagnostics.Debug.WriteLine(
-                                $"Columna: {col.ColumnName} - Tipo: {col.DataType}"
-                            );
-                        }
-
-                        // Calcular el número total de registros
-                        int totalRecords = dataTable.Rows.Count;
-
-                        if (totalRecords > 0)
-                        {
-                            // Determinar si es necesario dividir el XML en bloques
-                            bool splitXml = totalRecords > 100;
-
-                            // Si no es necesario dividir el XML, enviarlo directamente
-                            dataTable.TableName = "Table1";
-                            if (!splitXml)
-                            {
-                                string xmlData = ConvertDataTableToXml(dataTable);
-                                var dataAccess = new InventarioBL();
-                                ListaResult = dataAccess.ImportarDetalles(xmlData, IdAlmacen);
-                            }
-                            else
-                            {
-                                // Dividir el XML en bloques de 100 registros
-                                int startIndex = 0;
-                                int blockSize = 500;
-                                var dataAccess = new InventarioBL();
-
-                                while (startIndex < totalRecords)
-                                {
-                                    // Obtener el bloque actual de registros
-                                    var blockRows = dataTable.AsEnumerable()
-                                        .Skip(startIndex)
-                                        .Take(blockSize)
-                                        .CopyToDataTable();
-
-
-                                    // Convertir el bloque de registros a XML
-                                    string xmlDataBlock = ConvertDataTableToXml(blockRows);
-
-                                    // Enviar el bloque de registros a ImportarEmpleados
-
-                                    ListaResult.AddRange(dataAccess.ImportarDetalles(xmlDataBlock, IdAlmacen));
-                                    //if (startIndex == 0)
-                                    //{
-                                    //    ListaResult =  dataAccess.ImportarProductos(xmlDataBlock);
-                                    //}
-                                    //else
-                                    //{
-                                    //    ListaResult.AddRange(dataAccess.ImportarProductos(xmlDataBlock));
-                                    //}
-
-                                    // Incrementar el índice para el siguiente bloque
-                                    startIndex += blockSize;
-                                }
-
-                            }
-                        }
-                        response.Entity = ListaResult;
-                        //response.Entity = ListaResult.Where(x => x.Flg_Pass == 0);
-                    }
-                }
-            }
-            else
+            if (archivo == null || archivo.ContentLength <= 0)
             {
                 response.HUBO_ERROR = true;
                 response.MENSAJE_ERROR = "No se seleccionó ningún archivo o el archivo está vacío.";
                 return Json(response);
             }
 
+            string extension = Path.GetExtension(archivo.FileName).ToLower();
+
+            if (extension != ".xls" && extension != ".xlsx")
+            {
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = "La extensión del archivo no es valida.";
+                return Json(response);
+            }
+
+            using (var stream = archivo.InputStream)
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+                    {
+                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration
+                        {
+                            UseHeaderRow = true
+                        }
+                    });
+
+                    // Obtener la tabla del DataSet (asumiendo que es la primera)
+                    DataTable dataTable = dataSet.Tables[0];
+
+                    if (dataTable.Rows.Count == 0)
+                    {
+                        response.HUBO_ERROR = true;
+                        response.MENSAJE_ERROR = "El archivo no contiene registros.";
+                        return Json(response);
+                    }
+
+                    dataTable.TableName = "Table1";
+
+                    string xmlData = ConvertDataTableToXml(dataTable);
+
+                    var dataAccess = new InventarioBL();
+
+                    ListaResult = dataAccess.ImportarDetalles(
+                         xmlData,
+                         IdAlmacen,
+                         Session["UserName"].ToString(),
+                         importacionId
+                    );
+
+                    //0: error, 1: correcto
+                    // TODO ENVIAR AL RESPONSE Y IMPRIMIR EN FRONT
+
+                    ResultadoImportacionDetInventarioImportBE resultado = new ResultadoImportacionDetInventarioImportBE
+                    {
+                        ListaCorrectos = ListaResult.Where(x => x.Flg_Pass == 1).ToList(),
+                        ListaIncorrectos = ListaResult.Where(x => x.Flg_Pass == 0).ToList(),
+                        Errores = ListaResult.Count(x => x.Flg_Pass == 0),
+                        Correctos = ListaResult.Count(x => x.Flg_Pass == 1),
+                        TotalImportacion = ListaResult.Count()
+                    };
+
+                    response.Entity = resultado;
+
+                    // TODO ENVIAR AL RESPONSE Y IMPRIMIR EN FRONT
+                    //int errores = ListaResult.Count(x => x.Flg_Pass == 0);
+                    //int correctos = ListaResult.Count(x => x.Flg_Pass == 1);
+                    //int totales = errores + correctos;
+                    //response.Entity = ListaResult;
+                    //response.Entity = ListaResult.Where(x => x.Flg_Pass == 0);
+                }
+            }
             //return Json(response);
             // SOLUCION TEMPORAL - CAMBIAR EL FLUJO
             return new JsonResult
@@ -413,8 +392,19 @@ namespace TomaInventarioWEB.Controllers
                         }
                         //response.Entity = ListaResult;
                         //response.Entity = ListaResult.Where(x => x.Flg_pass == 0).ToList();
-                        response.Entity = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList();
+                        //0: error, 1: actualizado, 2: nuevos, 3:sin cambios
+                        // TODO ENVIAR AL RESPONSE Y IMPRIMIR EN FRONT
 
+                        ResultadoImportacionBE resultado = new ResultadoImportacionBE
+                        {
+                            Lista = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList(),
+                            Errores = ListaResult.Count(x => x.Flg_pass == 0),
+                            Actualizados = ListaResult.Count(x => x.Flg_pass == 1),
+                            Nuevos = ListaResult.Count(x => x.Flg_pass == 2),
+                            SinCambios = ListaResult.Count(x => x.Flg_pass == 3),
+                        };
+
+                        response.Entity = resultado;
                     }
                 }
             }
@@ -426,7 +416,13 @@ namespace TomaInventarioWEB.Controllers
             }
             //response.Entity = null;
 
-            return Json(response);
+            //return Json(response);
+            return new JsonResult
+            {
+                Data = response,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue
+            };
         }
 
         public JsonResult SubirArchivo_Ubicaciones(HttpPostedFileBase archivo)
@@ -506,7 +502,19 @@ namespace TomaInventarioWEB.Controllers
                             }
                         }
                         //response.Entity = ListaResult;
-                        response.Entity = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList();
+                        //0: error, 1: actualizado, 2: nuevos, 3:sin cambios
+                        // TODO ENVIAR AL RESPONSE Y IMPRIMIR EN FRONT
+
+                        ResultadoImportacionBE resultado = new ResultadoImportacionBE
+                        {
+                            Lista = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList(),
+                            Errores = ListaResult.Count(x => x.Flg_pass == 0),
+                            Actualizados = ListaResult.Count(x => x.Flg_pass == 1),
+                            Nuevos = ListaResult.Count(x => x.Flg_pass == 2),
+                            SinCambios = ListaResult.Count(x => x.Flg_pass == 3),
+                        };
+
+                        response.Entity = resultado;
                     }
                 }
             }
@@ -517,7 +525,13 @@ namespace TomaInventarioWEB.Controllers
                 return Json(response);
             }
 
-            return Json(response);
+            //return Json(response);
+            return new JsonResult
+            {
+                Data = response,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue
+            };
         }
 
         #endregion

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BE
 {
@@ -72,7 +69,8 @@ namespace BE
 
     public class DetInventarioImportBE
     {
-        
+        // ID DE IMPORTACION
+        public Guid importacionId { get; set; }
         public string COD_UBICACION { get; set; }
         public string DSC_UBICACION { get; set; }
         public string COD_PRODUCTO { get; set; }
@@ -82,6 +80,16 @@ namespace BE
         public int Flg_Pass { get; set; }
         public string Desc_Error { get; set; }
 
+    }
+
+    public class ResultadoImportacionDetInventarioImportBE
+    {
+        public List<DetInventarioImportBE> ListaCorrectos { get; set; }
+        public List<DetInventarioImportBE> ListaIncorrectos { get; set; }
+
+        public int Errores { get; set; }
+        public int Correctos { get; set; }
+        public int TotalImportacion { get; set; }
     }
 
     public class CLISTA_DETALLEAPI

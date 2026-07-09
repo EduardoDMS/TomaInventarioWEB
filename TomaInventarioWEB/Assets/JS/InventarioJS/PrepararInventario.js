@@ -410,29 +410,32 @@ function GuardarInventarioPreparado() {
         return;
     }
 
-    var data = tablaProductos.rows().data().toArray();
-    var xml = '<NewDataSet>';
+    //var data = tablaProductos.rows().data().toArray();
+    //var xml = '<NewDataSet>';
 
-    data.forEach(function (row) {
-        xml += '<Table1>';
-        xml += '<Cod_Inventario>' + row[0] + '</Cod_Inventario>';
-        xml += '<Cod_Ubicacion>' + row[1] + '</Cod_Ubicacion>';
-        xml += '<Cod_Producto>' + row[3] + '</Cod_Producto>';
-        xml += '<Lote_Producto>' + row[5] + '</Lote_Producto>';
-        /*xml += '<Serie_Producto>' + row[6] + '</Serie_Producto>';*/
-        xml += '<Stock_Actual>' + row[6] + '</Stock_Actual>';
-        xml += '</Table1>';
-    });
+    //data.forEach(function (row) {
+    //    xml += '<Table1>';
+    //    xml += '<Cod_Inventario>' + row[0] + '</Cod_Inventario>';
+    //    xml += '<Cod_Ubicacion>' + row[1] + '</Cod_Ubicacion>';
+    //    xml += '<Cod_Producto>' + row[3] + '</Cod_Producto>';
+    //    xml += '<Lote_Producto>' + row[5] + '</Lote_Producto>';
+    //    /*xml += '<Serie_Producto>' + row[6] + '</Serie_Producto>';*/
+    //    xml += '<Stock_Actual>' + row[6] + '</Stock_Actual>';
+    //    xml += '</Table1>';
+    //});
 
-    xml += '</NewDataSet>';
+    //xml += '</NewDataSet>';
 
     var CodInv = $('#txt_New_CodInventario').val();
     var Id_Almacen = $('#cbxAlmacen_NewInv').val();
 
     var obj = new Object();
-    obj.xmlData = xml;
+    //obj.xmlData = xml; YA NO ENVIO XML
+    obj.importacionId = importacionId;
     obj.CodInv = CodInv;
     obj.Id_Almacen = Id_Almacen;
+
+    console.log(obj);
     //var formData = new FormData();
     //formData.append("xmlData", xml);
     ///*formData.append("xmlData", "hola");*/

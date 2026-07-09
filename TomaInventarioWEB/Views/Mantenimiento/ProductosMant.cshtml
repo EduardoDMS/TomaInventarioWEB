@@ -140,22 +140,44 @@
                     if (response.HUBO_ERROR === true) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error en la importación',
+                            title: 'Error al importar',
                             text: response.MENSAJE_ERROR,
                             confirmButtonColor: '#5d87ff',
                             confirmButtonText: 'Entendido'
                         });
                     } else {
-                        Charge_RImport_Modal(response.Entity);
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Importación exitosa!',
-                            text: 'Los productos se han importado correctamente.',
-                            confirmButtonColor: '#5d87ff',
-                            confirmButtonText: 'Aceptar',
-                            timer: 2500,
-                            timerProgressBar: true
-                        });
+
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Importación completada!',
+                                text: 'Los productos se procesaron correctamente. Revisa los detalles a continuación.',
+                                confirmButtonText: 'Ver resultados',
+                                confirmButtonColor: '#28a745',
+                                timer: 5000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed || result.isDismissed) {
+                                    Charge_RImport_Modal(response.Entity.Lista);
+                                    $("#lblErrores").text(response.Entity.Errores);
+                                    $("#lblActualizados").text(response.Entity.Actualizados);
+                                    $("#lblNuevos").text(response.Entity.Nuevos);
+                                    $("#lblSinCambios").text(response.Entity.SinCambios);
+                                }
+                            });
+                        }, 1000);
+                        //Charge_RImport_Modal(response.Entity);
+                        //Swal.fire({
+                        //    icon: 'success',
+                        //    title: '¡Importación exitosa!',
+                        //    text: 'Los productos se han importado correctamente.',
+                        //    confirmButtonColor: '#5d87ff',
+                        //    confirmButtonText: 'Aceptar',
+                        //    timer: 2500,
+                        //    timerProgressBar: true
+                        //});
                     }
 
                     ActualizarTabla();

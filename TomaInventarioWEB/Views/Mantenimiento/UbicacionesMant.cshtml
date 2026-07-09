@@ -157,7 +157,7 @@
             );
 
             Swal.fire({
-                title: 'Procesando archivo',
+                title: 'Importando ubicaciones...',
                 text: 'Por favor espera mientras importamos las ubicaciones',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
@@ -189,9 +189,9 @@
                             confirmButtonColor: '#d33'
                         });
                     } else {
-                        $('#Import_Modal').modal('hide');
-                        $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open').css('padding-right', '');
+                        //$('#Import_Modal').modal('hide');
+                        //$('.modal-backdrop').remove();
+                        //$('body').removeClass('modal-open').css('padding-right', '');
 
                         setTimeout(() => {
                             Swal.fire({
@@ -200,19 +200,23 @@
                                 text: 'Las ubicaciones se procesaron correctamente. Revisa los detalles a continuación.',
                                 confirmButtonText: 'Ver resultados',
                                 confirmButtonColor: '#28a745',
-                                timer: 2500,
+                                timer: 5000,
                                 timerProgressBar: true,
                                 showConfirmButton: true,
                                 allowOutsideClick: false
                             }).then((result) => {
                                 if (result.isConfirmed || result.isDismissed) {
-                                    Charge_RImport_Modal(response.Entity);
+                                    Charge_RImport_Modal(response.Entity.Lista);
+                                    $("#lblErrores").text(response.Entity.Errores);
+                                    $("#lblActualizados").text(response.Entity.Actualizados);
+                                    $("#lblNuevos").text(response.Entity.Nuevos);
+                                    $("#lblSinCambios").text(response.Entity.SinCambios);
                                 }
                             });
-                        }, 800);
+                        }, 1000);
                     }
 
-                    $("#fileInput").val("");
+                    /*$("#fileInput").val("");*/
                     ActualizarTabla();
                 },
                 error: function (xhr, status, error) {

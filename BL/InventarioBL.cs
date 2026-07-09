@@ -1,5 +1,6 @@
 ﻿using BE;
 using DAO;
+using System;
 using System.Collections.Generic;
 using System.Xml;
 using TomaInventario.BL.Licencias;
@@ -83,7 +84,8 @@ namespace BL
             return new InventarioDAO().ValidarDatosInventario(Cod_Inv, id_almacen);
         }
 
-        public Response InsertInv_InvDetalle(string xmlData, string UserReg, string CodInv, int Id_Almacen)
+        // YA NO ENVIA string xmlData
+        public Response InsertInv_InvDetalle(Guid importacionId, string UserReg, string CodInv, int Id_Almacen)
         {
             int total = new InventarioDAO().ContarInventarios();
 
@@ -96,16 +98,16 @@ namespace BL
                 };
             }
 
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlData);
-            return new InventarioDAO().InsertInv_InvDetalle(xmlDoc, UserReg, CodInv, Id_Almacen);
+            //XmlDocument xmlDoc = new XmlDocument();
+            //xmlDoc.LoadXml(xmlData);
+            return new InventarioDAO().InsertInv_InvDetalle(importacionId, UserReg, CodInv, Id_Almacen);
         }
 
-        public List<DetInventarioImportBE> ImportarDetalles(string xml, int IdAlmacen)
+        public List<DetInventarioImportBE> ImportarDetalles(string xml, int IdAlmacen, string UserReg, Guid importacionId)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
-            return new InventarioDAO().ImportarDetalles(xmlDoc, IdAlmacen);
+            return new InventarioDAO().ImportarDetalles(xmlDoc, IdAlmacen, UserReg, importacionId);
         }
 
         public Response GetAPI_StockALM()

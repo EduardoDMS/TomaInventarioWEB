@@ -1,21 +1,17 @@
 ﻿{
-
-  "COD_EMPRESA": "SE",
-  "DESC_EMPRESA": "Senati Instituto",
+  "COD_EMPRESA": "MiEmpresa",
+  "DESC_EMPRESA": "MiEmpresa",
   "FLG_ACTIVO": "1",
-  "RUC_EMPRESA": "20963791195",
-  "DIR_EMPRESA": "En el cerro",
-  "TLF_EMPRESA": "+511999888777",
-  "RAZONSOCIAL_EMPRESA": "SENATI - baje de pepita",
+  "RUC_EMPRESA": "MiRUC",
+  "DIR_EMPRESA": "MiDireccion",
+  "TLF_EMPRESA": "MiTelefono",
+  "RAZONSOCIAL_EMPRESA": "MiRazonSocial",
 
   "AlmacenesMax": 3,
   "UbicacionesMax": 1,
   "ProductosMax": 1,
   "UsuariosAdmiMax": 1,
   "UsuariosOpeMax": 5,
-  "InventariosPreparadosMax": 1000,
+  "InventariosPreparadosMax": 100000,
   "Estado": true
-
-
-
 }

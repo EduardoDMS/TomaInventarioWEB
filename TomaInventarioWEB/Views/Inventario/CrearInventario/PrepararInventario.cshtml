@@ -246,7 +246,7 @@
 </div>
 
 <!-- MODAL PRODUCTOS CON ERROR AL IMPORTAR -->
-<div class="modal fade" id="modal_productosNoImportados">
+<!--<div class="modal fade" id="modal_productosNoImportados">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -256,9 +256,9 @@
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body py-4">
+            <div class="modal-body py-4">-->
                 <!--tabla-->
-                <div class="table-responsive">
+                <!--<div class="table-responsive">
                     <table id="RImport_Tbl" class="table table-hover w-100">
                         <thead class="table-light">
 
@@ -267,6 +267,117 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<div class="modal fade" id="RImport_modal" role="dialog" tabindex="-1" aria-labelledby="ttl_ImportModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="ti ti-package-import fs-5 text-primary"></i>
+                    <div>
+                        <h5 class="modal-title mb-0" id="ttl_ImportModal">Resultado de Importación de Productos</h5>
+                        <small class="text-muted">Revisa el estado de cada producto procesado</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="d-flex justify-content-evenly gap-2 mb-3">
+                    <!-- TOTAL DE IMPORTADOS (CELESTE)-->
+                    <div class="card text-bg-info">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Totales</h4>
+                                </div>
+                                <div class="mx-3">
+                                    <h2 id="lblImportados" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DE CORRECTOS (VERDE)-->
+                    <div class="card text-bg-success">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Correctas</h4>
+                                </div>
+                                <div class="mx-3">
+                                    <h2 id="lblCorrectos" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DE ERRONEOS (ROJO)-->
+                    <div class="card text-bg-danger">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Erroneas</h4>
+                                </div>
+                                <div class="mx-3">
+                                    <h2 id="lblErrores" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DE PRODUCTOS SIN CAMBIOS (GRIS)-->
+                    @*<div class="card text-bg-muted">
+                        <div class="card-body text-white p-2">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="ms-3">
+                                    <h4 class="mb-0 text-white fs-6">Productos sin cambios</h4>
+                                </div>
+                                <div class="ms-auto">
+                                    <h2 id="lblSinCambios" class="fs-7 mb-0 text-white">
+                                        6540
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                </div>
+
+                <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
+                    <i class="ti ti-info-circle fs-5 me-2 mt-1"></i>
+                    <div>
+                        <strong>Importante:</strong> Los registros con errores están resaltados en <span class="text-danger fw-semibold">rojo</span>.
+                        Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel antes de importar nuevamente.
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="RImport_Tbl" class="table table-hover align-middle w-100">
+                        <thead class="table-light">
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top bg-light">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <i class="ti ti-check me-1"></i>Entendido
+                </button>
             </div>
         </div>
     </div>
@@ -331,7 +442,7 @@
 
         /* FORMULARIO WIZARD */
         const formularioPasos = document.getElementById("PasosPrepararInventario");
-        const modalProdNoImport = new bootstrap.Modal(document.getElementById("modal_productosNoImportados"));
+        //const modalProdNoImport = new bootstrap.Modal(document.getElementById("modal_productosNoImportados"));
         const urlGestionar = '@Url.Action("GestionInventario", "Inventario")';
         const inputAlmacen = document.getElementById("cbxAlmacen_NewInv");
         const inputUbicacion = document.getElementById("cbxUbicacion_NewInv");
@@ -521,6 +632,8 @@
 
 
         /*// AGREGAR INVENTARIO POR IMPORTACION EXCEL //*/
+        var importacionId = ""; // Identificador para la tabla temporar a la hora de importar
+
         $('#CrearInv_btn_Import').click(function () {
 
             var formData = new FormData();
@@ -548,30 +661,70 @@
                 processData: false,
                 //async:false,
                 success: function (response) {
-                    //console.log(response);
+                    console.log(response);
                     /*$("#CrearInv_fileInput").val("");*/
                     if (response.HUBO_ERROR == true) {
-                        Swal.fire("Error al importar su inventario", response.MENSAJE_ERROR, "warning");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al importar',
+                            text: response.MENSAJE_ERROR || 'Ocurrió un error durante la importación. Por favor verifica el archivo e intenta nuevamente.',
+                            confirmButtonText: 'Entendido',
+                            confirmButtonColor: '#d33'
+                        });
+/*                        Swal.fire("Error al importar su inventario", response.MENSAJE_ERROR, "warning");*/
                         /*MostrarError(response.MENSAJE_ERROR, "content_mensajes3");*/
                     } else {
-                        /*Charge_RImport_Modal(response.Entity);*/
+                        
                         const data = response.Entity;
-                        const productosError = data.filter(x => x.Flg_Pass === 0);
 
-                        /*console.time("importar");*/
-                        ImportarProductos(data);
-                        /*console.timeEnd("importar");*/
-
-                        $("#PasosPrepararInventario").steps("next");
-
-                        if (productosError.length > 0) {
-                            /*console.time("noImportados");*/
-                            MostrarTablaNoImportados(productosError);
-                            /*console.timeEnd("noImportados");*/
-                            modalProdNoImport.show();
+                        if (data.length > 0) {
+                            importacionId = data[0].importacionId;
                         }
 
-                        Swal.close();
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Importación completada!',
+                                text: 'Las productos a inventariar se procesaron correctamente. Revisa los detalles a continuación.',
+                                confirmButtonText: 'Ver resultados',
+                                confirmButtonColor: '#28a745',
+                                timer: 5000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed || result.isDismissed) {
+                                    Charge_RImport_Modal(data.ListaIncorrectos);
+                                    $("#PasosPrepararInventario").steps("next");
+                                    $("#lblImportados").text(data.TotalImportacion);
+                                    $("#lblCorrectos").text(data.Correctos);
+                                    $("#lblErrores").text(data.Errores);
+                                    ImportarProductos(data.ListaCorrectos);
+                                    /*$("#lblSinCambios").text(response.Entity.SinCambios);*/
+                                }
+                            });
+                        }, 1000);
+
+
+
+                        //console.log(importacionId);
+
+                        //const productosError = data.filter(x => x.Flg_Pass === 0);
+
+                        ///*console.time("importar");*/
+                        //ImportarProductos(data);
+                        ///*console.timeEnd("importar");*/
+
+                        //$("#PasosPrepararInventario").steps("next");
+
+                        //if (productosError.length > 0) {
+                        //    /*console.time("noImportados");*/
+                        //    MostrarTablaNoImportados(productosError);
+                        //    /*console.timeEnd("noImportados");*/
+                        //    /*modalProdNoImport.show(); cambiado*/ 
+                        //}
+
+                        //Swal.close();
                     }
                 },
                 complete: function (response) {
@@ -714,5 +867,65 @@
                 });
             }
         });
+
+        // TABLA DE IMPORTACION
+        function Charge_RImport_Modal(Jsondata) {
+            $('#RImport_modal').modal('show');
+
+            // Destruir instancia previa si existe
+            if ($.fn.DataTable.isDataTable('#RImport_Tbl')) {
+                $('#RImport_Tbl').DataTable().destroy();
+            }
+
+            RImport_tabla = $('#RImport_Tbl').DataTable({
+                "data": Jsondata,
+                "createdRow": function (row, data, dataIndex) {
+                    if (data.Flg_Pass == 0) {
+                        $(row).addClass('table-danger');
+                    } else {
+                        $(row).addClass('table-success');
+                    }
+                },
+                "columns": [
+                    { "data": "COD_UBICACION", "title": "Cod. Ubicación" },
+                    { "data": "DSC_UBICACION", "title": "Dsc. Ubicación" },
+
+                    { "data": "COD_PRODUCTO", "title": "Cod. Producto" },
+                    { "data": "DSC_PRODUCTO", "title": "Dsc. Producto" },
+
+                    { "data": "LOTE_PRODUCTO", "title": "Lote Producto" },
+                    { "data": "STOCK_ACTUAL", "title": "Stock" },
+                    { "data": "Desc_Error", "title": "Mensaje" },
+                    {
+                        "data": null,
+                        "orderable": false,
+                        "searchable": false,
+                        "title": "Estado",
+                        "className": "text-center",
+                        "render": function (data, type, row, meta) {
+                            if (data.Flg_Pass == 0) {
+                                return '<span class="badge bg-danger"><i class="ti ti-x fs-4"></i> Error</span>';
+                            } else {
+                                return '<span class="badge bg-success"><i class="ti ti-check fs-4"></i> Éxito</span>';
+                            }
+                        }
+                        //"render": function (data, type, row, meta) {
+                        //    if (data.Flg_pass == 0) {
+                        //        return '<i class="fas fa-times-circle fa-lg text-danger" title="Error"></i>';
+                        //    } else {
+                        //        return '<i class="fas fa-check-circle fa-lg text-success" title="Éxito"></i>';
+                        //    }
+                        //}
+                    }
+                ],
+                "paging": true,
+                "pageLength": 10,
+                "searching": true,
+                "lengthChange": true,
+                "responsive": true,
+                "language": españolTbl,
+                "order": [[4, "desc"]] // Ordenar por estado (errores primero)
+            });
+        }
     </script>
 }

@@ -82,8 +82,13 @@ namespace TomaInventarioWEB.Controllers
         {
             List<CombosBE> list = new List<CombosBE>();
             list = (List<CombosBE>)new CombosBL().cbxUbicacion(id_almacen).Entity;
-            //ViewBag.ListInventarios = listInventarios;
-            return Json(list);
+
+            return new JsonResult
+            {
+                Data = list,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue
+            };
         }
 
         public ActionResult FillCbxProductoInv(string dsc_prod)
@@ -514,10 +519,11 @@ namespace TomaInventarioWEB.Controllers
             var response = new InventarioBL().ValidarDatosInventario(Cod_inventario, Id_Almacen);
             return Json(response);
         }
-        public ActionResult InsertInv_InvDetalle(string xmlData, string CodInv, int Id_Almacen)
+        // YA NO ENVIA string xmlData
+        public ActionResult InsertInv_InvDetalle(Guid importacionId, string CodInv, int Id_Almacen)
         {
             //System.Diagnostics.Debug.WriteLine("Entró al método");
-            var response = new InventarioBL().InsertInv_InvDetalle(xmlData, Session["UserName"].ToString(), CodInv, Id_Almacen);
+            var response = new InventarioBL().InsertInv_InvDetalle(importacionId, Session["UserName"].ToString(), CodInv, Id_Almacen);
             return Json(response);
             //return Json(new
             //{

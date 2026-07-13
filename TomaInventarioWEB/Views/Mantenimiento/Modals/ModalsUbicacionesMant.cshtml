@@ -289,10 +289,10 @@
         <div class="modal-content">
             <div class="modal-header border-bottom">
                 <div class="d-flex align-items-center gap-2">
-                    <i class="ti ti-file-import fs-5"></i>
+                    <i class="ti ti-file-import fs-5 text-primary"></i>
                     <div>
-                        <h5 class="modal-title mb-0" id="ttl_ImportModal">Resultado de Importación</h5>
-                        <small class="text-muted">Revisa el estado de cada registro procesado</small>
+                        <h5 class="modal-title mb-0" id="ttl_ImportModal">Resultado de Importación de Ubicaciones</h5>
+                        <small class="text-muted">Revisa el estado de cada ubicación procesada</small>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -301,7 +301,7 @@
             <div class="modal-body">
 
                 
-                <div class="d-flex justify-content-evenly gap-2 mb-3">
+                <div class="d-flex justify-content-evenly gap-2 mb-4">
                     <!-- TOTAL DE UBICACIONES NUEVAS (VERDE)-->
                     <div class="card text-bg-success">
                         <div class="card-body text-white p-2">
@@ -339,7 +339,7 @@
                         <div class="card-body text-white p-2">
                             <div class="d-flex flex-row align-items-center">
                                 <div class="ms-3">
-                                    <h4 class="mb-0 text-white fs-6">Erroneas</h4>
+                                    <h4 class="mb-0 text-white fs-6">Erróneas</h4>
                                 </div>
                                 <div class="mx-3">
                                     <h2 id="lblErrores" class="fs-7 mb-0 text-white">
@@ -367,17 +367,20 @@
                     </div>
                 </div>
 
-                <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
+                
+
+                <div class="d-flex align-items-start mb-3" role="alert">
                     <i class="ti ti-info-circle fs-5 me-2"></i>
                     <div>
-                        <strong>Importante:</strong> Los registros con errores están resaltados en rojo.
-                        Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel.
+                        @*<strong>Importante:</strong> Los registros con errores están resaltados en rojo.
+        Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel.*@
+                        <strong>La siguiente tabla solo muestra las ubicaciones <span class="text-info fw-semibold">actualizadas</span> y <span class="text-danger fw-semibold">erróneas</span>.</strong>
                     </div>
                 </div>
 
                 <div class="table-responsive">
                     <table id="RImport_Tbl" class="table table-hover align-middle w-100">
-                        <thead>
+                        <thead class="table-light">
                             <tr></tr>
                         </thead>
                         <tbody>
@@ -387,7 +390,7 @@
                 </div>
             </div>
 
-            <div class="modal-footer border-top">
+            <div class="modal-footer border-top bg-light">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                     <i class="ti ti-check me-1"></i>Entendido
                 </button>

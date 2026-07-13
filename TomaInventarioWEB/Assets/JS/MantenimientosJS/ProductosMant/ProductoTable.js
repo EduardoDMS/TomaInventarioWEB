@@ -195,7 +195,7 @@ function Charge_RImport_Modal(Jsondata) {
                 if (data.Flg_pass == 0 || data.Flg_Pass == 0) {
                     $(row).addClass('table-danger');
                 } else {
-                    $(row).addClass('table-success');
+                    $(row).addClass('table-info');
                 }
             },
             "columns": [
@@ -231,7 +231,7 @@ function Charge_RImport_Modal(Jsondata) {
                         if (data.Flg_pass == 0 || data.Flg_Pass == 0) {
                             return '<span class="badge bg-danger"><i class="ti ti-x fs-4"></i> Error</span>';
                         } else {
-                            return '<span class="badge bg-success"><i class="ti ti-check fs-4"></i> Éxito</span>';
+                            return '<span class="badge bg-info"><i class="ti ti-check fs-4"></i> Éxito</span>';
                         }
                     }
                 }

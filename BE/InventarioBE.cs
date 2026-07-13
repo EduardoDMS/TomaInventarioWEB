@@ -84,6 +84,7 @@ namespace BE
 
     public class ResultadoImportacionDetInventarioImportBE
     {
+        public Guid importacionId { get; set; }
         public List<DetInventarioImportBE> ListaCorrectos { get; set; }
         public List<DetInventarioImportBE> ListaIncorrectos { get; set; }
 

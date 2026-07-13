@@ -269,7 +269,7 @@
 
             <div class="modal-body">
 
-                <div class="d-flex justify-content-evenly gap-2 mb-3">
+                <div class="d-flex justify-content-evenly gap-2 mb-4">
                     <!-- TOTAL DE PRODUCTOS NUEVAS (VERDE)-->
                     <div class="card text-bg-success">
                         <div class="card-body text-white p-2">
@@ -307,7 +307,7 @@
                         <div class="card-body text-white p-2">
                             <div class="d-flex flex-row align-items-center">
                                 <div class="ms-3">
-                                    <h4 class="mb-0 text-white fs-6">Erroneos</h4>
+                                    <h4 class="mb-0 text-white fs-6">Erróneos</h4>
                                 </div>
                                 <div class="mx-3">
                                     <h2 id="lblErrores" class="fs-7 mb-0 text-white">
@@ -335,11 +335,14 @@
                     </div>
                 </div>
 
-                <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
-                    <i class="ti ti-info-circle fs-5 me-2 mt-1"></i>
+
+
+                <div class="d-flex align-items-start mb-3" role="alert">
+                    <i class="ti ti-info-circle fs-5 me-2"></i>
                     <div>
-                        <strong>Importante:</strong> Los registros con errores están resaltados en <span class="text-danger fw-semibold">rojo</span>.
-                        Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel antes de importar nuevamente.
+                        @*<strong>Importante:</strong> La siguiente <u>tabla muestra solo los productos actualizados y los erróneos</u> estaran resaltados en <span class="text-danger fw-semibold">rojo</span>.
+                        Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel antes de importar nuevamente.*@
+                        <strong>La siguiente tabla solo muestra los productos <span class="text-info fw-semibold">actualizados</span> y <span class="text-danger fw-semibold">erróneos</span>.</strong>
                     </div>
                 </div>
 

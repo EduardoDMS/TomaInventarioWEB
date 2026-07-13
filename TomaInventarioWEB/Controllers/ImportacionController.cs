@@ -224,6 +224,7 @@ namespace TomaInventarioWEB.Controllers
 
                     ResultadoImportacionDetInventarioImportBE resultado = new ResultadoImportacionDetInventarioImportBE
                     {
+                        importacionId = importacionId,
                         ListaCorrectos = ListaResult.Where(x => x.Flg_Pass == 1).ToList(),
                         ListaIncorrectos = ListaResult.Where(x => x.Flg_Pass == 0).ToList(),
                         Errores = ListaResult.Count(x => x.Flg_Pass == 0),

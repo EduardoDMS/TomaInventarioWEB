@@ -314,68 +314,89 @@ function ActualizarTabla() {
 
 
 function Charge_RImport_Modal(Jsondata) {
-    $('#RImport_modal').modal('show');
+    // Cerrar el modal de importación primero
+    const importModal = document.getElementById('Import_Modal');
+    const bsImportModal = bootstrap.Modal.getInstance(importModal);
 
-    // Destruir instancia previa si existe
-    if ($.fn.DataTable.isDataTable('#RImport_Tbl')) {
-        $('#RImport_Tbl').DataTable().destroy();
+    if (bsImportModal) {
+        bsImportModal.hide();
+    } else {
+        $('#Import_Modal').modal('hide');
     }
 
-    RImport_tabla = $('#RImport_Tbl').DataTable({
-        "data": Jsondata,
-        "createdRow": function (row, data, dataIndex) {
-            if (data.Flg_pass == 0) {
-                $(row).addClass('table-danger');
-            } else {
-                $(row).addClass('table-success');
-            }
-        },
-        "columns": [
-            {
-                "data": "Objeto.vchCOD_Almacen",
-                "title": "Cód. Almacén"
-            },
-            {
-                "data": "Objeto.vchCod_Ubicacion",
-                "title": "Cód. Ubicación"
-            },
-            {
-                "data": "Objeto.vchDSC_Ubicacion",
-                "title": "Descripción"
-            },
-            {
-                "data": "Mensaje",
-                "title": "Mensaje",
-                "className": "text-start"
-            },
-            {
-                "data": null,
-                "orderable": false,
-                "searchable": false,
-                "title": "Estado",
-                "className": "text-center",
-                "render": function (data, type, row, meta) {
-                    if (data.Flg_pass == 0) {
-                        return '<span class="badge bg-danger"><i class="ti ti-x fs-4"></i> Error</span>';
-                    } else {
-                        return '<span class="badge bg-success"><i class="ti ti-check fs-4"></i> Éxito</span>';
-                    }
+    // Esperar a que el modal de importación se cierre completamente
+    $(importModal).one('hidden.bs.modal', function () {
+        // Limpiar backdrop si quedó
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+        $('body').css('overflow', '');
+        $('body').css('padding-right', '');
+
+        // Destruir instancia previa si existe
+        if ($.fn.DataTable.isDataTable('#RImport_Tbl')) {
+            $('#RImport_Tbl').DataTable().destroy();
+        }
+
+        // Crear la nueva DataTable con los resultados
+        RImport_tabla = $('#RImport_Tbl').DataTable({
+            "data": Jsondata,
+            "createdRow": function (row, data, dataIndex) {
+                if (data.Flg_pass == 0) {
+                    $(row).addClass('table-danger');
+                } else {
+                    $(row).addClass('table-info');
                 }
-                //"render": function (data, type, row, meta) {
-                //    if (data.Flg_pass == 0) {
-                //        return '<i class="fas fa-times-circle fa-lg text-danger" title="Error"></i>';
-                //    } else {
-                //        return '<i class="fas fa-check-circle fa-lg text-success" title="Éxito"></i>';
-                //    }
-                //}
-            }
-        ],
-        "paging": true,
-        "pageLength": 10,
-        "searching": true,
-        "lengthChange": true,
-        "responsive": true,
-        "language": españolTbl,
-        "order": [[4, "desc"]] // Ordenar por estado (errores primero)
-    });
+            },
+            "columns": [
+                {
+                    "data": "Objeto.vchCOD_Almacen",
+                    "title": "Cód. Almacén"
+                },
+                {
+                    "data": "Objeto.vchCod_Ubicacion",
+                    "title": "Cód. Ubicación"
+                },
+                {
+                    "data": "Objeto.vchDSC_Ubicacion",
+                    "title": "Descripción"
+                },
+                {
+                    "data": "Mensaje",
+                    "title": "Mensaje",
+                    "className": "text-start"
+                },
+                {
+                    "data": null,
+                    "orderable": false,
+                    "searchable": false,
+                    "title": "Estado",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        if (data.Flg_pass == 0) {
+                            return '<span class="badge bg-danger"><i class="ti ti-x fs-4"></i> Error</span>';
+                        } else {
+                            return '<span class="badge bg-info"><i class="ti ti-check fs-4"></i> Éxito</span>';
+                        }
+                    }
+                    //"render": function (data, type, row, meta) {
+                    //    if (data.Flg_pass == 0) {
+                    //        return '<i class="fas fa-times-circle fa-lg text-danger" title="Error"></i>';
+                    //    } else {
+                    //        return '<i class="fas fa-check-circle fa-lg text-success" title="Éxito"></i>';
+                    //    }
+                    //}
+                }
+            ],
+            "paging": true,
+            "pageLength": 10,
+            "searching": true,
+            "lengthChange": true,
+            "responsive": true,
+            "language": españolTbl,
+            "order": [[4, "desc"]] // Ordenar por estado (errores primero)
+        });
+
+        // Mostrar el modal de resultados después de cerrar el de importación
+        $('#RImport_modal').modal('show');
+    });   
 }

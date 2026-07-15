@@ -4284,8 +4284,6 @@
     <Content Include="Assets\FontAwesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Assets\FontAwesome\webfonts\fa-v4compatibility.ttf" />
     <Content Include="Assets\FontAwesome\webfonts\fa-v4compatibility.woff2" />
-    <Content Include="Plantillas\ALMACENSOFT - CARGA - INVENTARIO.xls" />
-    <Content Include="Plantillas\ALMACENSOFT - CARGA - MAESTROS.xls" />
     <Content Include="Plantillas\Plantilla_Producto.xlsx" />
     <Content Include="Plantillas\Plantilla_Ubicacion.xlsx" />
     <Content Include="Plantillas\1.CARGA - MAESTROS.XLSX" />

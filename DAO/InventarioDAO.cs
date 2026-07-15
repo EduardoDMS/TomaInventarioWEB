@@ -811,6 +811,59 @@ namespace DAO
 
         }
 
+        // MODIFICAR STOCK DE LA TABLA TEMPORAL DE LA DB
+        public Response ModificarProductoStock(Guid importacionId, string codUbicacion, string codProducto, string lote, double stock)
+        {
+            Response response = new Response();
+
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+
+            try
+            {
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (comando = new SqlCommand("WEB_MantCampoTablaDetalle_2026", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.Clear();
+
+                        comando.Parameters.Add("@ImportacionId ", SqlDbType.UniqueIdentifier).Value = importacionId;
+                        comando.Parameters.Add("@CodUbicacion", SqlDbType.VarChar, 20).Value = codUbicacion;
+                        comando.Parameters.Add("@CodProducto", SqlDbType.VarChar, 50).Value = codProducto;
+                        comando.Parameters.Add("@LoteProducto", SqlDbType.VarChar, 20).Value = lote;
+                        comando.Parameters.Add("@StockActual", SqlDbType.Decimal).Value = Convert.ToDecimal(stock);
+                        comando.Parameters.Add("@HUBO_ERROR", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                        comando.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
+                        conexion.Open();
+
+                        comando.ExecuteReader();
+
+                        response.MENSAJE_ERROR = (string)comando.Parameters["@msg"].Value ?? "";
+                        response.HUBO_ERROR = (bool)comando.Parameters["@Hubo_error"].Value;
+
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+                if (comando != null) comando.Dispose();
+                if (reader != null) reader.Dispose();
+            }
+
+            return response;
+
+        }
+
+
         public Response GetAPI_StockALM()
         {
             //string Stringresult;

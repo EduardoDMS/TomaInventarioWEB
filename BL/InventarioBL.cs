@@ -103,6 +103,13 @@ namespace BL
             return new InventarioDAO().InsertInv_InvDetalle(importacionId, UserReg, CodInv, Id_Almacen);
         }
 
+        // MODIFICAR STOCK DE LA TABLA TEMPORAL DE LA DB
+        public Response ModificarProductoStock(Guid importacionId, string codUbicacion, string codProducto, string lote, double stock)
+        {
+            InventarioDAO inventarioDAO = new InventarioDAO();
+            return inventarioDAO.ModificarProductoStock(importacionId, codUbicacion, codProducto, lote, stock);
+        }
+
         public List<DetInventarioImportBE> ImportarDetalles(string xml, int IdAlmacen, string UserReg, Guid importacionId)
         {
             XmlDocument xmlDoc = new XmlDocument();

@@ -160,7 +160,7 @@ function CargarTablaInventario(Cod_Inventario) {
                 f.searchValue = $('input[type="search"][aria-controls="tbl_Inventario"]').val();
                 //f.search
             }, "complete": function (response) {
-                console.log(response.responseJSON);
+                //console.log(response.responseJSON);
 
                 var codAlmacen = response.responseJSON.data[0].Dsc_Almacen;
                 $('#lblAlmAct').text(`Almacen actual: ${codAlmacen}`);
@@ -178,7 +178,7 @@ function CargarTablaInventario(Cod_Inventario) {
                 var faltantes = totalElementos - InventarioContado;
 
                 CargarCuadrosGraficos(Cod_Inventario, InventarioContado, faltantes, totalElementos);
-               
+                
                 CargarGraficoDiferencial(data);
 
                 CargarFooter(response.responseJSON.Listfooter[0], response.responseJSON.Listfooter[1], response.responseJSON.Listfooter[2], response.responseJSON.Listfooter[3],
@@ -568,9 +568,9 @@ function actualizarRadiosConteo(conteoActual) {
 $('#ConfirmarExport').on("click", function () {
     let radSelect = $('input:radio[name=ListRadioExcel]:checked').val();
 
-    console.log(radSelect);
-    console.log(Codigo_almacen);
-    console.log(Codigo_inventario);
+    //console.log(radSelect);
+    //console.log(Codigo_almacen);
+    //console.log(Codigo_inventario);
 
 
     switch (radSelect) {

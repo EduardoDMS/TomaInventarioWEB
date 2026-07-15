@@ -188,6 +188,7 @@ namespace TomaInventarioWEB.Controllers
             return json;
         }
 
+        // REPORTE DE CONTEOS DESDE GESTION INVENTARIO
         public ActionResult ExportInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, string inventario, string codigo)
         {
             var response = new InventarioBL().ExportInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3);
@@ -221,6 +222,7 @@ namespace TomaInventarioWEB.Controllers
                 excelWorksheet.Cells["E8"].Value = inventario;
                 excelWorksheet.Cells["G8"].Value = codigo;
 
+
                 // Escribir las cabeceras en el archivo Excel
                 for (int i = 0; i < dt.Columns.Count; i++)
                 {
@@ -232,6 +234,10 @@ namespace TomaInventarioWEB.Controllers
                 {
                     excelWorksheet.Cells["A12"].LoadFromDataTable(dt, false);
                 }
+
+                // Auto-ajustar columnas
+                excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
+
                 string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
                 if (System.IO.File.Exists(rutaImagen))
                 {
@@ -531,6 +537,17 @@ namespace TomaInventarioWEB.Controllers
             //    cod = CodInv,
             //    almacen = Id_Almacen
             //});
+        }
+
+        // MODIFICAR STOCK DE LA TABLA TEMPORAL DE LA DB <--
+        [HttpPost]
+        public JsonResult ModificarStockProducto(Guid importacionId, string codUbicacion, string codProducto, string lote, double stock) //AGREGAR, ELIMINAR
+        {
+            InventarioBL inventarioBL = new InventarioBL();
+
+            Response response = inventarioBL.ModificarProductoStock(importacionId, codUbicacion, codProducto, lote, stock);
+
+            return Json(response);
         }
 
         private List<Dictionary<string, object>> ConvertDataTableToList(DataTable dt)

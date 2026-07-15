@@ -3,12 +3,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
 }
-<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
+@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
 <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
 <link href="~/Content/css/select2.css" rel="stylesheet" />
 <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
 <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-<link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">
+<link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">*@
 
 
 <!-- Sección Seleccionar Inventario -->
@@ -144,7 +144,7 @@
                                 <th>Producto</th>
                                 <th>Ubicación</th>
                                 <th>Lote</th>
-                                <th>Serie</th>
+                                @*<th>Serie</th>*@
                                 <th class="text-end">Stock Inicial</th>
                                 <th class="text-end">Último Conteo</th>
                                 <th class="text-end">Stock Conteo</th>
@@ -155,7 +155,7 @@
                         <tbody></tbody>
                         <tfoot class="table-secondary fw-bold">
                             <tr>
-                                <td colspan="5" class="text-end">TOTALES:</td>
+                                <td colspan="4" class="text-end">TOTALES:</td>
                                 <td class="text-end" id="footerStockInicial">0</td>
                                 <td class="text-end"></td>
                                 <td class="text-end" id="footerStockConteo">0</td>
@@ -171,14 +171,14 @@
 </div>
 
 @section scripts {
-    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+    @*<script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
     <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
-    <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    @*<script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
     <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
     <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
-    <script src="~/Content/matdash/js/forms/select2.init.js"></script>
+    <script src="~/Content/matdash/js/forms/select2.init.js"></script>*@
 
     <script nonce="@nonce">
 
@@ -289,6 +289,7 @@
                     "complete": function (response) {
                         toggle_Loadingtb('tbLoading', false);
 
+                        //console.log(response);
                         if (response.responseJSON) {
                             if (response.responseJSON.error) {
                                 Swal.fire({
@@ -339,7 +340,7 @@
                     { "data": "Dsc_Producto", "title": "PRODUCTO" },
                     { "data": "Cod_ubicacion", "title": "UBICACIÓN" },
                     { "data": "Lote_Producto", "title": "LOTE" },
-                    { "data": "Serie_Producto", "title": "SERIE" },
+                    /*{ "data": "Serie_Producto", "title": "SERIE" },*/
                     {
                         "data": "Stock_inicial",
                         "title": "STOCK INICIAL",
@@ -439,8 +440,10 @@
             let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
                          '&searchValue=' + encodeURIComponent(searchValue);
 
+            //console.log(baseUrl + params);
             window.location.href = baseUrl + params;
 
+            // TIEMPO PUESTO MANUAL
             setTimeout(function() {
                 Swal.close();
             }, 500);

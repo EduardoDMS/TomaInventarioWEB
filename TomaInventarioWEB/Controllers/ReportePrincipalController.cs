@@ -663,7 +663,7 @@ namespace TomaInventarioWEB.Controllers
 
                     // Cabeceras en fila 11
                     string[] headers = new string[] {
-                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE", "SERIE",
+                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE",
                 "STOCK INICIAL", "ÚLTIMO CONTEO", "STOCK CONTEO", "DIFERENCIAL", "USUARIO"
             };
 
@@ -681,12 +681,25 @@ namespace TomaInventarioWEB.Controllers
                     // Totales
                     int filaTotal = 12 + dt.Rows.Count + 1;
                     excelWorksheet.Cells[filaTotal, 1].Value = "TOTALES:";
+                    excelWorksheet.Cells[filaTotal, 1].Style.Font.Bold = true;
+
                     if (listFooter.Count >= 3)
                     {
-                        excelWorksheet.Cells[filaTotal, 6].Value = listFooter[0]; // Stock Inicial
-                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[1]; // Stock Último Conteo
-                        excelWorksheet.Cells[filaTotal, 9].Value = listFooter[2]; // Diferencial
+                        excelWorksheet.Cells[filaTotal, 5].Value = listFooter[0]; // Stock Inicial
+                        excelWorksheet.Cells[filaTotal, 7].Value = listFooter[1]; // Stock Último Conteo
+                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[2]; // Diferencial
+
+                        // Formato para totales
+                        excelWorksheet.Cells[filaTotal, 5].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 7].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Color.SetColor(
+                            listFooter[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
+                        );
                     }
+
+                    // Auto-ajustar columnas
+                    excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
 
                     // Logo
                     string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
@@ -767,7 +780,7 @@ namespace TomaInventarioWEB.Controllers
                     }
 
                     string[] headers = new string[] {
-                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE", "SERIE",
+                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE",
                 "STOCK INICIAL", "ÚLTIMO CONTEO", "STOCK CONTEO", "DIFERENCIAL", "USUARIO"
             };
 
@@ -783,12 +796,25 @@ namespace TomaInventarioWEB.Controllers
 
                     int filaTotal = 12 + dt.Rows.Count + 1;
                     excelWorksheet.Cells[filaTotal, 1].Value = "TOTALES:";
+                    excelWorksheet.Cells[filaTotal, 1].Style.Font.Bold = true;
+
                     if (listFooter.Count >= 3)
                     {
-                        excelWorksheet.Cells[filaTotal, 6].Value = listFooter[0];
-                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[1];
-                        excelWorksheet.Cells[filaTotal, 9].Value = listFooter[2];
+                        excelWorksheet.Cells[filaTotal, 5].Value = listFooter[0];
+                        excelWorksheet.Cells[filaTotal, 7].Value = listFooter[1];
+                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[2];
+
+                        // Formato para totales
+                        excelWorksheet.Cells[filaTotal, 5].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 7].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Color.SetColor(
+                            listFooter[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
+                        );
                     }
+
+                    // Auto-ajustar columnas
+                    excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
 
                     string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
                     if (System.IO.File.Exists(rutaImagen))
@@ -868,7 +894,7 @@ namespace TomaInventarioWEB.Controllers
                     }
 
                     string[] headers = new string[] {
-                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE", "SERIE",
+                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE",
                 "STOCK INICIAL", "ÚLTIMO CONTEO", "STOCK CONTEO", "DIFERENCIAL", "USUARIO"
             };
 
@@ -884,12 +910,26 @@ namespace TomaInventarioWEB.Controllers
 
                     int filaTotal = 12 + dt.Rows.Count + 1;
                     excelWorksheet.Cells[filaTotal, 1].Value = "TOTALES:";
+                    excelWorksheet.Cells[filaTotal, 1].Style.Font.Bold = true;
+
                     if (listFooter.Count >= 3)
                     {
-                        excelWorksheet.Cells[filaTotal, 6].Value = listFooter[0];
-                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[1];
-                        excelWorksheet.Cells[filaTotal, 9].Value = listFooter[2];
+                        excelWorksheet.Cells[filaTotal, 5].Value = listFooter[0];
+                        excelWorksheet.Cells[filaTotal, 7].Value = listFooter[1];
+                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[2];
+
+                        // Formato para totales
+                        excelWorksheet.Cells[filaTotal, 5].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 7].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Color.SetColor(
+                            listFooter[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
+                        );
+
                     }
+
+                    // Auto-ajustar columnas
+                    excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
 
                     string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
                     if (System.IO.File.Exists(rutaImagen))
@@ -969,7 +1009,7 @@ namespace TomaInventarioWEB.Controllers
                     }
 
                     string[] headers = new string[] {
-                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE", "SERIE",
+                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE",
                 "STOCK INICIAL", "ÚLTIMO CONTEO", "STOCK CONTEO", "DIFERENCIAL", "USUARIO"
             };
 
@@ -985,12 +1025,25 @@ namespace TomaInventarioWEB.Controllers
 
                     int filaTotal = 12 + dt.Rows.Count + 1;
                     excelWorksheet.Cells[filaTotal, 1].Value = "TOTALES:";
+                    excelWorksheet.Cells[filaTotal, 1].Style.Font.Bold = true;
+
                     if (listFooter.Count >= 3)
                     {
-                        excelWorksheet.Cells[filaTotal, 6].Value = listFooter[0];
-                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[1];
-                        excelWorksheet.Cells[filaTotal, 9].Value = listFooter[2];
+                        excelWorksheet.Cells[filaTotal, 5].Value = listFooter[0];
+                        excelWorksheet.Cells[filaTotal, 6].Value = listFooter[1];
+                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[2];
+
+                        // Formato para totales
+                        excelWorksheet.Cells[filaTotal, 5].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 7].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Color.SetColor(
+                            listFooter[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
+                        );
                     }
+
+                    // Auto-ajustar columnas
+                    excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
 
                     string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
                     if (System.IO.File.Exists(rutaImagen))
@@ -1033,7 +1086,7 @@ namespace TomaInventarioWEB.Controllers
             dt.Columns.Add("DSC_PRODUCTO", typeof(string));
             dt.Columns.Add("COD_UBICACION", typeof(string));
             dt.Columns.Add("LOTE_PRODUCTO", typeof(string));
-            dt.Columns.Add("SERIE_PRODUCTO", typeof(string));
+            //dt.Columns.Add("SERIE_PRODUCTO", typeof(string));
             dt.Columns.Add("STOCK_INICIAL", typeof(decimal));
             dt.Columns.Add("ULTIMO_CONTEO", typeof(int));
             dt.Columns.Add("STOCK_ULTIMO_CONTEO", typeof(decimal));
@@ -1047,7 +1100,7 @@ namespace TomaInventarioWEB.Controllers
                     item.Dsc_Producto ?? "",
                     item.Cod_ubicacion ?? "",
                     item.Lote_Producto ?? "",
-                    item.Serie_Producto ?? "",
+                    //item.Serie_Producto ?? "",
                     item.Stock_inicial,
                     item.Ultimo_Conteo_Finalizado,
                     item.Stock_Ultimo_Conteo,
@@ -1248,16 +1301,16 @@ namespace TomaInventarioWEB.Controllers
 
                     // Cabeceras en fila 11
                     string[] headers = new string[] {
-                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE", "SERIE",
+                "CÓDIGO", "PRODUCTO", "UBICACIÓN", "LOTE",
                 "STOCK INICIAL", "CONTEO #", "STOCK CONTEO", "DIFERENCIAL", "USUARIO"
             };
 
                     for (int i = 0; i < headers.Length; i++)
                     {
                         excelWorksheet.Cells[11, i + 1].Value = headers[i];
-                        excelWorksheet.Cells[11, i + 1].Style.Font.Bold = true;
-                        excelWorksheet.Cells[11, i + 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                        excelWorksheet.Cells[11, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        //excelWorksheet.Cells[11, i + 1].Style.Font.Bold = true;
+                        //excelWorksheet.Cells[11, i + 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        //excelWorksheet.Cells[11, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
                     }
 
                     // Datos desde fila 12
@@ -1273,15 +1326,15 @@ namespace TomaInventarioWEB.Controllers
 
                     if (listFooter.Count >= 3)
                     {
-                        excelWorksheet.Cells[filaTotal, 6].Value = listFooter[0]; // Stock Inicial
-                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[1]; // Stock Conteo
-                        excelWorksheet.Cells[filaTotal, 9].Value = listFooter[2]; // Diferencial
+                        excelWorksheet.Cells[filaTotal, 5].Value = listFooter[0]; // Stock Inicial
+                        excelWorksheet.Cells[filaTotal, 7].Value = listFooter[1]; // Stock Conteo
+                        excelWorksheet.Cells[filaTotal, 8].Value = listFooter[2]; // Diferencial
 
                         // Formato para totales
-                        excelWorksheet.Cells[filaTotal, 6].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 5].Style.Font.Bold = true;
+                        excelWorksheet.Cells[filaTotal, 7].Style.Font.Bold = true;
                         excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
-                        excelWorksheet.Cells[filaTotal, 9].Style.Font.Bold = true;
-                        excelWorksheet.Cells[filaTotal, 9].Style.Font.Color.SetColor(
+                        excelWorksheet.Cells[filaTotal, 8].Style.Font.Color.SetColor(
                             listFooter[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
                         );
                     }

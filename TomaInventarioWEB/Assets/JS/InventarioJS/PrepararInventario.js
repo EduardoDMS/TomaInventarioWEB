@@ -285,7 +285,8 @@ function AgregarNuevoProducto() {
     ]);
 
     tablaProductos.clear();
-    tablaProductos.rows.add(dataActual).draw();
+    /* tablaProductos.rows.add(dataActual).draw();*/
+
     //let nuevoProducto = tablaProductos.row
     //    .add([
     //        CodInv,
@@ -303,6 +304,41 @@ function AgregarNuevoProducto() {
     //    .node();
 
     //$(nuevoProducto).prependTo('#tbl_addProductos tbody');
+
+    // Guid importacionId, string codUbicacion, string codProducto, string lote, double stock
+
+    // AGREGAR EN LA TABLA TEMPORAL MEDIANTE EL SP
+    console.log(importacionId, Codubi, Codprod, Lote, (Math.round(Stock * 1000) / 1000) * umMult);
+    $.ajax({
+        url: '../Inventario/ModificarStockProducto',
+        type: 'POST',
+        data: {
+            importacionId: importacionId,
+            codUbicacion: Codubi,
+            codProducto: Codprod,
+            lote: Lote,
+            stock: (Math.round(Stock * 1000) / 1000) * umMult
+        },
+        
+        success: function (response) {
+            console.log(response)
+            if (!response.HUBO_ERROR) {
+                tablaProductos.rows.add(dataActual).draw();
+
+                let fila = tablaProductos.row(0).node();
+
+                $(fila).addClass("row-nuevo");
+
+                //setTimeout(function () {
+                //    $(fila).removeClass("row-nuevo");
+                //}, 2000);
+
+                console.log("Se agrego correctamente de la tabla temporal");                
+            } else {
+                console.log(response.Message);
+            }
+        }
+    });  
 }
 
 
@@ -321,8 +357,39 @@ document.addEventListener("click", (e) => {
             return;
         }
 
-        tablaProductos.row(".selected").remove().draw(false);
-        estaSelecProd = false;
+        // Obtener los datos de la fila seleccionada
+        let data = tablaProductos.row(".selected").data();
+
+        let codUbicacion = data[1];
+        let codProducto = data[3];
+        let lote = data[5];
+        let stock = -parseFloat(data[6]);
+        var umMult = $('#UMText').attr('mult');
+
+        console.log(codUbicacion, codProducto, lote, stock);
+        $.ajax({
+            url: '../Inventario/ModificarStockProducto',
+            type: 'POST',
+            data: {
+                importacionId: importacionId,
+                codUbicacion: codUbicacion,
+                codProducto: codProducto,
+                lote: lote,
+                stock: (Math.round(stock * 1000) / 1000) * umMult
+            },
+
+            success: function (response) {
+                console.log(response)
+                if (!response.HUBO_ERROR) {
+                    tablaProductos.row(".selected").remove().draw(false);
+                    estaSelecProd = false;
+
+                    console.log("Se elimino correctamente de la tabla temporal");                   
+                } else {
+                    console.log(response.Message);
+                }
+            }
+        });        
     }
 });
 

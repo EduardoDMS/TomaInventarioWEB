@@ -128,8 +128,14 @@
                             </div> 
                         </div>
                         <div class="col-md-2 d-flex justify-content-center gap-3 align-items-end flex-wrap">
-                            <button type="button" id="btnAgregar" class="btn btn-primary">Agregar</button>
-                            <button type="button" id="btnEliminarFila" class="btn btn-danger">Eliminar</button>
+                            <button type="button" id="btnAgregar" class="btn btn-primary d-flex align-items-center gap-1">
+                                <i class="ti ti-circle-plus fs-4"></i>
+                                Agregar
+                            </button>
+                            <button type="button" id="btnEliminarFila" class="btn btn-danger d-flex align-items-center gap-1">
+                                <i class="ti ti-circle-minus fs-4"></i>
+                                Eliminar
+                            </button>
                         </div>
                     </div>
                     <!--tabla-->
@@ -662,7 +668,7 @@
                 processData: false,
                 //async:false,
                 success: function (response) {
-                    console.log(response);
+                    //console.log(response);
                     /*$("#CrearInv_fileInput").val("");*/
                     if (response.HUBO_ERROR == true) {
                         Swal.fire({

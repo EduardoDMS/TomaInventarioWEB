@@ -79,17 +79,26 @@
                         });
                     } else {
                         $('#Add_almacen').modal('hide');
-                        ActualizarTabla();
 
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Almacén creado exitosamente!',
-                            text: 'El almacén ha sido registrado correctamente.',
-                            confirmButtonColor: '#5d87ff',
-                            confirmButtonText: 'Aceptar',
-                            //timer: 5000,
-                            //timerProgressBar: true
-                        });
+                        // Mostrar éxito
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Almacén creado exitosamente!',
+                                text: 'El almacén ha sido registrado correctamente.',
+                                confirmButtonColor: '#5d87ff',
+                                confirmButtonText: 'Aceptar',
+                                timer: 5000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                allowOutsideClick: true
+                            }).then((result) => {
+                                if (result.isConfirmed || result.isDismissed) {
+                                    // Actualizar tabla
+                                    ActualizarTabla();
+                                }
+                            });
+                        }, 100); 
                     }
                 },
                 error: function (result) {
@@ -212,17 +221,26 @@ function saveEdit() {
                     });
                 } else {
                     $('#Edit_almacen').modal('hide');
-                    ActualizarTabla();
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Almacén actualizado exitosamente!',
-                        text: 'Los cambios han sido guardados correctamente.',
-                        confirmButtonColor: '#5d87ff',
-                        confirmButtonText: 'Aceptar',
-                        //timer: 5000,
-                        //timerProgressBar: true
-                    });
+                    // Mostrar éxito
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Almacén actualizado exitosamente!',
+                            text: 'Los cambios han sido guardados correctamente.',
+                            confirmButtonColor: '#5d87ff',
+                            confirmButtonText: 'Aceptar',
+                            timer: 5000,
+                            timerProgressBar: true,
+                            showConfirmButton: true,
+                            allowOutsideClick: true
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Actualizar tabla
+                                ActualizarTabla();
+                            }
+                        });
+                    }, 100);    
                 }
             },
             error: function (result) {

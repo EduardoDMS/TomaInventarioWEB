@@ -767,7 +767,7 @@ namespace DAO
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
-                        comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString();
+                        comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString(); // REVISAR ESE TOSTRING YA QUE INNERXML YA ES UN STRING
                         comando.Parameters.Add("@IDAlmacen", SqlDbType.Int).Value = IdAlmacen;
                         comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 50).Value = UserReg;
                         comando.Parameters.Add("@importacionId", SqlDbType.UniqueIdentifier).Value = importacionId;

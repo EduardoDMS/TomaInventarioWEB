@@ -175,8 +175,10 @@
     }
 
 
-    // ===== LIMPIAR AL CERRAR MODAL AGREGAR =====
+    // ===== LIMPIAR CAMPOS AL CERRAR MODAL AGREGAR =====
     $('#Add_usuario').on('hidden.bs.modal', function () {
+        document.getElementById('NombreInput').value = '';
+        document.getElementById('ApellidoInput').value = '';
         document.getElementById('txtUsuario_add').value = '';
         document.getElementById('txtPass_add').value = '';
         document.getElementById('txtPass_add').setAttribute('type', 'password');
@@ -276,7 +278,7 @@
                 url: _url,
                 data: JSON.stringify(obj),
                 success: function (response) {
-                    console.log("Payload enviado:", obj);
+                    //console.log("Payload enviado:", obj);
                     if (response.HUBO_ERROR) {
                         Swal.fire({
                             icon: 'error',
@@ -290,16 +292,27 @@
                         $('#Add_usuario').modal('hide');
 
                         // Actualizar tabla
-                        ActualizarTabla();
+                        /*ActualizarTabla();*/
 
                         // Mostrar éxito
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Usuario creado exitosamente!',
-                            text: 'El usuario ha sido registrado correctamente.',
-                            confirmButtonColor: '#5d87ff',
-                            confirmButtonText: 'Aceptar'
-                        });
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Usuario creado exitosamente!',
+                                text: 'El usuario ha sido registrado correctamente.',
+                                confirmButtonColor: '#5d87ff',
+                                confirmButtonText: 'Aceptar',
+                                timer: 5000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                allowOutsideClick: true
+                            }).then((result) => {
+                                if (result.isConfirmed || result.isDismissed) {
+                                    // Actualizar tabla
+                                    ActualizarTabla();
+                                }
+                            });
+                        }, 100);    
                     }
                 },
                 error: function (result) {
@@ -527,20 +540,25 @@ function saveEdit() {
                 } else {
                     $('#Edit_usuario').modal('hide');
 
-                    // Actualizar tabla
-                    ActualizarTabla();
-
                     // Mostrar éxito
-                    Swal.fire({
-                        title: '¡Usuario actualizado!',
-                        icon: 'success',
-                        text: 'Los cambios han sido guardados correctamente.',
-                        draggable: true,
-                        //confirmButtonColor: '#5d87ff',
-                        //confirmButtonText: 'Aceptar',
-                        //timer: 4500,
-                        //timerProgressBar: true
-                    });
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Usuario actualizado exitosamente!',
+                            text: 'Los cambios han sido guardados correctamente.',
+                            confirmButtonColor: '#5d87ff',
+                            confirmButtonText: 'Aceptar',
+                            timer: 5000,
+                            timerProgressBar: true,
+                            showConfirmButton: true,
+                            allowOutsideClick: true
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Actualizar tabla
+                                ActualizarTabla();
+                            }
+                        });
+                    }, 100);
                 }
             },
             error: function (result) {

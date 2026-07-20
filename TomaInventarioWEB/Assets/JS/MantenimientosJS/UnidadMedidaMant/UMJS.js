@@ -123,19 +123,25 @@
                         // Cerrar modal
                         $('#Add_Modal').modal('hide');
 
-                        // Actualizar tabla
-                        ActualizarTabla();
-
                         // Mostrar éxito
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Unidad de medida creada!',
-                            text: 'La unidad de medida se ha registrado correctamente.',
-                            confirmButtonColor: '#5d87ff',
-                            confirmButtonText: 'Aceptar',
-                            //timer: 4500,
-                            //timerProgressBar: true
-                        });
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Unidad de medida creada!',
+                                text: 'La unidad de medida ha sido registrada correctamente.',
+                                confirmButtonColor: '#5d87ff',
+                                confirmButtonText: 'Aceptar',
+                                timer: 5000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                allowOutsideClick: true
+                            }).then((result) => {
+                                if (result.isConfirmed || result.isDismissed) {
+                                    // Actualizar tabla
+                                    ActualizarTabla();
+                                }
+                            });
+                        }, 100);        
                     }
                 },
                 error: function (result) {
@@ -296,19 +302,25 @@ function saveEdit() {
                 } else {
                     $('#Edit_Modal').modal('hide');
 
-                    // Actualizar tabla
-                    ActualizarTabla();
-
                     // Mostrar éxito
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Unidad de medida actualizada!',
-                        text: 'Los cambios han sido guardados correctamente.',
-                        confirmButtonColor: '#5d87ff',
-                        confirmButtonText: 'Aceptar',
-                        //timer: 4500,
-                        //timerProgressBar: true
-                    });
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Unidad de medida actualizada!',
+                            text: 'Los cambios han sido guardados correctamente.',
+                            confirmButtonColor: '#5d87ff',
+                            confirmButtonText: 'Aceptar',
+                            timer: 5000,
+                            timerProgressBar: true,
+                            showConfirmButton: true,
+                            allowOutsideClick: true
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Actualizar tabla
+                                ActualizarTabla();
+                            }
+                        });
+                    }, 100);    
                 }
             },
             error: function (result) {

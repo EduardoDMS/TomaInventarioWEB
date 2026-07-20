@@ -79,7 +79,7 @@ namespace TomaInventarioWEB.Controllers
                 if (worksheet != null && listaUnidades.Any())
                 {
                     // Determinar la fila y columna de inicio para la tabla
-                    int startRow = 5;
+                    int startRow = 3;
                     int startColumn = 6; // Corresponde a la columna F
 
                     // Obtener las propiedades de la clase UnidadMedidaBE para los encabezados
@@ -98,7 +98,7 @@ namespace TomaInventarioWEB.Controllers
                     // Determinar el rango de la tabla (incluyendo encabezados)
                     int endRow = startRow + listaUnidades.Count - 1;
                     int endColumn = startColumn + properties.Length - 1;
-                    ExcelRange dataRange = worksheet.Cells[5, 6, endRow, endColumn];
+                    ExcelRange dataRange = worksheet.Cells[3, 6, endRow, endColumn];
 
                     // Opcional: Formatear como tabla
                     ExcelTable table = worksheet.Tables.Add(dataRange, "TablaUnidadesMedida");
@@ -147,10 +147,10 @@ namespace TomaInventarioWEB.Controllers
         public ActionResult DescargarExcelDetalle()
         {
             // Ruta del archivo en el servidor
-            string rutaArchivo = Server.MapPath("~/Plantillas/Plantilla_Detalle.xlsx");
+            string rutaArchivo = Server.MapPath("~/Plantillas/Plantilla_Inventario.xlsx");
 
             // Nombre que se mostrará al descargar el archivo
-            string nombreArchivo = "Plantilla_Detalle.xlsx";
+            string nombreArchivo = "Plantilla_Inventario.xlsx";
 
             // Tipo MIME para un archivo Excel
             string tipoMIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

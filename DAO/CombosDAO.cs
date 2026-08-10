@@ -1,23 +1,20 @@
 ﻿using BE;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAO
 {
     public class CombosDAO
     {
-        public Response cbxAlmacenes() {
+        public Response cbxAlmacenes()
+        {
             Response response = new Response();
             List<CombosBE> ListCombo = new List<CombosBE>();
             SqlConnection con = null;
             SqlCommand cmd = null;
-            SqlDataReader reader= null;
+            SqlDataReader reader = null;
             try
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
@@ -50,8 +47,9 @@ namespace DAO
                 response.HUBO_ERROR = true;
 
             }
-            finally {
-                if (con != null) { con.Close();con.Dispose(); }
+            finally
+            {
+                if (con != null) { con.Close(); con.Dispose(); }
                 //if (con != null) { con.Dispose(); }
                 if (reader != null) { reader.Dispose(); }
             }
@@ -102,6 +100,55 @@ namespace DAO
                 //if (con != null) { con.Dispose(); }
                 if (reader != null) { reader.Dispose(); }
             }
+            return response;
+        }
+
+        public Response cbxInventariosPorAlmacen(string idAlmacen)
+        {
+            Response response = new Response();
+            List<CombosBE> ListCombo = new List<CombosBE>();
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+            SqlDataReader reader = null;
+
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_cbxInventariosCerrados", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add("@COD_ALMACEN", SqlDbType.VarChar).Value = idAlmacen;// es codAlmacen pero se identifica como idAlmacen
+                                                                                                // cmd.Parameters.Clear();
+                        con.Open();
+
+                        using (reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CombosBE entity = new CombosBE();
+                                entity.vchValue = (reader["ID_INVENTARIO"] == DBNull.Value) ?
+                                    String.Empty : reader["ID_INVENTARIO"].ToString();
+                                entity.vchdesc = (reader["COD_INVENTARIO"] == DBNull.Value) ?
+                                    String.Empty : reader["COD_INVENTARIO"].ToString();
+                                ListCombo.Add(entity);
+                            }
+                        }
+                    }
+                }
+                response.Entity = ListCombo;
+            }
+            catch (Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (con != null) { con.Close(); con.Dispose(); }
+                if (reader != null) { reader.Dispose(); }
+            }
+
             return response;
         }
 
@@ -270,6 +317,7 @@ namespace DAO
                     using (cmd = new SqlCommand("WEB_cbxInventariosCerrados", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
+                        //cmd.Parameters.Add("@ID_ALMACEN", SqlDbType.Int).Value = NRO_CONTEO_3;
                         cmd.Parameters.Clear();
                         con.Open();
 
@@ -325,7 +373,7 @@ namespace DAO
                             while (reader.Read())
                             {
                                 CombosBE entity = new CombosBE();
-                                
+
                                 entity.intValue = (reader["IntUniMed"] == DBNull.Value) ? 0 : Int32.Parse(reader["IntUniMed"].ToString());
                                 entity.vchdesc = (reader["vchDesUniMed"] == DBNull.Value) ? String.Empty : reader["vchDesUniMed"].ToString();
                                 ListCombo.Add(entity);

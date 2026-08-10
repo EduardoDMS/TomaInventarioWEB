@@ -12,7 +12,7 @@ namespace TomaInventarioWEB.Controllers
     [CheckSession]
     public class ReportePrincipalController : Controller
     {
-        // GET: Vista Principal del Reporte
+        // GET: Vista Principal del Reporte(NO DIFERENCIAL,...
         [GenerateNonce]
         public ActionResult Reporte_Principal()
         {
@@ -30,41 +30,131 @@ namespace TomaInventarioWEB.Controllers
 
             return View();
         }
+
+
+
+
+        // ==================================================
+        // NUEVOS MÉTODOS DE REPORTES
+        // ==================================================
         [GenerateNonce]
         public ActionResult Reporte_Diferencial()
         {
-            Session["NavIndex"] = "2";
+            //Session["NavIndex"] = "2";
 
-            // Cargar combo de inventarios cerrados
-            CombosBE objCombo = new CombosBE();
-            objCombo.vchValue = "-1";  // Cambiado de intValue a vchValue
-            objCombo.vchdesc = "Seleccionar Inventario";
+            // Cargar combo de almacenes 
+            CombosBE objComboAlmacen = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objComboAlmacen);
 
-            List<CombosBE> listInventariosCerrados = new List<CombosBE>();
-            listInventariosCerrados = (List<CombosBE>)new CombosBL().cbxInventariosCerrados().Entity;
-            listInventariosCerrados.Insert(0, objCombo);
-            ViewBag.ListInventariosCerrados = listInventariosCerrados;
+            ViewBag.ListaAlmacenes = listaAlmacenes;
 
             return View();
         }
+
+        [HttpPost]
+        public JsonResult ObtenerReporteDiferencial(string codInventario, string estado, string tipoDiferencia, string busqueda)
+        {
+            try
+            {
+                var response = new ReportePrincipalBL().ObtenerDatosReporteDiferencial(codInventario, estado, tipoDiferencia, busqueda);
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    error = ex.Message
+                });
+            }
+        }
+
+
+        [GenerateNonce]
+        public ActionResult Reporte_Conteo()
+        {
+            //Session["NavIndex"] = "2";
+
+            // Cargar combo de almacenes 
+            CombosBE objComboAlmacen = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objComboAlmacen);
+
+            ViewBag.ListaAlmacenes = listaAlmacenes;
+
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerReporteConteo(string codInventario, int nroConteo, string busqueda)
+        {
+            try
+            {
+                var response = new ReportePrincipalBL().ObtenerDatosReporteConteo(codInventario, nroConteo, busqueda);
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    error = ex.Message
+                });
+            }
+        }
+
 
         [GenerateNonce]
         public ActionResult Reporte_Usuario()
         {
-            Session["NavIndex"] = "2";
+            //Session["NavIndex"] = "2";
 
-            // Cargar combo de inventarios cerrados
-            CombosBE objCombo = new CombosBE();
-            objCombo.vchValue = "-1";  // Cambiado de intValue a vchValue
-            objCombo.vchdesc = "Seleccionar Inventario";
+            // Cargar combo de almacenes 
+            CombosBE objComboAlmacen = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objComboAlmacen);
 
-            List<CombosBE> listInventariosCerrados = new List<CombosBE>();
-            listInventariosCerrados = (List<CombosBE>)new CombosBL().cbxInventariosCerrados().Entity;
-            listInventariosCerrados.Insert(0, objCombo);
-            ViewBag.ListInventariosCerrados = listInventariosCerrados;
+            ViewBag.ListaAlmacenes = listaAlmacenes;
 
             return View();
         }
+
+        [HttpPost]
+        public JsonResult ObtenerReporteUsuario(string codInventario, int nroConteo, string busqueda)
+        {
+            try
+            {
+                var response = new ReportePrincipalBL().ObtenerDatosReporteUsuario(codInventario, nroConteo, busqueda);
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    error = ex.Message
+                });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [GenerateNonce]
         public ActionResult Reporte_Producto()
         {
@@ -99,23 +189,7 @@ namespace TomaInventarioWEB.Controllers
 
             return View();
         }
-        [GenerateNonce]
-        public ActionResult Reporte_Conteo()
-        {
-            Session["NavIndex"] = "2";
 
-            // Cargar combo de inventarios cerrados
-            CombosBE objCombo = new CombosBE();
-            objCombo.vchValue = "-1";  // Cambiado de intValue a vchValue
-            objCombo.vchdesc = "Seleccionar Inventario";
-
-            List<CombosBE> listInventariosCerrados = new List<CombosBE>();
-            listInventariosCerrados = (List<CombosBE>)new CombosBL().cbxInventariosCerrados().Entity;
-            listInventariosCerrados.Insert(0, objCombo);
-            ViewBag.ListInventariosCerrados = listInventariosCerrados;
-
-            return View();
-        }
 
         /// <summary>
         /// Método AJAX para recargar combo de inventarios cerrados
@@ -143,12 +217,56 @@ namespace TomaInventarioWEB.Controllers
 
 
 
+
+
+
+
+        // NUEVO CONTROLADOR
+        [HttpPost]
+        public JsonResult FillCbxInventariosPorAlmacen(string idAlmacen)
+        {
+            //return Json(new
+            //{
+            //    success = true,
+            //    recibido = idAlmacen
+            //});
+            try
+            {
+                CombosBE objCombo = new CombosBE();
+                objCombo.vchValue = "-1";
+                objCombo.vchdesc = "Seleccionar Inventario";
+
+                List<CombosBE> listaInventariosPorAlmacen = new List<CombosBE>();
+                listaInventariosPorAlmacen = (List<CombosBE>)new CombosBL().cbxInventariosPorAlmacen(idAlmacen).Entity;
+                listaInventariosPorAlmacen.Insert(0, objCombo);
+
+                return Json(new { success = true, data = listaInventariosPorAlmacen });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, mensaje = ex.Message });
+            }
+        }
+
+        // ==================================================
+        // NUEVOS MÉTODOS DE REPORTES
+        // ==================================================
+
+
+
+
+
+
+
+
         #region Obtener Datos del Reporte
 
         /// <summary>
         /// Obtiene los datos principales del reporte de inventario cerrado
         /// Muestra: código producto, descripción, ubicación, lote, cantidad inicial, conteos y diferencias
         /// </summary>
+
+        // NO EN DIFERENCIAL, ...
         [HttpPost]
         public JsonResult ObtenerDatosReporteInventario(
           string codInventario,
@@ -238,6 +356,7 @@ namespace TomaInventarioWEB.Controllers
         }
 
         // Método ReportePrincipalController
+        // NO EN DIFERENCIAL, ...
         private List<TblReportePrincipalBE> ConvertDataTableToList(DataTable dt)
         {
             List<TblReportePrincipalBE> lista = new List<TblReportePrincipalBE>();

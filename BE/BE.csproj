@@ -50,6 +50,12 @@
     <Compile Include="InventarioBE.cs" />
     <Compile Include="ProductoBE.cs" />
     <Compile Include="ReportePrincipalBE.cs" />
+    <Compile Include="Reportes\ReporteConteoBE.cs" />
+    <Compile Include="Reportes\ReporteDiferencialBE.cs" />
+    <Compile Include="Reportes\ReporteUsuarioBE.cs" />
+    <Compile Include="Reportes\TblReporteConteoBE.cs" />
+    <Compile Include="Reportes\TblReporteDiferencialBE.cs" />
+    <Compile Include="Reportes\TblReporteUsuarioBE.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="TblReportePrincipalV2BE.cs" />
     <Compile Include="UbicacionBE.cs" />
@@ -60,5 +66,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BE
+﻿namespace BE
 {
     public class CombosBE
     {
@@ -13,6 +7,5 @@ namespace BE
         public string vchdesc { get; set; }
         public string vchaddValue { get; set; }
         public int intaddValue { get; set; }
-
     }
 }

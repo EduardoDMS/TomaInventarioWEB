@@ -1,15 +1,121 @@
 ﻿using BE;
 using DAO;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL
 {
     public class ReportePrincipalBL
     {
+        // ==================================================
+        // NUEVOS MÉTODOS DE REPORTES
+        // ==================================================
+
+        public Response ObtenerDatosReporteDiferencial(
+            string codInventario,
+            string estado,
+            string tipoDiferencia,
+            string busqueda,
+            string start = "0",
+            string length = "10",
+            string order = null)
+        {
+            Response response = new Response();
+
+            try
+            {
+                if (String.IsNullOrEmpty(codInventario))
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "El código de inventario es obligatorio";
+                    return response;
+                }
+
+                response = new ReportePrincipalDAO().ReporteDiferencial(codInventario, estado, tipoDiferencia, busqueda);
+            }
+            catch (Exception ex)
+            {
+
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
+            }
+            return response;
+        }
+
+
+        public Response ObtenerDatosReporteConteo(
+            string codInventario,
+            int nroConteo,
+            string busqueda,
+            string start = "0",
+            string length = "10",
+            string order = null)
+        {
+            Response response = new Response();
+
+            try
+            {
+                if (String.IsNullOrEmpty(codInventario))
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "El código de inventario es obligatorio";
+                    return response;
+                }
+
+                response = new ReportePrincipalDAO().ReporteConteo(codInventario, nroConteo, busqueda);
+            }
+            catch (Exception ex)
+            {
+
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
+            }
+            return response;
+        }
+
+
+        public Response ObtenerDatosReporteUsuario(
+            string codInventario,
+            int nroConteo,
+            string busqueda,
+            string start = "0",
+            string length = "10",
+            string order = null)
+        {
+            Response response = new Response();
+
+            try
+            {
+                if (String.IsNullOrEmpty(codInventario))
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "El código de inventario es obligatorio";
+                    return response;
+                }
+
+                response = new ReportePrincipalDAO().ReporteUsuario(codInventario, nroConteo, busqueda);
+            }
+            catch (Exception ex)
+            {
+
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
+            }
+            return response;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public Response ObtenerReporteInventarioCerrado(
         string codInventario,
@@ -38,7 +144,7 @@ namespace BL
             return response;
         }
 
-      
+
         /// <summary>
         /// Obtiene reporte de inventario V2 - Usa último conteo finalizado
         /// </summary>
@@ -276,6 +382,8 @@ namespace BL
         //        }
         //        return response;
         //    }
+
+
         public Response ObtenerReporteInventarioPorConteo(
             string codInventario,
             int nroConteo,
@@ -323,6 +431,6 @@ namespace BL
             return response;
         }
     }
-    }
-      
+}
+
 

@@ -1,16 +1,12 @@
 ﻿using BE;
 using DAO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL
 {
     public class CombosBL
     {
-        public Response cbxAlmacenes() {
+        public Response cbxAlmacenes()
+        {
             return new CombosDAO().cbxAlmacenes();
         }
         public Response cbxInventario()
@@ -32,6 +28,11 @@ namespace BL
         public Response cbxInventariosCerrados()
         {
             return new CombosDAO().cbxInventariosCerrados();
+        }
+
+        public Response cbxInventariosPorAlmacen(string idAlmacen)
+        {
+            return new CombosDAO().cbxInventariosPorAlmacen(idAlmacen);
         }
     }
 }

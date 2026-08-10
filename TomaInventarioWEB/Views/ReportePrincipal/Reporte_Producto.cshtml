@@ -339,6 +339,7 @@
                         //toggle_Loadingtb('tbLoading', true);
                     },
                     "complete": function (response) {
+                        console.log(response);
                         toggle_Loadingtb('tbLoading', false);
 
                         if (response.responseJSON) {

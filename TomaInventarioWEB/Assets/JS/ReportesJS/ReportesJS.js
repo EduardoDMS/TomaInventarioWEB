@@ -33,6 +33,7 @@ function cargarcbxInventario() {
         data: '',
         async: false,
         success: function (response) {
+            //console.log(response);
             //  //Console.log(response);
             var row = "";
             /*row += "<option value=''>--Seleccione--</option>";*/
@@ -145,6 +146,7 @@ function CargarHistorico() {
         data: JSON.stringify(obj),
         //async: false,
         success: function (response) {
+            console.log(response);
             var json = JSON.parse(response);
             ////Console.log(json.length);
             $('#spanCantInv').text(json.length);

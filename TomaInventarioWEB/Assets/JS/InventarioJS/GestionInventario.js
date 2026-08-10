@@ -9,7 +9,7 @@ let nIntervId;
 /*// TRAE LOS INVENTARIOS //*/
 LoadCbxInventario();
 function LoadCbxInventario() {
-    //console.log("cargar inventarios");
+    console.log("cargar inventarios");
     $("#cbxInventarioP").empty();
     let _url = 'FillCbxInventario';
 
@@ -95,6 +95,7 @@ function CargarDatosInventario(Cod_Inventario) {
         data: JSON.stringify(obj),
         async: false,
         success: function (response) {
+            console.log(response);
             ConteoActual = response[0].NRO_CONTEO;
             lblConteoActual.textContent = ConteoActual;
             //$('#lblInventario').text(response[0].Nombre);

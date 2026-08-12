@@ -276,7 +276,7 @@ namespace DAO
                             reporteUsuarioBE.UsuariosParticipantes = (reader["USUARIOS_PARTICIPANTES"] == DBNull.Value) ? 0 : Int32.Parse(reader["USUARIOS_PARTICIPANTES"].ToString());
                             reporteUsuarioBE.ProductosFueraInventario = (reader["PRODUCTOS_FUERA_INVENTARIO"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_FUERA_INVENTARIO"].ToString());
                             reporteUsuarioBE.UsuarioMasLecturas = (reader["USUARIO_MAS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIO_MAS_LECTURAS"].ToString();
-                            reporteUsuarioBE.UsuarioMasLecturas = (reader["USUARIOS_MENOS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIO_MENOS_LECTURAS"].ToString();
+                            reporteUsuarioBE.UsuarioMenosLecturas = (reader["USUARIOS_MENOS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIOS_MENOS_LECTURAS"].ToString();
                             reporteUsuarioBE.ConteoSeleccionado = (reader["CONTEO_SELECCIONADO"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEO_SELECCIONADO"].ToString());
                             reporteUsuarioBE.EstadoConteo = (reader["COD_ESTADO_CONTEO"] == DBNull.Value) ? string.Empty : reader["COD_ESTADO_CONTEO"].ToString();
                             reporteUsuarioBE.ConteosDisponibles = (reader["CONTEOS_DISPONIBLES"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEOS_DISPONIBLES"].ToString());
@@ -309,7 +309,7 @@ namespace DAO
                                 totalesFooter.Add((reader["TOTALIZADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["TOTALIZADO"].ToString()));
                             }
                         }
-                        reporteUsuarioBE.TblreporteUsuarios = listaTabla;
+                        reporteUsuarioBE.TblReporteUsuarios = listaTabla;
                         reader.Close();
                     }
                 }
@@ -334,7 +334,115 @@ namespace DAO
         }
 
 
+        public Response ReporteProducto(
+            string codInventario,
+            string busqueda = "",
+            int observacion = 0,
+            string start = "0",
+            string length = "10",
+            string order = null)
+        {
+            Response response = new Response();
+            // MIS BE
+            ReporteProductoBE reporteProductoBE = new ReporteProductoBE();
+            List<TblReporteProductoBE> listaTabla = new List<TblReporteProductoBE>();
+            List<decimal> totalesFooter = new List<decimal>();
 
+
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+
+            try
+            {
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (comando = new SqlCommand("SP_WEB_reporteXproducto_2026", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.Clear();
+
+                        // Parametros SP
+                        comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
+                        comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 20).Value = busqueda;
+                        comando.Parameters.Add("@P_OBSERVACION", SqlDbType.Int).Value = observacion;
+
+                        comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = int.Parse(start);
+                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
+                        comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = order;
+
+                        conexion.Open();
+                        reader = comando.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            reporteProductoBE.ProductosInventariados = (reader["PRODUCTOS_INVENTARIADOS"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_INVENTARIADOS"].ToString());
+                            reporteProductoBE.ProductosConDiferencia = (reader["PRODUCTOS_CON_DIFERENCIA"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_CON_DIFERENCIA"].ToString());
+                            reporteProductoBE.ProductosSinDiferencia = (reader["PRODUCTOS_SIN_DIFERENCIA"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_SIN_DIFERENCIA"].ToString());
+                            reporteProductoBE.ProductosFueraInventario = (reader["PRODUCTOS_FUERA_INVENTARIO"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_FUERA_INVENTARIO"].ToString());
+                            reporteProductoBE.ProductosUbicacionDiferente = (reader["PRODUCTOS_UBICACION_DIFERENTE"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_UBICACION_DIFERENTE"].ToString());
+                            reporteProductoBE.ProductosLoteDiferente = (reader["PRODUCTOS_LOTE_DIFERENTE"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_LOTE_DIFERENTE"].ToString());
+                            reporteProductoBE.StockInicialTotal = (reader["STOCK_INICIAL_TOTAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INICIAL_TOTAL"].ToString());
+                            reporteProductoBE.StockFinalTotal = (reader["STOCK_FINAL_TOTAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_FINAL_TOTAL"].ToString());
+                            reporteProductoBE.DiferenciaTotal = (reader["DIFERENCIA_TOTAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["DIFERENCIA_TOTAL"].ToString());
+                            reporteProductoBE.EstadoConteo = (reader["ESTADO_INVENTARIO"] == DBNull.Value) ? string.Empty : reader["ESTADO_INVENTARIO"].ToString();
+                            reporteProductoBE.ConteoSeleccionado = (reader["CONTEO_ACTUAL"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEO_ACTUAL"].ToString());
+                        }
+
+                        if (reader.NextResult())
+                        {
+                            while (reader.Read())
+                            {
+                                TblReporteProductoBE filaTabla = new TblReporteProductoBE();
+
+                                filaTabla.CodProducto = (reader["CODIGO"] == DBNull.Value) ? string.Empty : reader["CODIGO"].ToString();
+                                filaTabla.DscProducto = (reader["PRODUCTO"] == DBNull.Value) ? string.Empty : reader["PRODUCTO"].ToString();
+                                filaTabla.UbicacionInicial = (reader["UBICACION_INICIAL"] == DBNull.Value) ? string.Empty : reader["UBICACION_INICIAL"].ToString();
+                                filaTabla.UbicacionContada = (reader["UBICACION_CONTADA"] == DBNull.Value) ? string.Empty : reader["UBICACION_CONTADA"].ToString();
+                                filaTabla.LoteInicial = (reader["LOTE_INICIAL"] == DBNull.Value) ? string.Empty : reader["LOTE_INICIAL"].ToString();
+                                filaTabla.LoteContado = (reader["LOTE_CONTADO"] == DBNull.Value) ? string.Empty : reader["LOTE_CONTADO"].ToString();
+                                filaTabla.StockInicial = (reader["STOCK_INICIAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INICIAL"].ToString());
+                                filaTabla.StockContado = (reader["STOCK_CONTADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_CONTADO"].ToString());
+                                filaTabla.Diferencia = (reader["DIFERENCIA"] == DBNull.Value) ? 0 : decimal.Parse(reader["DIFERENCIA"].ToString());
+                                filaTabla.Observacion = (reader["OBSERVACION"] == DBNull.Value) ? string.Empty : reader["OBSERVACION"].ToString();
+                                filaTabla.Usuario = (reader["USUARIOS"] == DBNull.Value) ? string.Empty : reader["USUARIOS"].ToString();
+
+                                listaTabla.Add(filaTabla);
+                            }
+                        }
+
+                        if (reader.NextResult())
+                        {
+                            if (reader.Read())
+                            {
+                                totalesFooter.Add((reader["StockInicialTotal"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockInicialTotal"].ToString()));
+                                totalesFooter.Add((reader["StockFinalTotal"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockFinalTotal"].ToString()));
+                                totalesFooter.Add((reader["StockDiferencial"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockDiferencial"].ToString()));
+                            }
+                        }
+                        reporteProductoBE.TblReporteProductos = listaTabla;
+                        reader.Close();
+                    }
+                }
+
+                response.Entity = reporteProductoBE;
+                response.footerTable = totalesFooter;
+            }
+            catch (Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed) reader.Close();
+                if (reader != null) reader.Dispose();
+                if (comando != null) comando.Dispose();
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+            }
+
+            return response;
+        }
 
 
 

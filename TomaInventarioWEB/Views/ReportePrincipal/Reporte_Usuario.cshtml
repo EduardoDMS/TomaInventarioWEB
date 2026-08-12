@@ -338,35 +338,49 @@
                 cargarDatosInventario();
             });
 
-            $('#btnLimpiarFiltros').click(function () {
-                $('#customSearch').val('');
-                $('#btnLimpiarBusqueda').addClass('d-none');
-                reloadTableReporte();
-            });
-
             $('#btnExportarExcel').click(function () {
                 exportarExcel();
             });
 
-            $('#customSearch').on('keyup', function () {
-                if (typeof tblReporteUsuario !== 'undefined') {
-                    tblReporteUsuario.search(this.value).draw();
+
+            // Busqueda general
+            let timeoutBusqueda = null;
+
+            $('#busquedaGeneral').on('input', function () {
+                if (modoFiltrado === "LOCAL") {
+                    tblReporteInventario.search(this.value, false, false).draw();
+                    return;
                 }
+
+                clearTimeout(timeoutBusqueda);
+
+                timeoutBusqueda = setTimeout(() => {
+                    CargarReporteInventarioUsuario(inventarioSeleccionado.codigo);
+                }, 400);
+            })
+
+            $('#busquedaGeneral').on('keydown', function (e) {
+                if (e.key !== "Enter")
+                    return;
+
+                clearTimeout(timeoutBusqueda);
+
+                CargarReporteInventarioUsuario(inventarioSeleccionado.codigo);
             });
 
-            $('#customSearch').on('keyup change', function () {
-                if ($(this).val().length > 0) {
-                    $('#btnLimpiarBusqueda').removeClass('d-none');
-                } else {
-                    $('#btnLimpiarBusqueda').addClass('d-none');
-                }
-            });
-
+            // Limpiar busqueda
             $('#btnLimpiarBusqueda').on('click', function () {
-                $('#customSearch').val('');
-                $('#btnLimpiarBusqueda').addClass('d-none');
-                if (typeof tblReporteUsuario !== 'undefined') {
-                    tblReporteUsuario.search('').draw();
+                $('#busquedaGeneral').val('');
+                tblReporteInventario.search('').draw();
+                CargarReporteInventarioUsuario(inventarioSeleccionado.codigo);
+            });
+
+            // Filtro conteo
+            $('#slcConteo').on('change', function () {
+                if (modoFiltrado === "SERVIDOR") {
+                    CargarReporteInventarioUsuario(inventarioSeleccionado.codigo);
+                } else {
+                    tblReporteInventario.column(5).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
                 }
             });
         }
@@ -463,7 +477,7 @@
 
              // UMBRAL PARA FILTROS AL SERVIDOR
              let totalProductos = result.Entity.ProductosInventariados;
-             modoFiltrado = totalProductos > 1 ? "SERVIDOR" : "LOCAL";
+             modoFiltrado = totalProductos >= 0 ? "SERVIDOR" : "LOCAL";
              //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
              // VERIFICAR CONTEOS DISPONIBLES
@@ -473,7 +487,7 @@
              CargarKPIs(result.Entity);
 
              // CARGAR TABLA
-             CargarTabla(result.Entity.TblReporteConteo);
+             CargarTabla(result.Entity.TblReporteUsuarios);
 
              // CARGAR FOOTER
              CargarFooterTabla(result.footerTable);
@@ -562,7 +576,7 @@
         }
 
         function CargarFooterTabla(datosFooter) {
-            if (datosFooter && datosFooter.length >= 3) {
+            if (datosFooter) {
                 $('#footerStockTotal').text(datosFooter[0]);
             }
         }

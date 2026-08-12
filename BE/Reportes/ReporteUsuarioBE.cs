@@ -14,8 +14,7 @@ namespace BE.Reportes
         public string EstadoConteo { get; set; }
         public int ConteosDisponibles { get; set; }
 
-
         // TABLA
-        public List<TblReporteUsuarioBE> TblreporteUsuarios { get; set; }
+        public List<TblReporteUsuarioBE> TblReporteUsuarios { get; set; }
     }
 }

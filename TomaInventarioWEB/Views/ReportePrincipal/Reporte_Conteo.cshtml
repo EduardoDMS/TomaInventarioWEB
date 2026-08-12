@@ -199,8 +199,8 @@
                                     <label for="slcConteo" class="form-label">Conteo</label>
                                     <select id="slcConteo" class="form-select">
                                         @*<option selected>1</option>
-                                        <option>2</option>
-                                        <option>3</option>*@
+                                <option>2</option>
+                                <option>3</option>*@
                                     </select>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@
                 @*<hr class="my-4">*@
 
                 <!-- Tabla -->
-                <!-- Código, Producto, Ubicación, Lote, Stock Inicial, Stock Final, Diferencia, Estado -->
+                <!-- Código, Producto, Ubicación Inicial, Ubicación Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Usuario -->
 
                 <div class="table-responsive">
                     <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
@@ -511,11 +511,11 @@
             $('#txtEstadoConteo').text(kpis.EstadoConteo || '0');
             CambiarIconoEstado(kpis.EstadoConteo);
             $('#txtConteoActual').text(kpis.ConteoSeleccionado || '0');
-            $('#txtProductosRegistrados').text(kpis.LecturasRealizadas || '0');
+            $('#txtProductosRegistrados').text(kpis.ProductosLecturados || '0');
             $('#txtProductosFueraInventario').text(kpis.ProductosFueraInventario || '0');
             $('#txtUsuariosParticipantes').text(kpis.UsuariosParticipantes || '0');
             $('#txtDuracionConteo').text(kpis.DuracionConteo || '0');
-    }
+        }
 
         function CargarTabla(datos) {
 
@@ -651,6 +651,9 @@
                 $select.val('1');
             }
         } 
+
+
+
 
         function exportarExcel() {
     if (!inventarioSeleccionado.codigo || !inventarioSeleccionado.nroConteo) {

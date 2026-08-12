@@ -142,36 +142,52 @@ namespace TomaInventarioWEB.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         [GenerateNonce]
         public ActionResult Reporte_Producto()
         {
-            Session["NavIndex"] = "2";
+            //Session["NavIndex"] = "2";
 
-            // Cargar combo de inventarios cerrados
-            CombosBE objCombo = new CombosBE();
-            objCombo.vchValue = "-1";  // Cambiado de intValue a vchValue
-            objCombo.vchdesc = "Seleccionar Inventario";
+            // Cargar combo de almacenes 
+            CombosBE objComboAlmacen = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objComboAlmacen);
 
-            List<CombosBE> listInventariosCerrados = new List<CombosBE>();
-            listInventariosCerrados = (List<CombosBE>)new CombosBL().cbxInventariosCerrados().Entity;
-            listInventariosCerrados.Insert(0, objCombo);
-            ViewBag.ListInventariosCerrados = listInventariosCerrados;
+            ViewBag.ListaAlmacenes = listaAlmacenes;
 
             return View();
         }
+
+        [HttpPost]
+        public JsonResult ObtenerReporteProducto(string codInventario, string busqueda, int observacion)
+        {
+            try
+            {
+                var response = new ReportePrincipalBL().ObtenerDatosReporteProducto(codInventario, busqueda, observacion);
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    error = ex.Message
+                });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         [GenerateNonce]
         public ActionResult Reporte_Ubicacion()
         {

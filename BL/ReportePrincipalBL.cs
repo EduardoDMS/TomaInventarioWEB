@@ -105,6 +105,35 @@ namespace BL
         }
 
 
+        public Response ObtenerDatosReporteProducto(
+            string codInventario,
+            string busqueda,
+            int observacion = 0,
+            string start = "0",
+            string length = "10",
+            string order = null)
+        {
+            Response response = new Response();
+
+            try
+            {
+                if (String.IsNullOrEmpty(codInventario))
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "El código de inventario es obligatorio";
+                    return response;
+                }
+
+                response = new ReportePrincipalDAO().ReporteProducto(codInventario, busqueda, observacion);
+            }
+            catch (Exception ex)
+            {
+
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
+            }
+            return response;
+        }
 
 
 

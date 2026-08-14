@@ -176,35 +176,99 @@ namespace TomaInventarioWEB.Controllers
             }
         }
 
-
-
-
-
-
-
-
-
-
+        // obtener ubicacion
 
 
 
         [GenerateNonce]
         public ActionResult Reporte_Ubicacion()
-        {
-            Session["NavIndex"] = "2";
+        { 
+            CombosBE objComboAlmacen = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objComboAlmacen);
 
-            // Cargar combo de inventarios cerrados
-            CombosBE objCombo = new CombosBE();
-            objCombo.vchValue = "-1";  // Cambiado de intValue a vchValue
-            objCombo.vchdesc = "Seleccionar Inventario";
-
-            List<CombosBE> listInventariosCerrados = new List<CombosBE>();
-            listInventariosCerrados = (List<CombosBE>)new CombosBL().cbxInventariosCerrados().Entity;
-            listInventariosCerrados.Insert(0, objCombo);
-            ViewBag.ListInventariosCerrados = listInventariosCerrados;
+            ViewBag.ListaAlmacenes = listaAlmacenes;
 
             return View();
         }
+
+        [HttpPost]
+        public JsonResult ObtenerReporteUbicacion(string codInventario,string busqueda, string estado,int diferencias)
+        {
+            try
+            {
+                var response = new ReportePrincipalBL().ObtenerDatosReporteUbicacion(codInventario, busqueda, estado,diferencias);
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    error = true,
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stack = ex.StackTrace
+                });
+            }
+        }
+
+        [GenerateNonce]
+        public ActionResult Reporte_Auditoria()
+        {
+            CombosBE objAlmacen = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objAlmacen);
+
+            ViewBag.ListaAlmacenes = listaAlmacenes;
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerReporteAuditoria(string codInventario,string busqueda,string estado)
+        {
+            try
+            {
+                 var response = new ReportePrincipalBL().ObtenerDatosReporteAuditoria(codInventario, busqueda, estado);
+                 return Json(response);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    error = true,
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stack = ex.StackTrace
+                });
+            }
+        }
+
+
+
+
+
+
+
+        //[GenerateNonce]
+        //public ActionResult Reporte_Ubicacion()
+        //{
+        //    Session["NavIndex"] = "2";
+
+        //    // Cargar combo de inventarios cerrados
+        //    CombosBE objCombo = new CombosBE();
+        //    objCombo.vchValue = "-1";  // Cambiado de intValue a vchValue
+        //    objCombo.vchdesc = "Seleccionar Inventario";
+
+        //    List<CombosBE> listInventariosCerrados = new List<CombosBE>();
+        //    listInventariosCerrados = (List<CombosBE>)new CombosBL().cbxInventariosCerrados().Entity;
+        //    listInventariosCerrados.Insert(0, objCombo);
+        //    ViewBag.ListInventariosCerrados = listInventariosCerrados;
+
+        //    return View();
+        //}
 
 
         /// <summary>

@@ -1,5 +1,5 @@
-锘緻{
-    ViewBag.Title = "Reporte por Ubicaci贸n";
+@{
+    ViewBag.Title = "Reporte por Auditoria";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
 }
@@ -9,11 +9,11 @@
     <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">*@
 
-<!-- Secci贸n Seleccionar Almacen e inventario -->
+<!-- Secci髇 Seleccionar Almacen e inventario -->
 <div class="card text-bg-primary text-white mb-3">
     <div class="card-body p-3">
         <div class="d-flex align-items-center justify-content-center">
-            <h2 class="fs-8 fw-bolder text-white mb-0">Reporte por Ubicacion</h2>
+            <h2 class="fs-8 fw-bolder text-white mb-0">Reporte Auditoria</h2>
         </div>
     </div>
 </div>
@@ -60,7 +60,7 @@
 
 
 
-<!-- Reporte por Ubicaci贸n -->
+<!-- Reporte por Ubicaci髇 -->
 <div id="seccionReporte" class="row d-none">
     <div class="col-12">
         <div class="card">
@@ -68,7 +68,7 @@
             <div class="card-header pb-1">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div>
-                        <span class="badge bg-primary-subtle text-primary">Solo se muestran las ubicaciones con diferencias del 煤ltimo conteo</span>
+                        <span class="badge bg-primary-subtle text-primary">Mostrara el historial completo de un producto desde el ultimo conteo inventariado</span>
                     </div>
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-success" id="btnExportarExcel">
@@ -80,12 +80,12 @@
 
 
             <div class="card-body">
-                <!-- Informaci贸n del Inventario -->
+                <!-- Informaci髇 del Inventario -->
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h6 class="fw-semibold mb-0">Informaci贸n del Inventario</h6>
+                    <h6 class="fw-semibold mb-0">Informaci髇 del Inventario</h6>
                 </div>
 
-                <!-- KPIS: Almacen, C贸digo de inventario, Estado del conteo, Conteo actual, Productos registrados, Productos con diferencia, Productos sin diferencia, Productos fuera de inventario, Productos fuera de ubicacion, Productos con lote diferente -->
+                <!-- KPIS: Almacen, C骴igo de inventario, Estado del conteo, Conteo actual, Productos registrados, Productos con diferencia, Productos sin diferencia, Productos fuera de inventario, Productos fuera de ubicacion, Productos con lote diferente -->
                 <div class="row mb-4">
                     <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-secondary">
@@ -103,7 +103,7 @@
                         </div>
                         <div class="align-self-center">
                             <h4 id="txtCodigoInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">C贸digo de inventario</p>
+                            <p class="card-subtitle">C骴igo de inventario</p>
                         </div>
                     </div>
 
@@ -123,16 +123,18 @@
                         </div>
                         <div class="align-self-center">
                             <h4 id="txtConteoActual" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Conteo actual</p>
+                            <p class="card-subtitle">Conteos Realizados</p>
                         </div>
                     </div>
+
+
                     <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
                             <i class="ti ti-circle-check fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtUbicacionesTotales" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones Totales</p>
+                            <h4 id="txtProductosInventariados" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Productos Inventariados</p>
                         </div>
                     </div>
                 </div>
@@ -143,8 +145,8 @@
                             <i class="ti ti-alert-triangle fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtUbicacionesNuevas" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones Nuevas</p>
+                            <h4 id="txtProductosConDiferencia" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Productos Con Diferencias</p>
                         </div>
                     </div>
 
@@ -153,8 +155,8 @@
                             <i class="ti ti-users fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtUbicacionesCompletas" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones Completas</p>
+                            <h4 id="txtProductosSinDiferencia" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Productos sin Diferecia</p>
                         </div>
                     </div>
 
@@ -163,18 +165,8 @@
                             <i class="ti ti-clock-hour-5 fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtUbicacionesProgreso" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones en progreso</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUbicacionesNoIniciadas" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones no iniciadas</p>
+                            <h4 id="txtUsuariosParticipantes" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Usuarios Participantes</p>
                         </div>
                     </div>
 
@@ -183,10 +175,20 @@
                             <i class="ti ti-clock-hour-5 fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtProductosLoteDiferente" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos con lote diferente</p>
+                            <h4 id="txtUbicacionesNoIniciadas" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Ubicaciones no iniciadas</p>
                         </div>
                     </div>*@
+
+                    @*<div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                            <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
+                                <i class="ti ti-clock-hour-5 fs-6"></i>
+                            </div>
+                            <div class="align-self-center">
+                                <h4 id="txtProductosLoteDiferente" class="card-title mb-1"></h4>
+                                <p class="card-subtitle">Productos con lote diferente</p>
+                            </div>
+                        </div>*@
                 </div>
 
                 <div class="row mb-3">
@@ -195,8 +197,8 @@
                             <i class="ti ti-clock-hour-5 fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtMayorDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Top 3 mayor diferencia</p>
+                            <h4 id="txtPrimeraLectura" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Primera Lectura</p>
                         </div>
                     </div>
 
@@ -205,8 +207,8 @@
                             <i class="ti ti-clock-hour-5 fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtMenorDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Top 3 menor diferencia</p>
+                            <h4 id="txtUltimaLectura" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Ultima Lectura</p>
                         </div>
                     </div>
                 </div>
@@ -216,12 +218,12 @@
             </div>
             <!-- } -->
             <!-- Filtros -->
-            <!-- Busqueda(Producto, Ubicacion, Lote, Usuario), Observaci贸n(0, 1, 2, 3, 4, 5) -->
+            <!-- Busqueda(Producto, Ubicacion, Lote, Usuario), Observaci髇(0, 1, 2, 3, 4, 5) -->
             <div class="accordion mb-4" id="accordionFiltros">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <h6 class="fs-4 mb-0">Filtros de b煤squeda </h6>
+                            <h6 class="fs-4 mb-0">Filtros de b鷖queda </h6>
                             @*<small class="text-muted ms-1">(Opcional)</small>*@
                         </button>
                     </h2>
@@ -229,34 +231,32 @@
                         <div class="accordion-body row">
                             <!-- Busqueda general -->
                             <div class="col-md-4 mb-2">
-                                <label for="busquedaGeneral" class="form-label">B煤squeda general</label>
+                                <label for="busquedaGeneral" class="form-label">B鷖queda general</label>
                                 <div class="input-group">
                                     <input id="busquedaGeneral" type="text" class="form-control" placeholder="Codigo o descripcion de la ubicacion">
                                     <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
                                         <i class="ti ti-eraser fs-4"></i>
                                     </button>
                                 </div>
-                                @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="C贸digo o descripci贸n del producto" />*@
+                                @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="C骴igo o descripci髇 del producto" />*@
                             </div>
 
-                            <!-- Seleccionar observaci贸n -->
+                            <!-- Seleccionar observaci髇 -->
                             <div class="col-md-4 mb-2">
                                 <label for="slcEstado" class="form-label">Estado</label>
                                 <select id="slcEstado" class="form-select">
-                                    <option value="" selected>Todos</option>
-                                    <option value="COMPLETA">Completa</option>
-                                    <option value="PROCESO">En Proceso</option>
-                                    <option value="NOINICIADA">No Iniciada</option>
-                                    <option value="NUEVA">Nueva Ubicacion</option>
+                                    <option value="TODOS" selected>Todos</option>
+                                    <option value="COINCIDE">Coincide</option>
+                                    <option value="DIFERENCIA">Diferencias</option>
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-2">
+                            @*<div class="col-md-4 mb-2">
                                 <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
                                 <label class="form-check-label" for="flexCheckDefault">
                                     Mostrar Solo Diferencias
                                 </label>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </div>
@@ -265,31 +265,32 @@
             @*<hr class="my-4">*@
 
             <!-- Tabla -->
-            <!-- C贸digo, Producto, Ubicaci贸n Inicial, Ubicaci贸n Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Observacion, Usuarios -->
+            <!-- C骴igo, Producto, Ubicaci髇 Inicial, Ubicaci髇 Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Observacion, Usuarios -->
 
             <div class="table-responsive">
                 <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center">C贸digo</th>
-                            <th class="text-center">Ubicacion</th>
-                            <th class="text-center">Productos Totales</th>
+                            <th class="text-center">C骴igo</th>
+                            <th class="text-center">Producto</th>
                             <th class="text-center">Stock Inicial</th>
-                            <th class="text-center">Productos Contados</th>
-                            <th class="text-center">Stock Contado</th>
+                            <th class="text-center">Ubicacion Inicial</th>
+                            <th class="text-center">Lote Inicial</th>
+                            <th class="text-center">Stock final</th>
                             <th class="text-center">Diferencia</th>
                             <th class="text-center">Estado</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                     <tfoot class="table-light">
-                        <tr>
-                            <td colspan="3" class="fw-bolder">TOTALES</td>
+                        <tr id="filaFooterDinamica">
+                            
+                            @*<td colspan="3" class="fw-bolder">TOTALES</td>
                             <td class="text-end fw-bold" id="footerStockInicial">0</td>
                             <td colspan="1" class="fw-bolder"></td>
                             <td class="text-end fw-bold" id="footerStockFinal">0</td>
                             <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
-                            <td colspan="1"></td>
+                            <td colspan="1"></td>*@
                         </tr>
                     </tfoot>
                 </table>
@@ -308,7 +309,7 @@
         <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
         <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
         <script src="~/Content/matdash/js/forms/select2.init.js"></script>*@
-    
+
 <script nonce="@nonce">
         let tblReporteInventario;
         let inventarioSeleccionado = {
@@ -387,8 +388,8 @@
                 if (!selectedValue || selectedValue === '-1' || selectedValue === '') {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Atenci贸n',
-                        text: 'Debe seleccionar un inventario v谩lido'
+                        title: 'Atenci髇',
+                        text: 'Debe seleccionar un inventario v醠ido'
                     });
                     return;
                 }
@@ -416,7 +417,7 @@
                 clearTimeout(timeoutBusqueda);
 
                 timeoutBusqueda = setTimeout(() => {
-                    CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
+                    CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
                 }, 400);
             })
 
@@ -426,17 +427,17 @@
 
                 clearTimeout(timeoutBusqueda);
 
-                CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
+                CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
             });
 
             // Limpiar busqueda
             $('#btnLimpiarBusqueda').on('click', function () {
                 $('#busquedaGeneral').val('');
                 tblReporteInventario.search('').draw();
-                CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
+                CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
             });
 
-            // Filtro observaci贸n
+            // Filtro observaci髇
             //$('#slcObservacion').on('change', function () {
             //    if (modoFiltrado === "SERVIDOR") {
             //        CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
@@ -446,14 +447,14 @@
             //});
 
                 $('#slcEstado').on('change', function () {
-                    CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
+                    CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
                 });
 
-                //in_soloDiferencias
-                $('#in_soloDiferencias').on('change', function () {
-                     CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
-                });
-                    
+                ////in_soloDiferencias
+                //$('#in_soloDiferencias').on('change', function () {
+                //    CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
+                //});
+
             }
 
         // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
@@ -517,27 +518,27 @@
             //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
             $('#seccionResumen').removeClass('d-none');
 
-            CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
+            CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
             console.log(inventarioSeleccionado.codigo);
 
             $('#seccionReporte').removeClass('d-none');
         }
 
 
-        async function CargarReporteInventarioUbicacion(codInventario) {
+        async function CargarReporteInventarioAuditoria(codInventario) {
 
             const obj = {
                 codInventario: codInventario,
                 busqueda: $('#busquedaGeneral').val().trim(),
                 estado : $('#slcEstado').val(),
-                diferencias : $('#in_soloDiferencias').is(':checked') ? 1 : 0,
+                // diferencias : $('#in_soloDiferencias').is(':checked') ? 1 : 0,
                 //observacion: parseInt($('#slcObservacion').val()),
             };
 
             console.log(obj);
 
             try {
-                const response = await fetch("ObtenerReporteUbicacion", {
+                const response = await fetch("ObtenerReporteAuditoria", {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
@@ -553,19 +554,19 @@
                 console.log(result);
 
                 // UMBRAL PARA FILTROS AL SERVIDOR
-                let totalUbicaciones = result.Entity.UbicacionesTotales;
-                modoFiltrado = totalUbicaciones > 0 ? "SERVIDOR" : "LOCAL";
-                console.log(`驴Filtro a usar? = ${modoFiltrado}`);
+                let totalProductos = result.Entity.Productos_Inventariados;
+                modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
+                console.log(`縁iltro a usar? = ${modoFiltrado}`);
 
                 // CARGAR KPIS ubicacion
                 CargarKPIs(result.Entity);
 
                 // CARGAR TABLA
-                CargarTabla(result.Entity.TblReporteUbicacion);
+                CargarTabla(result.Entity.TblReporteAuditoria, result.Entity.Footer);
 
                 // CARGAR FOOTER
-                CargarFooterTabla(result.footerTable);
-                // function 
+                //CargarFooterTabla(result.Entity.Footer);
+                // function
             }
             catch (error) {
                 console.error("Error:", error);
@@ -576,88 +577,204 @@
             $('#txtEstadoInventario').text(kpis.Estado_Inventario || '0');
             CambiarIconoEstado(kpis.Estado_Inventario);
             $('#txtConteoActual').text(kpis.Conteo_Actual || '0');
-            $('#txtUbicacionesTotales').text(kpis.Ubicaciones_Totales || '0');
-            $('#txtUbicacionesNuevas').text(kpis.Ubicaciones_Nuevas || '0');
-            $('#txtUbicacionesCompletas').text(kpis.Ubicaciones_Completas || '0');
-            $('#txtUbicacionesProgreso').text(kpis.Ubicaciones_En_Proceso || '0');
-            $('#txtUbicacionesNoIniciadas').text(kpis.Ubicaciones_No_Iniciadas || '0');
-            $('#txtMayorDiferencia').text(kpis.Top3_Mayor_Diferencia || '0');
-            $('#txtMenorDiferencia').text(kpis.Top3_Menor_Diferencia || '0');
+            $('#txtProductosInventariados').text(kpis.Productos_Inventariados || '0');
+            $('#txtProductosConDiferencia').text(kpis.Productos_Con_Diferencia || '0');
+            $('#txtProductosSinDiferencia').text(kpis.Productos_Sin_Diferencia || '0');
+            $('#txtUsuariosParticipantes').text(kpis.Usuarios_Participantes || '0');
+            $('#txtPrimeraLectura').text(kpis.Primera_Lectura || '0');
+            $('#txtUltimaLectura').text(kpis.Ultima_Lectura || '0');
         }
 
-        function CargarTabla(datos) {
 
-            if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
-                $('#tblReporteInventario').DataTable().destroy();
-            }
+    //function CargarTabla(datos) {
 
-            $('#tblReporteInventario tbody').empty();
+    //    if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
+    //        $('#tblReporteInventario').DataTable().destroy();
+    //    }
 
-            tblReporteInventario = $('#tblReporteInventario').DataTable({
+    //    $('#tblReporteInventario tbody').empty();
 
-                data: datos,
+    //    let numerosConteo = [];
 
-                columns: [
-                    {
-                        data: "Cod_Ubicacion",
-                        className: "text-center"
-                    },
+    //    datos.forEach(item => {
+    //        if (!item.Conteos) return;
+    //        item.Conteos.forEach(conteo => {
+    //            if (!numerosConteo.includes(conteo.Nro_Conteo)) {
+    //                numerosConteo.push(conteo.Nro_Conteo);
+    //            }
+    //        });
+    //    });
+    //    numerosConteo.sort((a, b) => a - b);
 
-                    {
-                        data: "Descripcion_Ubicacion",
-                        className: "text-center"
-                    },
+    //    let columnas = [
+    //        { data: "Codigo", title: "C骴igo", className: "text-center" },
+    //        { data: "Producto", title: "Producto", className: "text-center" },
+    //        { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
+    //        { data: "Ubicacion_Inicial", title: "Ubicaci髇 Inicial", className: "text-center" },
+    //        { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" }
+    //    ];
 
-                    {
-                        data: "Productos_Totales",
-                        className: "text-center"
-                    },
+    //    numerosConteo.forEach(n => {
+    //        columnas.push({
+    //            data: null,
+    //            title: `Conteo ${n}`,
+    //            className: "text-center",
+    //            render: function (data, type, row) {
+    //                if (!row.Conteos) return "";
+    //                const conteo = row.Conteos.find(x => x.Nro_Conteo === n);
+    //                if (!conteo) return "";
+    //                return `
+    //                <div class="text-start">
+    //                    <div><strong>Stock:</strong> ${conteo.Stock_Contado ?? 0}</div>
+    //                    <div><strong>Ubicaci髇:</strong> ${conteo.Ubicaciones_Contadas || "-"}</div>
+    //                    <div><strong>Lote:</strong> ${conteo.Lote_Contado || "-"}</div>
+    //                    <div><strong>Usuario:</strong> ${conteo.Usuario || "-"}</div>
+    //                    <div><strong>Hora:</strong> ${conteo.Hora_Registro || "-"}</div>
+    //                </div>
+    //            `;
+    //            }
+    //        });
+    //    });
 
-                    {
-                        data: "Stock_Inicial",
-                        className: "text-center"
-                    },
+    //    columnas.push(
+    //        { data: "Stock_Final", title: "Stock Final", className: "text-center" },
+    //        { data: "Diferencia", title: "Diferencia", className: "text-center" },
+    //        { data: "Estado", title: "Estado", className: "text-center" }
+    //    );
 
-                    {
-                        data: "Productos_Contados",
-                        className: "text-center"
-                    },
+    //    // thead dinamico (ya lo tenias)
+    //    let header = $('#tblReporteInventario thead tr');
+    //    header.empty();
+    //    columnas.forEach(columna => {
+    //        header.append(`<th class="text-center">${columna.title}</th>`);
+    //    });
 
-                    {
-                        data: "Stock_Contado",
-                        className: "text-center"
-                    },
+    //    tblReporteInventario = $('#tblReporteInventario').DataTable({
+    //        data: datos,
+    //        columns: columnas,
+    //        pageLength: 25,
+    //        searching: true,
+    //        dom: 'lrtip',
+    //        language: espa駉lTbl
+    //    });
 
-                    {
-                        data: "Diferencia",
-                        className: "text-center"
-                    },
+    //    // guardamos para reusar en el footer sin recalcular
+    //    window._numerosConteoActual = numerosConteo;
+    //}
 
-                    {
-                        data: "Estado",
-                        className: "text-center"
-                    }
-                ],
+    function CargarTabla(datos, footerData) {   // <-- ahora recibe tambien el footer
 
-                pageLength: 25,
-                searching: true,
-                dom: 'lrtip',
-                language: espa帽olTbl
+        if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
+            $('#tblReporteInventario').DataTable().destroy();
+        }
+
+        $('#tblReporteInventario tbody').empty();
+        $('#filaFooterDinamica').empty(); // limpieza defensiva tambien aca
+
+        let numerosConteo = [];
+
+        datos.forEach(item => {
+            if (!item.Conteos) return;
+            item.Conteos.forEach(conteo => {
+                if (!numerosConteo.includes(conteo.Nro_Conteo)) {
+                    numerosConteo.push(conteo.Nro_Conteo);
+                }
             });
+        });
+        numerosConteo.sort((a, b) => a - b);
 
-        }
+        let columnas = [
+            { data: "Codigo", title: "C骴igo", className: "text-center" },
+            { data: "Producto", title: "Producto", className: "text-center" },
+            { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
+            { data: "Ubicacion_Inicial", title: "Ubicaci髇 Inicial", className: "text-center" },
+            { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" }
+        ];
 
-        function CargarFooterTabla(datosFooter) {
-            if (datosFooter && datosFooter.length >= 3) {
-                $('#footerStockInicial').text(datosFooter[0]);
-                $('#footerStockFinal').text(datosFooter[1]);
+        numerosConteo.forEach(n => {
+            columnas.push({
+                data: null,
+                title: `Conteo ${n}`,
+                className: "text-center",
+                render: function (data, type, row) {
+                    if (!row.Conteos) return "";
+                    const conteo = row.Conteos.find(x => x.Nro_Conteo === n);
+                    if (!conteo) return "";
+                    return `
+                    <div class="text-start">
+                        <div><strong>Stock:</strong> ${conteo.Stock_Contado ?? 0}</div>
+                        <div><strong>Ubicaci髇:</strong> ${conteo.Ubicaciones_Contadas || "-"}</div>
+                        <div><strong>Lote:</strong> ${conteo.Lote_Contado || "-"}</div>
+                        <div><strong>Usuario:</strong> ${conteo.Usuario || "-"}</div>
+                        <div><strong>Hora:</strong> ${conteo.Hora_Registro || "-"}</div>
+                    </div>
+                `;
+                }
+            });
+        });
 
-                let diferencial = datosFooter[2];
-                let clase = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
-                $('#footerStockDiferencial').html('<span class="' + clase + '">' + diferencial + '</span>');
+        columnas.push(
+            { data: "Stock_Final", title: "Stock Final", className: "text-center" },
+            { data: "Diferencia", title: "Diferencia", className: "text-center" },
+            { data: "Estado", title: "Estado", className: "text-center" }
+        );
+
+        let header = $('#tblReporteInventario thead tr');
+        header.empty();
+        columnas.forEach(columna => {
+            header.append(`<th class="text-center">${columna.title}</th>`);
+        });
+
+        window._numerosConteoActual = numerosConteo;
+
+        tblReporteInventario = $('#tblReporteInventario').DataTable({
+            data: datos,
+            columns: columnas,
+            pageLength: 25,
+            searching: true,
+            dom: 'lrtip',
+            language: espa駉lTbl,
+            // CLAVE: esto se ejecuta despues de CADA draw (init, busqueda, sort, pagina)
+            // asi el footer se re-pinta siempre, sin importar que DataTables toque el DOM
+            drawCallback: function (settings) {
+                CargarFooterTabla(footerData, numerosConteo);
             }
+        });
+    }
+
+
+    function CargarFooterTabla(footer, numerosConteo) {
+        let fila = $('#filaFooterDinamica');
+        fila.empty();
+
+        if (!footer) {
+            console.warn("Footer no recibido, revisa result.Entity.Footer en la respuesta");
+            return;
         }
 
+        numerosConteo = numerosConteo || [];
+
+        fila.append(`<td colspan="2" class="fw-bolder">TOTALES</td>`);
+        fila.append(`<td class="text-end fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
+        fila.append(`<td></td>`);
+        fila.append(`<td></td>`);
+
+        numerosConteo.forEach(n => {
+            let totalConteo = (footer.TotalesPorConteo || []).find(t => t.Nro_ConteoTotal === n);
+            let valor = totalConteo && totalConteo.Total_Stock != null ? totalConteo.Total_Stock : 0;
+            fila.append(`<td class="text-end fw-bold">${valor}</td>`);
+        });
+
+        fila.append(`<td class="text-end fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
+
+        let diferencial = footer.StockDiferencial ?? 0;
+        let clase = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
+        fila.append(`<td class="text-end"><span class="${clase}">${diferencial}</span></td>`);
+
+        fila.append(`<td></td>`);
+    }
+
+        
         // Icono lock
         function CambiarIconoEstado(estado) {
             //console.log(estado);
@@ -688,7 +805,7 @@
             if (!inventarioSeleccionado.codigo) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Atenci贸n',
+                    title: 'Atenci髇',
                     text: 'Debe seleccionar un inventario primero'
                 });
                 return;

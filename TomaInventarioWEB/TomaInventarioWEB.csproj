@@ -4431,6 +4431,7 @@
     <Content Include="Views\Reportes\Reporte_Lectura.cshtml" />
     <Content Include="Views\Reportes\Reporte_Conteo.cshtml" />
     <Content Include="Views\ReportePrincipal\Reporte_Conteo.cshtml" />
+    <Content Include="Views\ReportePrincipal\Reporte_Auditoria.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

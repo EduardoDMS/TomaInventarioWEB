@@ -225,22 +225,27 @@
                 <span class="submenu__titulo">Ubicación</span>
                 <small>Muestra el stock inventariado, el usuario en una ubicación seleccionada</small>
             </a>
-            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Principal", "ReportePrincipal")">
+            @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Principal", "ReportePrincipal")">
                 <span class="submenu__titulo">Detalle inventario</span>
                 <small>Acceda a más filtros</small>
-            </a>
-            @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Lectura", "Reportes")">
-                <span class="submenu__titulo">Lecturas</span>
-                <small>
-                    Muestra la fecha, stock inventariado, usuario y terminal donde se registro
-                </small>
-            </a>
-            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Detalle", "Reportes")">
-                <span class="submenu__titulo">Inventario Inicial</span>
-                <small>
-                    Muestra los productos iniciales antes de un inventario
-                </small>
             </a>*@
+            <a class="submenu__secundario--item" href="@Url.Action("Reporte_Auditoria", "ReportePrincipal")">
+                <span class="submenu__titulo">Auditoria</span>
+                <small>Muestra un reporte general que vea todo el historial de un producto en un inventario</small>
+            </a>
+
+            @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Lectura", "Reportes")">
+            <span class="submenu__titulo">Lecturas</span>
+            <small>
+                Muestra la fecha, stock inventariado, usuario y terminal donde se registro
+            </small>
+        </a>
+        <a class="submenu__secundario--item" href="@Url.Action("Reporte_Detalle", "Reportes")">
+            <span class="submenu__titulo">Inventario Inicial</span>
+            <small>
+                Muestra los productos iniciales antes de un inventario
+            </small>
+        </a>*@
 
         </div>
         <!-- GESTION DE USUARIO-->

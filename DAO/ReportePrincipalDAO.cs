@@ -276,7 +276,7 @@ namespace DAO
                             reporteUsuarioBE.UsuariosParticipantes = (reader["USUARIOS_PARTICIPANTES"] == DBNull.Value) ? 0 : Int32.Parse(reader["USUARIOS_PARTICIPANTES"].ToString());
                             reporteUsuarioBE.ProductosFueraInventario = (reader["PRODUCTOS_FUERA_INVENTARIO"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_FUERA_INVENTARIO"].ToString());
                             reporteUsuarioBE.UsuarioMasLecturas = (reader["USUARIO_MAS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIO_MAS_LECTURAS"].ToString();
-                            reporteUsuarioBE.UsuarioMenosLecturas = (reader["USUARIOS_MENOS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIOS_MENOS_LECTURAS"].ToString();
+                            reporteUsuarioBE.UsuarioMenosLecturas = (reader["USUARIO_MENOS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIO_MENOS_LECTURAS"].ToString();
                             reporteUsuarioBE.ConteoSeleccionado = (reader["CONTEO_SELECCIONADO"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEO_SELECCIONADO"].ToString());
                             reporteUsuarioBE.EstadoConteo = (reader["COD_ESTADO_CONTEO"] == DBNull.Value) ? string.Empty : reader["COD_ESTADO_CONTEO"].ToString();
                             reporteUsuarioBE.ConteosDisponibles = (reader["CONTEOS_DISPONIBLES"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEOS_DISPONIBLES"].ToString());
@@ -446,22 +446,290 @@ namespace DAO
 
 
 
+       // REPORTE POR UBICACIONES
+
+
+        public Response ReporteUbicacion(
+            string codInventario,
+            string busqueda = "",
+            string p_estado = "",
+            int diferencias = 0,
+            int p_idstart = 0,
+            int p_length = 10,
+            string p_order = null)
+        {
+            Response response = new Response();
+            ReporteUbicacionBE reporteUbicacionBE = new ReporteUbicacionBE();
+            List<TblReporteUbicacionBE> listaTabla = new List<TblReporteUbicacionBE>();
+            List<decimal> totalesFooter = new List<decimal>();
+
+
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+
+            try
+            {
+                using(conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using(comando = new SqlCommand("SP_WEB_reporteXubicaciones_2026", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.Clear();
+
+                        comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
+                        comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar,200).Value = busqueda;
+                        comando.Parameters.Add("@P_ESTADO", SqlDbType.VarChar, 20).Value = (object)p_estado ?? DBNull.Value;
+                        comando.Parameters.Add("@P_SOLO_DIFERENCIAS", SqlDbType.Int).Value = diferencias;
+                        comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = p_idstart;
+                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = p_length;
+                        comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value =(object)p_order ?? DBNull.Value;
+
+                        conexion.Open();
+                        reader = comando.ExecuteReader();
 
 
 
+                        if (reader.Read())
+                        {
+                            reporteUbicacionBE.Ubicaciones_Totales = (reader["UBICACIONES_TOTALES"] == DBNull.Value) ? 0 : Int32.Parse(reader["UBICACIONES_TOTALES"].ToString());
+                            reporteUbicacionBE.Ubicaciones_Nuevas = (reader["UBICACIONES_NUEVAS"] == DBNull.Value) ? 0 : Int32.Parse(reader["UBICACIONES_NUEVAS"].ToString());
+                            reporteUbicacionBE.Ubicaciones_Completas = (reader["UBICACIONES_COMPLETAS"] == DBNull.Value) ? 0 : Int32.Parse(reader["UBICACIONES_COMPLETAS"].ToString());
+                            reporteUbicacionBE.Ubicaciones_En_Proceso = (reader["UBICACIONES_EN_PROCESO"] == DBNull.Value) ? 0 : Int32.Parse(reader["UBICACIONES_EN_PROCESO"].ToString());
+                            reporteUbicacionBE.Ubicaciones_No_Iniciadas = (reader["UBICACIONES_NO_INICIADAS"] == DBNull.Value) ? 0 : Int32.Parse(reader["UBICACIONES_NO_INICIADAS"].ToString());
+                            reporteUbicacionBE.Estado_Inventario = (reader["ESTADO_INVENTARIO"] == DBNull.Value) ? string.Empty : reader["ESTADO_INVENTARIO"].ToString();
+                            reporteUbicacionBE.Cod_Inventario = (reader["COD_INVENTARIO"] == DBNull.Value) ? string.Empty : reader["COD_INVENTARIO"].ToString();
+                            reporteUbicacionBE.Conteo_Actual = (reader["CONTEO_ACTUAL"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEO_ACTUAL"].ToString());
+                            reporteUbicacionBE.Ultimo_Conteo_Finalizado = (reader["ULTIMO_CONTEO_FINALIZADO"] == DBNull.Value) ? 0 : Int32.Parse(reader["ULTIMO_CONTEO_FINALIZADO"].ToString());
+                            reporteUbicacionBE.Top3_Mayor_Diferencia = (reader["TOP3_MAYOR_DIFERENCIA"] == DBNull.Value) ? string.Empty : reader["TOP3_MAYOR_DIFERENCIA"].ToString();
+                            reporteUbicacionBE.Top3_Menor_Diferencia = (reader["TOP3_MENOR_DIFERENCIA"] == DBNull.Value) ? string.Empty : reader["TOP3_MENOR_DIFERENCIA"].ToString();
+                        }
+
+                        if (reader.NextResult())
+                        {
+                            while (reader.Read())
+                            {
+                                TblReporteUbicacionBE filaTabla = new TblReporteUbicacionBE();
+
+                                filaTabla.Cod_Ubicacion = (reader["CODIGO"] == DBNull.Value) ? string.Empty : reader["CODIGO"].ToString();
+                                filaTabla.Descripcion_Ubicacion = (reader["UBICACION"] == DBNull.Value) ? string.Empty : reader["UBICACION"].ToString();
+                                filaTabla.Productos_Totales = (reader["PRODUCTOS_TOTALES"] == DBNull.Value) ? 0 : Convert.ToInt32(reader["PRODUCTOS_TOTALES"].ToString());
+                                filaTabla.Stock_Inicial = (reader["STOCK_INICIAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INICIAL"].ToString()); // stock inicial error
+                                filaTabla.Productos_Contados = (reader["PRODUCTOS_CONTADOS"] == DBNull.Value) ? 0 : Convert.ToInt32(reader["PRODUCTOS_CONTADOS"].ToString());
+                                filaTabla.Stock_Contado = (reader["STOCK_CONTADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_CONTADO"].ToString());
+                                filaTabla.Diferencia = (reader["DIFERENCIA"] == DBNull.Value) ? 0 : decimal.Parse(reader["DIFERENCIA"].ToString());
+                                filaTabla.Estado = (reader["ESTADO"] == DBNull.Value) ? string.Empty : reader["ESTADO"].ToString();
+                                
+                                listaTabla.Add(filaTabla);
+                            }
+                        }
+
+                        if (reader.NextResult())
+                        {
+                            if (reader.Read())
+                            {
+                                totalesFooter.Add((reader["StockInicialTotal"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockInicialTotal"].ToString()));
+                                totalesFooter.Add((reader["StockFinalTotal"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockFinalTotal"].ToString()));
+                                totalesFooter.Add((reader["StockDiferencial"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockDiferencial"].ToString()));
+                            }
+                        }
+                        reporteUbicacionBE.TblReporteUbicacion = listaTabla;
+                        reader.Close();
+                    }
+                }
+
+                response.Entity = reporteUbicacionBE;
+                response.footerTable = totalesFooter;
+            }
+            catch (Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed) reader.Close();
+                if (reader != null) reader.Dispose();
+                if (comando != null) comando.Dispose();
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+            }
+
+            return response;
+        }
 
 
 
+        public Response ReporteAuditoria(
+            string codInventario,
+            string busqueda = "",
+            string estado = "",
+            int start = 0,
+            int p_length = 10,
+            string p_order = null)
+        {
+            Response response = new Response();
+            ReporteAuditoriaBE reporteAuditoriaBE = new ReporteAuditoriaBE();
+            List<TblReporteAuditoriaBE> listaTabla = new List<TblReporteAuditoriaBE>();
+            List<decimal> totalesFooter = new List<decimal>();
 
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+            try
+            {
+                using(conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (comando = new SqlCommand("SP_WEB_ReporteAuditoria__2026", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.CommandTimeout = 120; // Establecer un tiempo de espera de 120 segundos
+                        comando.Parameters.Clear();
 
+                        comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
+                        comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 200).Value = busqueda;
+                        comando.Parameters.Add("@ESTADO", SqlDbType.VarChar, 20).Value = (object)estado ?? DBNull.Value;
+                        comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = start;
+                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = p_length;
+                        comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = (object)p_order ?? DBNull.Value;
 
+                        conexion.Open();
 
+                        using (reader = comando.ExecuteReader())
+                        {
+                            if(reader.Read())
+                            {
+                                reporteAuditoriaBE.Productos_Inventariados = (reader["PRODUCTOS_INVENTARIADOS"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_INVENTARIADOS"].ToString());
+                                reporteAuditoriaBE.Productos_Con_Diferencia = (reader["PRODUCTOS_CON_DIFERENCIA"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_CON_DIFERENCIA"].ToString());
+                                reporteAuditoriaBE.Productos_Sin_Diferencia = (reader["PRODUCTOS_SIN_DIFERENCIA"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_SIN_DIFERENCIA"].ToString());
+                                reporteAuditoriaBE.Usuarios_Participantes = (reader["USUARIOS_PARTICIPANTES"] == DBNull.Value) ? 0 : Int32.Parse(reader["USUARIOS_PARTICIPANTES"].ToString());
+                                reporteAuditoriaBE.Primera_Lectura = (reader["PRIMERA_LECTURA"] == DBNull.Value) ? string.Empty : reader["PRIMERA_LECTURA"].ToString();
+                                reporteAuditoriaBE.Ultima_Lectura = (reader["ULTIMA_LECTURA"] == DBNull.Value) ? string.Empty : reader["ULTIMA_LECTURA"].ToString();
+                                reporteAuditoriaBE.Estado_Inventario = (reader["ESTADO_INVENTARIO"] == DBNull.Value) ? string.Empty : reader["ESTADO_INVENTARIO"].ToString();
+                                reporteAuditoriaBE.Codigo_Inventario = (reader["COD_INVENTARIO"] == DBNull.Value) ? string.Empty : reader["COD_INVENTARIO"].ToString();
+                                reporteAuditoriaBE.Conteo_Actual = (reader["CONTEO_ACTUAL"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEO_ACTUAL"].ToString()); //Total de conteos Realizados
+                            }
 
+                            if (reader.NextResult())
+                            {
+                                var nroConteo = new List<int>(); // crear lista para guardar numeros de conteo / xd solo existen 3 xd
+                                for(int i = 0; i < reader.FieldCount; i++)// obtenemos las columnas que tiene el resultado del SP y las guardamos en la lista de conteos 
+                                {
+                                    string colName = reader.GetName(i);
+                                    //obtener el campo de Conteo1_Stock, Conteo2_Stock, Conteo3_Stock y asi sucesivamente
+                                    if (colName.StartsWith("Conteo") && colName.EndsWith("_Stock"))
+                                    {
+                                        string numeroStr = colName.Replace("Conteo","").Replace("_Stock", "");
+                                        //aca ahora lo convertimos de string a int para guardarlo en la lista de conteos 
+                                        if (int.TryParse(numeroStr, out int n))
+                                        {
+                                            nroConteo.Add(n);
+                                        }
+                                    }
+                                }
+                                nroConteo.Sort();//ordenar de menor a mayor p mi ñaño
 
+                                while (reader.Read())
+                                {
+                                    var item = new TblReporteAuditoriaBE
+                                    {
 
+                                        Codigo = (reader["CODIGO"] == DBNull.Value) ? string.Empty : reader["CODIGO"].ToString(),
+                                        Producto = (reader["PRODUCTO"] == DBNull.Value) ? string.Empty : reader["PRODUCTO"].ToString(),
+                                        Stock_Inicial = (reader["STOCK_INICIAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INICIAL"].ToString()),
+                                        Ubicacion_Inicial = (reader["UBICACION_INICIAL"] == DBNull.Value) ? string.Empty : reader["UBICACION_INICIAL"].ToString(),
+                                        Lote_Inicial = (reader["LOTE_INICIAL"] == DBNull.Value) ? string.Empty : reader["LOTE_INICIAL"].ToString(),
+                                        Stock_Final = (reader["STOCK_FINAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_FINAL"].ToString()),
+                                        Diferencia = (reader["DIFERENCIA"] == DBNull.Value) ? 0 : Convert.ToDecimal(reader["DIFERENCIA"].ToString()),
+                                        Estado = (reader["ESTADO"] == DBNull.Value) ? string.Empty : reader["ESTADO"].ToString(),
+                                        //aqui se ingresara la nueva tabla uwu 
+                                        Conteos = new List<ConteoDetalleBE>()
+                                    };
 
+                                    foreach(int n in nroConteo)
+                                    {
+                                        string colStock = $"Conteo{n}_Stock";
 
+                                        if (reader[colStock] == DBNull.Value) continue; // si este producto no tiene stock en este conteo no agregues el conteo u pasa al siguiente xd
 
+                                        item.Conteos.Add(new ConteoDetalleBE
+                                        {
+                                            // NroConteo no existe en las tablas pero sirve colocarlo para tener referencia a todos los demas campos de la tabla a que
+                                            // // numero de conteo pertenecen pue amore 
+                                            Nro_Conteo = n,
+                                            Stock_Contado = Convert.ToDecimal(reader[colStock]),
+                                            Ubicaciones_Contadas = (reader[$"Conteo{n}_Ubicacion"] == DBNull.Value) ? string.Empty : reader[$"Conteo{n}_Ubicacion"].ToString(),
+                                            Lote_Contado = (reader[$"Conteo{n}_Lote"] == DBNull.Value) ? string.Empty : reader[$"Conteo{n}_Lote"].ToString(),
+                                            Usuario = (reader[$"Conteo{n}_Usuario"] == DBNull.Value) ? string.Empty : reader[$"Conteo{n}_Usuario"].ToString(),
+                                            Hora_Registro = (reader[$"Conteo{n}_Hora"] == DBNull.Value) ? string.Empty : reader[$"Conteo{n}_Hora"].ToString()
+                                        });
+                                    }
+                                    listaTabla.Add(item);
+                                }
+                            }
+                            reporteAuditoriaBE.TblReporteAuditoria = listaTabla;
+
+                            //nuevo footer crj por que acepte
+                            FooterAuditoriaBE footer = new FooterAuditoriaBE
+                            {
+                                TotalesPorConteo = new List<ConteoTotalBE>()
+                            };
+
+                            if (reader.NextResult())
+                            {
+                                // detectar cantidad de columnas que es un copy y pega de como esta estructurado conteos p 
+                                var nroConteoFooter = new List<int>();
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    string colName = reader.GetName(i);
+                                    if (colName.StartsWith("Conteo") && colName.EndsWith("_Total"))
+                                    {
+                                        string numeroStr = colName.Replace("Conteo", "").Replace("_Total", "");
+                                        if (int.TryParse(numeroStr, out int n)) nroConteoFooter.Add(n);
+                                    }
+                                }
+                                nroConteoFooter.Sort();
+
+                                if (reader.Read())
+                                {
+                                    footer.StockInicialTotal = (reader["StockInicialTotal"] == DBNull.Value) ? 0 : Convert.ToDecimal(reader["StockInicialTotal"]);
+                                    footer.StockFinalTotal = (reader["StockFinalTotal"] == DBNull.Value) ? 0 : Convert.ToDecimal(reader["StockFinalTotal"]);
+                                    footer.StockDiferencial = (reader["StockDiferencial"] == DBNull.Value) ? 0 : Convert.ToDecimal(reader["StockDiferencial"]);
+
+                                    foreach (int n in nroConteoFooter)
+                                    {
+                                        string colTotal = $"Conteo{n}_Total";
+                                        footer.TotalesPorConteo.Add(new ConteoTotalBE
+                                        {
+                                            Nro_ConteoTotal = n,
+                                            Total_Stock = (reader[colTotal] == DBNull.Value) ? (decimal?)null : Convert.ToDecimal(reader[colTotal])
+                                        });
+                                    }
+                                }
+                            }
+                            reporteAuditoriaBE.TblReporteAuditoria = listaTabla;
+                            reporteAuditoriaBE.Footer = footer;
+                            // reader.Close(); al usar using no es necesario cerrar el reader ya que se cierra automaticamente al salir del bloque
+                        }
+                    }
+                }
+                response.Entity = reporteAuditoriaBE;
+                //response.footerTable = totalesFooter;
+            }
+            catch (Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed) reader.Close();
+                if (reader != null) reader.Dispose();
+                if (comando != null) comando.Dispose();
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+
+            }
+            return response;
+        }
 
 
 

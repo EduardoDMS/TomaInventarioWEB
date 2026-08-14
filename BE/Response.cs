@@ -10,7 +10,10 @@ namespace BE
         public object Entity { get; set; }
 
         public int count { get; set; }
-        public List<decimal> footerTable { get; set; }
+        // si todo se rompe desconmentame --CANELITA
+       // public List<decimal> footerTable { get; set; }
+
+        public object footerTable { get; set; }
 
         //reporte principal
         public List<string> infoInventario { get; set; }

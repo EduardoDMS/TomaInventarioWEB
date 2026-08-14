@@ -137,9 +137,62 @@ namespace BL
 
 
 
+        public Response ObtenerDatosReporteUbicacion(
+            string codInventario,
+            string busqueda,
+            string estado = "",
+            int diferencias = 0,
+            string start = "0",
+            string length = "-1",
+            string order = null)
+        {
+            Response response = new Response();
+            try
+            {
+                if (String.IsNullOrEmpty(codInventario))
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "El código de inventario es obligatorio";
+                    return response;
+                }                                                                                   
+                response = new ReportePrincipalDAO().ReporteUbicacion(codInventario, busqueda,estado,diferencias);
+            }
+            catch (Exception ex)
+            {
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
+            }
+            return response;
+        }
 
 
 
+        public Response ObtenerDatosReporteAuditoria(
+            string codInventario,
+            string busqueda = "",
+            string estado = "",
+            string start = "0",
+            string length = "-1",
+            string order = null)
+        {
+            Response response = new Response();
+            try
+            {
+                if (String.IsNullOrEmpty(codInventario))
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "El código de inventario es obligatorio";
+                    return response;
+                }
+                response = new ReportePrincipalDAO().ReporteAuditoria(codInventario, busqueda, estado);
+            }
+            catch (Exception ex)
+            {
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
+            }
+            return response;
+        }
 
 
 

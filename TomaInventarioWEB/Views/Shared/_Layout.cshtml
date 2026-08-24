@@ -113,7 +113,7 @@
                                         <img src="@Url.Content("~/Assets/IMG/iconoUsuario.png")" class="rounded-circle img_perfil" />
                                         <div class="d-flex gap-1">
                                             <h5 class="fs-12 fw-normal">Bienvenido,</h5>
-                                            <h5 class="fs-12 fw-bold">@Session["Username"]</h5>
+                                            <h5 class="fs-12 fw-bold">@Session["UserName"]</h5>
                                         </div>
                                     </div>
                                 </li>
@@ -230,11 +230,28 @@
                 <span class="submenu__titulo">Ubicación</span>
                 <small>Visualiza el avance del inventario por ubicación</small>
             </a>
-
+            @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Principal", "ReportePrincipal")">
+            <span class="submenu__titulo">Detalle inventario</span>
+            <small>Acceda a más filtros</small>
+        </a>*@
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Auditoria", "ReportePrincipal")">
-                <span class="submenu__titulo">Auditoría</span>
-                <small>Investiga el historial y trazabilidad de cada lectura</small>
+                <span class="submenu__titulo">Auditoria</span>
+                <small>Muestra un reporte general que vea todo el historial de un producto en un inventario</small>
             </a>
+
+            @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Lectura", "Reportes")">
+            <span class="submenu__titulo">Lecturas</span>
+            <small>
+                Muestra la fecha, stock inventariado, usuario y terminal donde se registro
+            </small>
+        </a>
+        <a class="submenu__secundario--item" href="@Url.Action("Reporte_Detalle", "Reportes")">
+            <span class="submenu__titulo">Inventario Inicial</span>
+            <small>
+                Muestra los productos iniciales antes de un inventario
+            </small>
+        </a>*@
+
         </div>
         <!-- GESTION DE USUARIO-->
         @*<div class="submenu__secundario" id="gestionUsuario" data-nombre="Gestión de Usuarios">
@@ -248,24 +265,29 @@
                 </a>
             </div>*@
         <!-- GESTION DE RECURSOS-->
-        <div class="submenu__secundario" id="gestionRecursos" data-nombre="Gestión de Recursos">
-            <a class="submenu__secundario--item" href="@Url.Action("AlmacenesMant", "Mantenimiento")">
-                <span class="submenu__titulo">Almacenes</span>
-                <small>Administra tus almances (crea, edita y desactive)</small>
-            </a>
-            <a class="submenu__secundario--item" href="@Url.Action("UbicacionesMant", "Mantenimiento")">
-                <span class="submenu__titulo">Ubicaciones</span>
-                <small>Administra tus ubicaciones dentro de los almacenes (crea, edita y desactive)</small>
-            </a>
-            <a class="submenu__secundario--item" href="@Url.Action("ProductosMant", "Mantenimiento")">
-                <span class="submenu__titulo">Productos</span>
-                <small>Administra tus productos (crea, edita y desactive)</small>
-            </a>
-            <a class="submenu__secundario--item" href="@Url.Action("UnidadesMant", "Mantenimiento")">
-                <span class="submenu__titulo">Unidades de Medida</span>
-                <small>Administra como se cuantificaran tus productos (Ejm: unidades, litros, metros, etc)</small>
-            </a>
-        </div>
+    <div class="submenu__secundario" id="gestionRecursos" data-nombre="Gestión de Recursos">
+        <a class="submenu__secundario--item" href="@Url.Action("AlmacenesMant", "Mantenimiento")">
+            <span class="submenu__titulo">Almacenes</span>
+            <small>Administra tus almances (crea, edita y desactive)</small>
+        </a>
+        <a class="submenu__secundario--item" href="@Url.Action("UbicacionesMant", "Mantenimiento")">
+            <span class="submenu__titulo">Ubicaciones</span>
+            <small>Administra tus ubicaciones dentro de los almacenes (crea, edita y desactive)</small>
+        </a>
+        <a class="submenu__secundario--item" href="@Url.Action("ProductosMant", "Mantenimiento")">
+            <span class="submenu__titulo">Productos</span>
+            <small>Administra tus productos (crea, edita y desactive)</small>
+        </a>
+        <a class="submenu__secundario--item" href="@Url.Action("UnidadesMant", "Mantenimiento")">
+            <span class="submenu__titulo">Unidades de Medida</span>
+            <small>Administra como se cuantificaran tus productos (Ejm: unidades, litros, metros, etc)</small>
+        </a>
+        <!-- ZEUS-->
+        <a class="submenu__secundario--item" href="@Url.Action("TipoMonedaMant", "Mantenimiento")">
+            <span class="submenu__titulo">Tipo de Moneda</span>
+            <small>Administra el valor monetario de tu inventario (Ejm: USD, PEN, PES, etc)</small>
+        </a>
+    </div>
         <!-- AJUSTES-->
         <div class="submenu__secundario" id="ajustes" data-nombre="Ajustes">
             <a class="submenu__secundario--item" href="@Url.Action("ConfigGeneral_Empresa", "Configuracion")">

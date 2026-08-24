@@ -1,6 +1,5 @@
-ï»¿$(document).ready(function () {
+$(document).ready(function () {
 
-    // ===== VALIDACIÃ“N EN TIEMPO REAL =====
     function validarCampoRequerido(input) {
         const inputElement = $(input);
         const valor = inputElement.val().trim();
@@ -18,53 +17,43 @@
         }
     }
 
-    $('#txtCod_add, #txtProducto_add').on('blur', function () {
+    $('#txtCodMoneda_add, #txtDscMoneda_add').on('blur', function () {
         validarCampoRequerido(this);
     });
 
-    $('#txtCod_edit, #txtProducto_edit').on('blur', function () {
+    $('#txtdscMoneda_edit').on('blur', function () {
         validarCampoRequerido(this);
     });
 
-    $('#txtCod_add, #txtProducto_add, #txtCod_edit, #txtProducto_edit').on('input', function () {
+    $('#txtCodMoneda_add, #txtDscMoneda_add, #txtdscMoneda_edit').on('input', function () {
         $(this).removeClass('is-invalid');
         $(this).next('.invalid-feedback').remove();
     });
 
-    // ===== VALIDAR AGREGAR =====
     function ValidarAdd(obj) {
         let valid = true;
+        const codMonedaValido = validarCampoRequerido('#txtCodMoneda_add');
+        const descAlmacenValido = validarCampoRequerido('#txtDscMoneda_add');
 
-        const codValido = validarCampoRequerido('#txtCod_add');
-        const descValido = validarCampoRequerido('#txtProducto_add');
-       // const costoValido = validarCampoRequerido('#txtCosto_add');
-
-        if (!codValido || !descValido) {
+        if (!codMonedaValido || !descAlmacenValido) {
             valid = false;
         }
-
         return valid;
     }
 
-    // ===== LIMPIAR AL CERRAR MODAL AGREGAR =====
-    $('#Add_Modal').on('hidden.bs.modal', function () {
-        document.getElementById('txtCod_add').value = '';
-        document.getElementById('txtProducto_add').value = '';
-        document.getElementById('txtCosto_add').value = '';
-        $('#cbxUM_add').prop('selectedIndex', 0);
-        $('#cbxMon_add').prop('selectedIndex', 0);
-        $('#txtCod_add, #txtProducto_add, #txtCosto_add').removeClass('is-invalid');
+    // Limpiar al cerrar modal
+    $('#Add_TipoMoneda').on('hidden.bs.modal', function () {
+        document.getElementById('txtCodMoneda_add').value = '';
+        document.getElementById('txtDscMoneda_add').value = '';
+        $('#txtCodMoneda_add, #txtDscMoneda_add').removeClass('is-invalid');
         $('.invalid-feedback').remove();
     });
 
-    // ===== BOTÃ“N AGREGAR =====
+    // Botón Agregar
     document.getElementById('btn_Add').addEventListener('click', function (e) {
         var obj = new Object();
-        obj.codProducto = document.getElementById('txtCod_add').value.trim();
-        obj.descProducto = document.getElementById('txtProducto_add').value.trim();
-        obj.UM = document.getElementById('cbxUM_add').value;
-        obj.costo = document.getElementById('txtCosto_add').value || "0.00";
-        obj.idMoneda = document.getElementById('cbxMon_add').value;
+        obj.codMoneda = document.getElementById('txtCodMoneda_add').value.trim();
+        obj.dscMoneda = document.getElementById('txtDscMoneda_add').value.trim();
 
         var _valid = ValidarAdd(obj);
 
@@ -72,7 +61,7 @@
             const btnAdd = $('#btn_Add');
             btnAdd.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Guardando...');
 
-            let _url = "CreateProducto";
+            let _url = "InsertarTipoMoneda";
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
@@ -89,15 +78,14 @@
                             confirmButtonText: 'Entendido'
                         });
                     } else {
-                        // Cerrar modal
-                        $('#Add_Modal').modal('hide');
+                        $('#Add_TipoMoneda').modal('hide');
 
-                        // Mostrar Ã©xito
+                        // Mostrar éxito
                         setTimeout(() => {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Â¡Producto creado exitosamente!',
-                                text: 'El producto ha sido registrado correctamente.',
+                                title: '¡Nuevo valor de moneda creado exitosamente!',
+                                text: 'El nuevo cambio ha sido registrado correctamente.',
                                 confirmButtonColor: '#5d87ff',
                                 confirmButtonText: 'Aceptar',
                                 timer: 5000,
@@ -116,7 +104,7 @@
                 error: function (result) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error de conexiÃ³n',
+                        title: 'Error de conexión',
                         text: 'No se pudo conectar con el servidor.',
                         confirmButtonColor: '#5d87ff'
                     });
@@ -127,27 +115,16 @@
             });
         }
     });
-
-    // ===== BOTÃ“N TEMPLATE =====
-    document.getElementById('btnTemplate').addEventListener('click', function (e) {
-        downTemplate();
-    });
-
-    // ===== LIMPIAR AL CERRAR MODAL IMPORTAR =====
-    $('#Import_Modal').on('hidden.bs.modal', function () {
-        $("#fileInput").val("");
-    });
-
 });
 
-// ==================== EDICIÃ“N ====================
+// ==================== EDICIÓN ====================
 var IDTemp = -1;
 
 function editar(id) {
-    $('#Edit_Modal').modal('show');
-    let _url = "GetProducto";
+    $('#Edit_Moneda').modal('show');
+    let _url = "ObtenerTipoMonedaId";
     var obj = new Object();
-    obj.id = id;
+    obj.idTipoMoneda = id;
 
     $.ajax({
         type: "Post",
@@ -157,16 +134,11 @@ function editar(id) {
         data: JSON.stringify(obj),
         success: function (response) {
             var objResponse = response.Entity;
-            document.getElementById('txtCod_edit').value = objResponse.vchCodProducto;
-            document.getElementById('txtProducto_edit').value = objResponse.vchDescripcion;
-            document.getElementById('cbxUM_edit').value = objResponse.intUM;
-            document.getElementById('txtCosto_edit').value = objResponse.precioCosto;
-            document.getElementById('cbxMon_edit').value = objResponse.idMoneda;
-            document.getElementById('chkActivo_edit').checked = objResponse.intActivo;
-            
+            document.getElementById('txtcodMoneda_edit').value = objResponse.codMoneda;
+            document.getElementById('txtdscMoneda_edit').value = objResponse.dscMoneda; /////////////////////
+            document.getElementById('chkActivo_edit').checked = objResponse.flgActivo;
 
-            // Limpiar validaciones previas
-            $('#txtCod_edit, #txtProducto_edit, #txtCosto_edit').removeClass('is-invalid');
+            $('#txtdscMoneda_edit').removeClass('is-invalid');
             $('.invalid-feedback').remove();
 
             IDTemp = id;
@@ -175,7 +147,7 @@ function editar(id) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error al cargar',
-                text: 'No se pudo cargar la informaciÃ³n del producto.',
+                text: 'No se pudo cargar la información del TipoeMoneda.',
                 confirmButtonColor: '#5d87ff'
             });
         }
@@ -201,20 +173,16 @@ function validarCampoRequerido(input) {
 
 function ValidarEdit(obj) {
     var valid = true;
+    const descAlmacenValido = validarCampoRequerido('#txtdscMoneda_edit');
 
-    const codValido = validarCampoRequerido('#txtCod_edit');
-    const descValido = validarCampoRequerido('#txtProducto_edit');
-    const costoValido = validarCampoRequerido('#txtCosto_edit');
-
-    if (!codValido || !descValido || !costoValido) {
+    if (!descAlmacenValido) {
         valid = false;
     }
-
     return valid;
 }
 
-$('#Edit_Modal').on('hidden.bs.modal', function () {
-    $('#txtCod_edit, #txtProducto_edit ,#txtCosto_edit').removeClass('is-invalid');
+$('#Edit_Moneda').on('hidden.bs.modal', function () {
+    $('#txtdscMoneda_edit').removeClass('is-invalid');
     $('.invalid-feedback').remove();
 });
 
@@ -223,17 +191,13 @@ $("#btn_SaveEdit").on("click", function () {
 });
 
 function saveEdit() {
-
     var obj = new Object();
-    obj.id = IDTemp;
-    obj.codProducto = document.getElementById('txtCod_edit').value.trim();
-    obj.descProducto = document.getElementById('txtProducto_edit').value.trim();
-    obj.UM = document.getElementById('cbxUM_edit').value;
-    obj.costo = document.getElementById('txtCosto_edit').value || "0.00";
-    obj.idMoneda = document.getElementById('cbxMon_edit').value;
-    obj.activo = document.getElementById('chkActivo_edit').checked;
+    obj.idMoneda = IDTemp;
+    obj.codMoneda = document.getElementById('txtcodMoneda_edit').value; // ERROR_COD
+    obj.dscMoneda = document.getElementById('txtdscMoneda_edit').value.trim();
+    obj.flgActivo = document.getElementById('chkActivo_edit').checked;
 
-    let _url = "UpdateProducto";
+    let _url = "EditarTipoMoneda";
     var _valid = ValidarEdit(obj);
 
     if (_valid) {
@@ -256,13 +220,13 @@ function saveEdit() {
                         confirmButtonText: 'Entendido'
                     });
                 } else {
-                    $('#Edit_Modal').modal('hide');
+                    $('#Edit_Moneda').modal('hide');
 
-                    // Mostrar Ã©xito
+                    // Mostrar éxito
                     setTimeout(() => {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Â¡Producto actualizado exitosamente!',
+                            title: '¡Tipo de Moneda actualizado exitosamente!',
                             text: 'Los cambios han sido guardados correctamente.',
                             confirmButtonColor: '#5d87ff',
                             confirmButtonText: 'Aceptar',
@@ -276,13 +240,13 @@ function saveEdit() {
                                 ActualizarTabla();
                             }
                         });
-                    }, 100);    
+                    }, 100);
                 }
             },
             error: function (result) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error de conexiÃ³n',
+                    title: 'Error de conexión',
                     text: 'No se pudo conectar con el servidor.',
                     confirmButtonColor: '#5d87ff'
                 });
@@ -293,16 +257,16 @@ function saveEdit() {
         });
     }
 }
+//
+//
+//  ====================================================================Averiguar funcionalidad amor ============================================
+//  
+// ==================== IMPORTACIÓN API ====================
+$("#Api_Almacen").on("click", function () {
+    $("#Api_Almacen").attr("disabled", true);
 
-
-
-// ==================== IMPORTACIÃ“N API ====================
-$("#Prod_Almacen").on("click", function () {
-    $("#Prod_Almacen").attr("disabled", true);
-
-    // Mostrar SweetAlert de carga
     Swal.fire({
-        title: 'Importando productos...',
+        title: 'Importando almacenes...',
         html: 'Por favor espere mientras se cargan los datos.',
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -315,7 +279,7 @@ $("#Prod_Almacen").on("click", function () {
 });
 
 function ApiCarga() {
-    let _url = "CargarProductosAPIExterna";
+    let _url = "CargarAlmacenesAPIExterna";
     $.ajax({
         type: "Post",
         contentType: "application/json; charset=utf-8",
@@ -323,10 +287,12 @@ function ApiCarga() {
         url: _url,
         data: JSON.stringify(),
         success: function (response) {
+            console.log(response);
+
             if (response.HUBO_ERROR) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error en la carga',
+                    title: 'Error en la importación',
                     text: response.MENSAJE_ERROR,
                     confirmButtonColor: '#5d87ff',
                     confirmButtonText: 'Entendido'
@@ -334,23 +300,23 @@ function ApiCarga() {
             } else {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Â¡Carga exitosa!',
-                    text: response.MENSAJE_ERROR || 'Los productos se han cargado correctamente.',
+                    title: '¡Importación exitosa!',
+                    text: response.MENSAJE_ERROR || 'Los almacenes se han importado correctamente.',
                     confirmButtonColor: '#5d87ff',
                     confirmButtonText: 'Aceptar',
-                    //timer: 4500,
+                    //timer: 5000,
                     //timerProgressBar: true
                 });
                 ActualizarTabla();
             }
         },
         complete: function () {
-            $("#Prod_Almacen").attr("disabled", false);
+            $("#Api_Almacen").attr("disabled", false);
         },
         error: function (result) {
             Swal.fire({
                 icon: 'error',
-                title: 'Error de conexiÃ³n',
+                title: 'Error de conexión',
                 text: 'No se pudo conectar con el servidor.',
                 confirmButtonColor: '#5d87ff'
             });

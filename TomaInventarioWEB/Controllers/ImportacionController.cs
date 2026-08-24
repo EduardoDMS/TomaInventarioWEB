@@ -1,6 +1,7 @@
 ﻿using BE;
 using BL;
 using ExcelDataReader;
+using Microsoft.Ajax.Utilities;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
@@ -80,7 +81,7 @@ namespace TomaInventarioWEB.Controllers
                 {
                     // Determinar la fila y columna de inicio para la tabla
                     int startRow = 3;
-                    int startColumn = 6; // Corresponde a la columna F
+                    int startColumn = 11; // Corresponde a la columna F
 
                     // Obtener las propiedades de la clase UnidadMedidaBE para los encabezados
                     var properties = typeof(UMEXCELBE).GetProperties();
@@ -98,7 +99,7 @@ namespace TomaInventarioWEB.Controllers
                     // Determinar el rango de la tabla (incluyendo encabezados)
                     int endRow = startRow + listaUnidades.Count - 1;
                     int endColumn = startColumn + properties.Length - 1;
-                    ExcelRange dataRange = worksheet.Cells[3, 6, endRow, endColumn];
+                    ExcelRange dataRange = worksheet.Cells[3, 11, endRow, endColumn];
 
                     // Opcional: Formatear como tabla
                     ExcelTable table = worksheet.Tables.Add(dataRange, "TablaUnidadesMedida");
@@ -126,6 +127,55 @@ namespace TomaInventarioWEB.Controllers
 
 
             //return File(rutaArchivo, tipoMIME, nombreArchivo);
+        }
+
+        public ActionResult DescargarExcelProductos_x_Costos()
+        {
+            string rutaArchivo = Server.MapPath("~/Plantillas/Plantilla_Producto_Costos.xlsx");
+            string nombreArchivo = "Plantilla_Producto_Costos.xlsx";
+            string tipoMIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            // FIX: lista de monedas, no de unidades de medida
+            List<MonedaEXCELBE> listaMonedas = new MantenimientosBL().ListarMonedaEXCEL();
+
+            using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(rutaArchivo)))
+            {
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Hoja1"];
+                if (worksheet != null && listaMonedas.Any())
+                {
+                    int startRow = 2;
+                    int startColumn = 6; // columna K
+                    var properties = typeof(MonedaEXCELBE).GetProperties();
+
+                    for (int i = 0; i < listaMonedas.Count; i++)
+                    {
+                        for (int j = 0; j < properties.Length; j++)
+                        {
+                            var propertyValue = properties[j].GetValue(listaMonedas[i]);
+                            worksheet.Cells[startRow + i, startColumn + j].Value = propertyValue;
+                        }
+                    }
+
+                    int endRow = startRow + listaMonedas.Count - 1;
+                    int endColumn = startColumn + properties.Length - 1;
+                    ExcelRange dataRange = worksheet.Cells[startRow, startColumn, endRow, endColumn];
+
+                    ExcelTable table = worksheet.Tables.Add(dataRange, "TablaMonedas"); 
+                    table.ShowHeader = false;
+                    table.TableStyle = TableStyles.Light1;
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        excelPackage.SaveAs(memoryStream);
+                        memoryStream.Position = 0;
+                        return File(memoryStream.ToArray(), tipoMIME, nombreArchivo);
+                    }
+                }
+                else
+                {
+                    return Content("Error: No se encontró la Hoja1 en la plantilla o no hay monedas activas registradas.");
+                }
+            }
         }
 
         public ActionResult DescargarExcelUbicaciones()
@@ -274,6 +324,14 @@ namespace TomaInventarioWEB.Controllers
                 {
                     filteredTable.Columns.Add("COD_UNIDAD_MEDIDA", originalTable.Columns["COD_UNIDAD_MEDIDA"].DataType);
                 }
+                if (originalTable.Columns.Contains("PRECIO_COSTO"))
+                {
+                    filteredTable.Columns.Add("PRECIO_COSTO", originalTable.Columns["PRECIO_COSTO"].DataType);
+                }
+                if (originalTable.Columns.Contains("COD_MONEDA"))
+                {
+                    filteredTable.Columns.Add("COD_MONEDA", originalTable.Columns["COD_MONEDA"].DataType);
+                }
 
                 // Filtrar las filas y copiar los datos
                 foreach (DataRow row in originalTable.Rows)
@@ -296,7 +354,69 @@ namespace TomaInventarioWEB.Controllers
                         newRow["COD_UNIDAD_MEDIDA"] = row["COD_UNIDAD_MEDIDA"];
                         hasContent = true;
                     }
+                    if (filteredTable.Columns.Contains("PRECIO_COSTO") && originalTable.Columns.Contains("PRECIO_COSTO") && !string.IsNullOrWhiteSpace(row["PRECIO_COSTO"]?.ToString()))
+                    {
+                        newRow["PRECIO_COSTO"] = row["PRECIO_COSTO"];
+                        hasContent = true;
+                    }
+                    if(filteredTable.Columns.Contains("COD_MONEDA") && originalTable.Columns.Contains("COD_MONEDA") && !string.IsNullOrWhiteSpace(row["COD_MONEDA"]?.ToString()))
+                    {
+                        newRow["COD_MONEDA"] = row["COD_MONEDA"];
+                        hasContent = true;
+                    }
+                    if (hasContent)
+                    {
+                        filteredTable.Rows.Add(newRow);
+                    }
+                }
+            }
 
+            return filteredTable;
+        }
+
+
+
+        public DataTable FiltrarTablaProductos_X_Costos(DataTable originalTable)
+        {
+            DataTable filteredTable = new DataTable();
+
+            if (originalTable != null)
+            {
+                // Definir las columnas que queremos en la nueva tabla
+                if (originalTable.Columns.Contains("COD_PRODUCTO"))
+                {
+                    filteredTable.Columns.Add("COD_PRODUCTO", originalTable.Columns["COD_PRODUCTO"].DataType);
+                }
+                if (originalTable.Columns.Contains("PRECIO_COSTO"))
+                {
+                    filteredTable.Columns.Add("PRECIO_COSTO", originalTable.Columns["PRECIO_COSTO"].DataType);
+                }
+                if (originalTable.Columns.Contains("COD_MONEDA"))
+                {
+                    filteredTable.Columns.Add("COD_MONEDA", originalTable.Columns["COD_MONEDA"].DataType);
+                }
+
+                // Filtrar las filas y copiar los datos
+                foreach (DataRow row in originalTable.Rows)
+                {
+                    bool hasContent = false;
+                    DataRow newRow = filteredTable.NewRow();
+
+                    if (filteredTable.Columns.Contains("COD_PRODUCTO") && originalTable.Columns.Contains("COD_PRODUCTO") && !string.IsNullOrWhiteSpace(row["COD_PRODUCTO"]?.ToString()))
+                    {
+                        newRow["COD_PRODUCTO"] = row["COD_PRODUCTO"];
+                        hasContent = true;
+                    }  hasContent = true;
+                    if (filteredTable.Columns.Contains("PRECIO_COSTO") && originalTable.Columns.Contains("PRECIO_COSTO") && !string.IsNullOrWhiteSpace(row["PRECIO_COSTO"]?.ToString()))
+                    {
+                        newRow["PRECIO_COSTO"] = row["PRECIO_COSTO"];
+                        hasContent = true;
+                    }
+                    if (filteredTable.Columns.Contains("COD_MONEDA") && originalTable.Columns.Contains("COD_MONEDA") && !string.IsNullOrWhiteSpace(row["COD_MONEDA"]?.ToString()))
+                    {
+                        newRow["COD_MONEDA"] = row["COD_MONEDA"];
+                        hasContent = true;
+                    }
                     if (hasContent)
                     {
                         filteredTable.Rows.Add(newRow);
@@ -425,6 +545,127 @@ namespace TomaInventarioWEB.Controllers
                 MaxJsonLength = int.MaxValue
             };
         }
+
+        public JsonResult SubirArchivo_ActualizarProducto_x_Costo(HttpPostedFileBase archivo)
+        {
+            Response response = new BE.Response();
+            List<ImportBE> ListaResult = new List<ImportBE>();
+            if (archivo != null && archivo.ContentLength > 0)
+            {
+                string[] filename = archivo.FileName.Split('.');
+                string extension = filename[1];
+                if (extension != "xls" && extension != "xlsx")
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "La extensión del archivo no es valida.";
+                    return Json(response);
+                }
+
+                using (var stream = archivo.InputStream)
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+                        {
+                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration
+                            {
+                                UseHeaderRow = true
+                            }
+                        });
+
+                        // Obtener la tabla del DataSet (asumiendo que es la primera)
+                        DataTable dataTable = dataSet.Tables[0];
+                        dataTable = FiltrarTablaProductos_X_Costos(dataTable);
+
+                        // Calcular el número total de registros
+                        int totalRecords = dataTable.Rows.Count;
+
+                        if (totalRecords > 0)
+                        {
+                            // Determinar si es necesario dividir el XML en bloques
+                            bool splitXml = totalRecords > 100;
+
+                            // Si no es necesario dividir el XML, enviarlo directamente
+                            dataTable.TableName = "Table1";
+                            if (!splitXml)
+                            {
+                                string xmlData = ConvertDataTableToXml(dataTable);
+                                var dataAccess = new MantenimientosBL();
+                                ListaResult = dataAccess.ActualizarCostos_x_Productos(xmlData);
+                            }
+                            else
+                            {
+                                // Dividir el XML en bloques de 100 registros
+                                int startIndex = 0;
+                                int blockSize = 500;
+                                var dataAccess = new MantenimientosBL();
+
+                                while (startIndex < totalRecords)
+                                {
+                                    // Obtener el bloque actual de registros
+                                    var blockRows = dataTable.AsEnumerable()
+                                        .Skip(startIndex)
+                                        .Take(blockSize)
+                                        .CopyToDataTable();
+
+
+                                    // Convertir el bloque de registros a XML
+                                    string xmlDataBlock = ConvertDataTableToXml(blockRows);
+
+                                    // Enviar el bloque de registros a ImportarEmpleados
+
+                                    ListaResult.AddRange(dataAccess.ActualizarCostos_x_Productos(xmlDataBlock));
+                                    //if (startIndex == 0)
+                                    //{
+                                    //    ListaResult =  dataAccess.ImportarProductos(xmlDataBlock);
+                                    //}
+                                    //else
+                                    //{
+                                    //    ListaResult.AddRange(dataAccess.ImportarProductos(xmlDataBlock));
+                                    //}
+
+                                    // Incrementar el índice para el siguiente bloque
+                                    startIndex += blockSize;
+                                }
+
+                            }
+                        }
+                        //response.Entity = ListaResult;
+                        //response.Entity = ListaResult.Where(x => x.Flg_pass == 0).ToList();
+                        //0: error, 1: actualizado, 2: nuevos, 3:sin cambios
+                        // TODO ENVIAR AL RESPONSE Y IMPRIMIR EN FRONT
+
+                        ResultadoImportacionBE resultado = new ResultadoImportacionBE
+                        {
+                            Lista = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList(),
+                            Errores = ListaResult.Count(x => x.Flg_pass == 0),
+                            Actualizados = ListaResult.Count(x => x.Flg_pass == 1),
+                          //  Nuevos = ListaResult.Count(x => x.Flg_pass == 2),
+                            SinCambios = ListaResult.Count(x => x.Flg_pass == 3),
+                        };
+
+                        response.Entity = resultado;
+                    }
+                }
+            }
+            else
+            {
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = "No se seleccionó ningún archivo o el archivo está vacío.";
+                return Json(response);
+            }
+            //response.Entity = null;
+
+            //return Json(response);
+            return new JsonResult
+            {
+                Data = response,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue
+            };
+        }
+
+
 
         public JsonResult SubirArchivo_Ubicaciones(HttpPostedFileBase archivo)
         {

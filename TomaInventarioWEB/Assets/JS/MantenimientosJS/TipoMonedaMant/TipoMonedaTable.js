@@ -1,14 +1,15 @@
-ï»¿var tabla;
+var tabla;
 tabla = $('#dtTabla').DataTable({
     "ajax": {
-        "url": "ListarAlmacenes",
+        "url": "ListarTipoMonedas",
         "type": "POST",
         "datatype": "json",
         "data": function (f) {
-            var txtAlmacen = document.getElementById("txtAlmacen").value;
+            var txtMoneda = document.getElementById("txtMoneda").value;
             var cbxEstado = document.getElementById("cbxActivo").value;
-            f.dscAlmacen = txtAlmacen
-            f.activo = cbxEstado
+            f.codMoneda = txtMoneda;
+            f.dscMoneda = "";
+            f.activo = cbxEstado;
         },
         "complete": function (response) {
             //if (Swal.isVisible()) {
@@ -22,7 +23,7 @@ tabla = $('#dtTabla').DataTable({
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'OcurriÃ³ un error al cargar los datos',
+                    text: 'Ocurrió un error al cargar los datos',
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
@@ -37,25 +38,36 @@ tabla = $('#dtTabla').DataTable({
             "orderable": false,
             "searchable": false,
             "render": function (data, type, row, meta) {
-                return '<button class="btn btn-link btn-editar text-primary"><i class="ti ti-edit fs-5"></i></button>'
+                return '<button class="btn btn-link btn-editar text-primary">' +
+                    '<i class="ti ti-edit fs-5"></i>' +
+                    '</button>';
             },
             "createdCell": function (td, cellData, rowData, row, col) {
                 $(td).find('.btn-editar').click(function (event) {
                     event.stopPropagation();
-                    editar(rowData.idAlmacen);
+                    editar(rowData.idMoneda);
                 });
             }
         },
-        { "data": "vchcodAlmacen" },
-        { "data": "vchdscAlmacen" },
+        //{
+        //    "data": "idMoneda"
+        //},
         {
-            "data": "vchActivo",
+            "data": "codMoneda"
+        },
+        {
+            "data": "dscMoneda"
+        },
+        {
+            "data": "flgActivo",
             "render": function (data, type, row, meta) {
-                if (data === "Activo" || data === "1" || data === 1) {
-                    return '<span class="badge bg-success-subtle text-success"><i class="ti ti-circle-filled fs-1"></i> Activo</span>';
-                } else {
-                    return '<span class="badge bg-danger-subtle text-danger"><i class="ti ti-circle-filled fs-1"></i> Inactivo</span>';
+                if (data === true || data === "Activo" || data === "1" || data === 1) {
+                    return '<span class="badge bg-success-subtle text-success">' +
+                        '<i class="ti ti-circle-filled fs-1"></i> Activo</span>';
                 }
+
+                return '<span class="badge bg-danger-subtle text-danger">' +
+                    '<i class="ti ti-circle-filled fs-1"></i> Inactivo</span>';
             }
         }
     ],
@@ -68,10 +80,11 @@ tabla = $('#dtTabla').DataTable({
     "paging": true,
     "pageLength": 10,
     "searching": false,
-    "lengthChange": true,
-    /*"responsive": true,*/
-    "language": espaÃ±olTbl
+    "lengthChange": true
+    //,
+    //"language": españolTbl
 });
+
 $('#btn_filtrar').on('click', function () {
     Swal.fire({
         title: 'Buscando...',
@@ -86,16 +99,15 @@ $('#btn_filtrar').on('click', function () {
     ActualizarTabla();
 });
 
-
-$('#txtAlmacen').on('keypress', function (e) {
-    if (e.which === 13) { 
+$('#txtMoneda').on('keypress', function (e) {
+    if (e.which === 13) {
         e.preventDefault();
-        $('#btn_filtrar').click(); 
+        $('#btn_filtrar').click();
     }
 });
 
 $('#btn_limpiar').on('click', function () {
-    $('#txtAlmacen').val('');
+    $('#txtMoneda').val('');
     $('#cbxActivo').val('');
 
     Swal.fire({

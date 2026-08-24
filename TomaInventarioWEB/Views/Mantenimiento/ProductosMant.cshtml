@@ -7,9 +7,9 @@
 
 
 @*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
-<link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
-<link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
-<link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">*@
+    <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
+    <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">*@
 
 <div class="card">
     <div class="card-header bg-primary text-white">
@@ -21,6 +21,9 @@
             <div class="d-flex gap-2">
                 <button class="btn btn-warning d-none" id="Prod_Almacen">
                     <i class="ti ti-cloud-upload"></i> Cargar Productos desde la nube
+                </button>
+                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#ImportxProdxCosto_Modal">
+                    <i class="ti ti-file-upload"></i> Actualizar Precios a los Productos   
                 </button>
                 <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Import_Modal">
                     <i class="ti ti-file-upload"></i> Importar  
@@ -91,6 +94,7 @@
 @section scripts{
     <script src="~/Assets/JS/MantenimientosJS/ProductosMant/ProductoMantJS.js"></script>
     <script src="~/Assets/JS/MantenimientosJS/ProductosMant/ProductoTable.js"></script>
+    <script src="~/Assets/JS/MantenimientosJS/ProductosMant/Costos/ActualizarCostoJS.js"></script>
     <script nonce="@nonce">
     function downTemplate() {
         window.location.href = "@Url.Content("~/")Importacion/DescargarExcelProductos"
@@ -133,7 +137,7 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    Swal.close(); 
+                    Swal.close();
 
                     $("#fileInput").val("");
 
@@ -183,7 +187,7 @@
                     ActualizarTabla();
                 },
                 error: function (xhr, status, error) {
-                    Swal.close(); 
+                    Swal.close();
 
                     Swal.fire({
                         icon: 'error',
@@ -201,11 +205,17 @@
     });
     </script>
 
+
+    <script nonce="@nonce">
+    // Creamos una variable global con la ruta ya procesada
+        var urlDescargarCostos = '@Url.Content("~/")Importacion/DescargarExcelProductos_x_Costos';
+     var urlSubirCosto = '@Url.Action("SubirArchivo_ActualizarProducto_x_Costo", "Importacion")';
+    </script>
     @*<script src="~/Content/matdash/libs/jquery-steps/build/jquery.steps.min.js"></script>
-    <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
-    <script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>*@
+        <script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+        <script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+        <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>*@
 
 }

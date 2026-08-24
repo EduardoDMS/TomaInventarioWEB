@@ -12,6 +12,9 @@ namespace BE
         public string Usuario { get; set; }
         public string Perfil { get; set; }
         public bool Activo { get; set; }
+        //public bool flgOnline { get; set; }
+
+       // public Guid?TokenSesion {  get; set; }
     }
     public class UsuarioBE
     {

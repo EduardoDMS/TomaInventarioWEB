@@ -133,7 +133,7 @@
             </div>
         </form>       
         <div class="mb-4">
-            <button id="btn-login" class="login__boton" type="submit">
+            <button id="btn-login" class="login__boton" type="button"><!--ZEUS AQUI ERA SUBMIT XD-->
                 <span class="login__texto">Ingresar</span>
                 @*<div class="login__validando">
                     <span class="spinner-border"></span>
@@ -150,8 +150,9 @@
     </section>
 </main>
 @section scripts{
-    @*<script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
+    <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>
     <script src="~/Assets/JS/LoginJS.js"></script>
+
     
     <script nonce="@nonce">
 
@@ -161,64 +162,72 @@
 
         document.getElementById("usuario").focus();
 
+        //canelita
         $("#btn-login").on("click", function () {
-            Autenticar();
+            Autenticar(false);
         });
 
-        function Autenticar() {
+        function Autenticar(forzarSesion) {
 
-            // validar inputs
-            if (!validarFormulario(formLogin)) {
-                return;
-            }
+    if (!validarFormulario(formLogin)) {
+        return;
+    }
 
-            const modelUser = {
-                user: document.getElementById("usuario")?.value.trim() || "",
-                pass: document.getElementById("contrasena")?.value.trim() || ""
-            };
+    const modelUser = {
+        user: document.getElementById("usuario")?.value.trim() || "",
+        pass: document.getElementById("contrasena")?.value.trim() || "",
+        forzarSesion: forzarSesion === true  // NUEVO
+    };
 
-            $.ajax({
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                url: "@Url.Content("~/")Seguridad/ValidarAcceso",
-                data: JSON.stringify(modelUser),
-                async: true,
-                success: function (response) {
-                    console.log(response);
-                    if (response[0] == false) {
-                        if (!localStorage.getItem("primeraImportacion")) {
-                            localStorage.setItem("primeraImportacion", "true");
-                            @*window.location.href = "@Url.Content("~/Importacion/ImportacionArchivos")";
-                            localStorage.setItem("menuActivo", "ajustes");*@
-                            window.location.href = "@Url.Content("~/Home/Index")";
-                            localStorage.setItem("menuActivo", "inicio");
-                        } else {
-                            window.location.href = "@Url.Content("~/Home/Index")";
-                            localStorage.setItem("menuActivo", "inicio");
-                        }
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        url: "@Url.Content("~/")Seguridad/ValidarAcceso",
+        data: JSON.stringify(modelUser),
+        async: true,
+        success: function (response) {
+            var huboError = response[0];
+            var mensaje = response[1];
+            var redirect = response[2];
+            var codigoResultado = response[3]; // NUEVO
 
-                    }
-                    else {
-                        alertaLoginErrorBackend(response[1]);
-                    }
-                },
-                error: function (result) {
-                    alertaLoginErrorInesperado(result);
+            if (huboError === false) {
+                // Login exitoso — misma lógica que ya tenías
+                if (!localStorage.getItem("primeraImportacion")) {
+                    localStorage.setItem("primeraImportacion", "true");
+                    window.location.href = "@Url.Content("~/Home/Index")";
+                    localStorage.setItem("menuActivo", "inicio");
+                } else {
+                    window.location.href = "@Url.Content("~/Home/Index")";
+                    localStorage.setItem("menuActivo", "inicio");
                 }
-            });
-
-            //setTimeout(function () {
-
-            //    var succ = ValidarCampos(modelUser);
-
-            //    if (succ) {
-
-
-            //    } else {
-            //        ocultarValidando();
-            //    }
-            //}, 2000);
+            }
+            else if (codigoResultado === 2) {
+                // NUEVO: sesión activa, no es un error de credenciales — preguntamos
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Sesión activa',
+                    text: 'Este usuario ya tiene una sesión activa en otro dispositivo. ¿Deseas cerrarla e ingresar aquí?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, forzar ingreso',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#5d87ff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Autenticar(true); // reintenta con forzarSesion=true; el backend REVALIDA usuario+contraseña de nuevo
+                    }
+                });
+            }
+            else {
+                // Error real: credenciales inválidas, inactivo, sin permiso, etc.
+                alertaLoginErrorBackend(mensaje);
+            }
+        },
+        error: function (result) {
+            alertaLoginErrorInesperado(result);
         }
+    });
+}
     </script>
 }

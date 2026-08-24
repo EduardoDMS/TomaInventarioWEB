@@ -400,6 +400,55 @@ namespace DAO
             return response;
         }
 
+        public Response cbxMon()
+        {
+            Response response = new Response();
+            List<CombosBE> ListCombo = new List<CombosBE>();
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+            SqlDataReader reader = null;
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_CbxTipoMoneda_2026", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Clear();
+
+                        con.Open();
+                        using (reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CombosBE entity = new CombosBE();
+
+                                entity.intValue = (reader["Id_moneda"] == DBNull.Value) ? 0 : Int32.Parse(reader["Id_moneda"].ToString());
+                                entity.vchdesc = (reader["dscMoneda"] == DBNull.Value) ? String.Empty : reader["dscMoneda"].ToString();
+                                ListCombo.Add(entity);
+                            }
+                        }
+
+                    }
+
+                }
+                response.Entity = ListCombo;
+            }
+            catch (Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+
+            }
+            finally
+            {
+                if (con != null) { con.Close(); con.Dispose(); }
+                //if (con != null) { con.Dispose(); }
+                if (reader != null) { reader.Dispose(); }
+            }
+            return response;
+        }
+
 
     }
 

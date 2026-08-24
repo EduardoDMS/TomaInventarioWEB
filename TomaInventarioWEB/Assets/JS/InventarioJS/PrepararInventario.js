@@ -524,7 +524,7 @@ function GuardarInventarioPreparado() {
 
         success: function (response) {
             if (response.HUBO_ERROR) {
-                Console.log(response);
+                console.log(response);
                 //$('#txtvarError').text(response.MENSAJE_ERROR);
                 //$('#error_modal').modal('show');
                 Swal.fire("Error", response.MENSAJE_ERROR, "error");

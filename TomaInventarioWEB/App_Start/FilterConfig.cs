@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using TomaInventarioWEB.Filters;
 
 namespace TomaInventarioWEB
 {
@@ -8,6 +9,7 @@ namespace TomaInventarioWEB
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new ValidarSesionUnicaAttribute());
         }
     }
 }

@@ -203,7 +203,7 @@
             }
         },
         "error": {
-            "system": "Ha ocurrido un error en el sistema (<a target=\"\\\" rel=\"\\ nofollow\" href=\"\\\">Más información&lt;\\\/a&gt;).<\/a>"
+            "system": "Ha ocurrido un error en el sistema ." //(<a target=\"\\\" rel=\"\\ nofollow\" href=\"\\\">Más información&lt;\\\/a&gt;).<\/a>
         },
         "multi": {
             "title": "Múltiples Valores",

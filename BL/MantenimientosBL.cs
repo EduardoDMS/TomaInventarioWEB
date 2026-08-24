@@ -271,7 +271,7 @@ namespace BL
         {
             return new MantenimientosDAO().ListarProductos(activo, vchProducto, start, length, order);
         }
-        public Response CreateProducto(string codProducto, string descProducto, int UM)
+        public Response CreateProducto(string codProducto, string descProducto, int UM,decimal costo, int idMoneda)
         {
             int total = new MantenimientosDAO().ContarProductos();
 
@@ -284,15 +284,19 @@ namespace BL
                 };
             }
 
-            return new MantenimientosDAO().CreateProducto(codProducto, descProducto, UM);
+            return new MantenimientosDAO().CreateProducto(codProducto, descProducto, UM,costo, idMoneda);
         }
+
+
+        /// <summary>       Elocuencia de productos se agregara Se añadira el tema de Costos y el codigo de la moneda
+        
         public Response GetProducto(int id)
         {
             return new MantenimientosDAO().GetProducto(id);
         }
-        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo, int UM)
+        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo,decimal costo,int idMoneda, int UM)
         {
-            return new MantenimientosDAO().UpdateProducto(id, codProducto, descProducto, usuario, activo, UM);
+            return new MantenimientosDAO().UpdateProducto(id, codProducto, descProducto, usuario, activo,costo, idMoneda, UM);
         }
 
         public List<ImportBE> ImportarProductos(string xml)
@@ -301,6 +305,22 @@ namespace BL
             xmlDoc.LoadXml(xml);
             int limiteProductos = _licencia.ObtenerProductosLimites();
             return new MantenimientosDAO().ImportarProductos(xmlDoc,limiteProductos);
+        }
+
+
+        /// </summary>
+
+
+
+
+
+
+        //actualiza por medio de un excel 
+        public List<ImportBE> ActualizarCostos_x_Productos(string xml)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(xml);
+            return new MantenimientosDAO().ActualizarCostos_x_Productos(xmlDoc);
         }
 
         public Response GetAPIProductos()
@@ -358,6 +378,40 @@ namespace BL
         {
             return new MantenimientosDAO().ListarUnidadMedidaEXCEL();
         }
+        #endregion
+
+        #region Tipo de moneda
+        public List<TipoMonedaBE> ListarTipoMonedas(string codMoneda , string dscMoneda, string activo)
+        {
+               return new MantenimientosDAO().ListarTipoMonedas(codMoneda , dscMoneda, activo);
+        }
+
+        public Response ActivarInactivarTipoMoneda(int idMoneda, bool flgActivo)
+        {
+            return new MantenimientosDAO().ActivarInactivarTipoMoneda(idMoneda, flgActivo);
+        }
+
+        public Response InsertarTipoMoneda(string codMoneda, string dscMoneda)
+        {
+            return new MantenimientosDAO().InsertarTipoMoneda(codMoneda, dscMoneda);
+        }
+
+        public Response EditarTipoMoneda(int idMoneda, string dscMoneda, bool flgActivo)
+        {
+            return new MantenimientosDAO().EditarTipoMoneda(idMoneda, dscMoneda, flgActivo);
+        }
+
+        public Response ObtenerTipoMoneda(int idMoneda)
+        {
+            return new MantenimientosDAO().ObtenerTipoMoneda(idMoneda);
+        }
+
+
+        public List<MonedaEXCELBE> ListarMonedaEXCEL()
+        {
+            return new MantenimientosDAO().ListarMonedaEXCEL();
+        }
+
 
         #endregion
 

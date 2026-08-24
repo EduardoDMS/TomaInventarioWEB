@@ -766,6 +766,7 @@ namespace DAO
                     using (comando = new SqlCommand("WEB_ImportDetallesXML_2026", conexion))
                     {
                         comando.CommandType = CommandType.StoredProcedure;
+                        // comando.CommandTimeout = 180; Descomentame si necesitas ayuda 
                         comando.Parameters.Clear();
                         comando.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml_import.InnerXml.ToString(); // REVISAR ESE TOSTRING YA QUE INNERXML YA ES UN STRING
                         comando.Parameters.Add("@IDAlmacen", SqlDbType.Int).Value = IdAlmacen;

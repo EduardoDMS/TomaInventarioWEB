@@ -129,8 +129,10 @@ namespace DAO
                                 CombosBE entity = new CombosBE();
                                 entity.vchValue = (reader["ID_INVENTARIO"] == DBNull.Value) ?
                                     String.Empty : reader["ID_INVENTARIO"].ToString();
-                                entity.vchdesc = (reader["COD_INVENTARIO"] == DBNull.Value) ?
-                                    String.Empty : reader["COD_INVENTARIO"].ToString();
+                                //entity.vchdesc = (reader["COD_INVENTARIO"] == DBNull.Value) ?
+                                //    String.Empty : reader["COD_INVENTARIO"].ToString();
+                                entity.vchdesc = (reader["ID_INVENTARIO"] == DBNull.Value) ?
+                                    String.Empty : reader["ID_INVENTARIO"].ToString();
                                 ListCombo.Add(entity);
                             }
                         }

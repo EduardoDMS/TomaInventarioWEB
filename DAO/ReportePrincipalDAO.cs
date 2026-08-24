@@ -48,7 +48,7 @@ namespace DAO
                         comando.Parameters.Add("@ESTADO", SqlDbType.VarChar, 20).Value = estado.ToUpper();
                         comando.Parameters.Add("@TIPO_DIFERENCIA", SqlDbType.VarChar, 20).Value = tipoDiferencia.ToUpper();
                         comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = int.Parse(start);
-                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
+                        //comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
                         comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = order;
 
                         conexion.Open();
@@ -155,7 +155,7 @@ namespace DAO
                         comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 20).Value = busqueda;
 
                         comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = int.Parse(start);
-                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
+                        //comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
                         comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = order;
 
                         conexion.Open();
@@ -264,7 +264,7 @@ namespace DAO
                         comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 20).Value = busqueda;
 
                         comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = int.Parse(start);
-                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
+                        //comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
                         comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = order;
 
                         conexion.Open();
@@ -276,7 +276,7 @@ namespace DAO
                             reporteUsuarioBE.UsuariosParticipantes = (reader["USUARIOS_PARTICIPANTES"] == DBNull.Value) ? 0 : Int32.Parse(reader["USUARIOS_PARTICIPANTES"].ToString());
                             reporteUsuarioBE.ProductosFueraInventario = (reader["PRODUCTOS_FUERA_INVENTARIO"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_FUERA_INVENTARIO"].ToString());
                             reporteUsuarioBE.UsuarioMasLecturas = (reader["USUARIO_MAS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIO_MAS_LECTURAS"].ToString();
-                            reporteUsuarioBE.UsuarioMenosLecturas = (reader["USUARIO_MENOS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIO_MENOS_LECTURAS"].ToString();
+                            reporteUsuarioBE.UsuarioMenosLecturas = (reader["USUARIOS_MENOS_LECTURAS"] == DBNull.Value) ? string.Empty : reader["USUARIOS_MENOS_LECTURAS"].ToString();
                             reporteUsuarioBE.ConteoSeleccionado = (reader["CONTEO_SELECCIONADO"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEO_SELECCIONADO"].ToString());
                             reporteUsuarioBE.EstadoConteo = (reader["COD_ESTADO_CONTEO"] == DBNull.Value) ? string.Empty : reader["COD_ESTADO_CONTEO"].ToString();
                             reporteUsuarioBE.ConteosDisponibles = (reader["CONTEOS_DISPONIBLES"] == DBNull.Value) ? 0 : Int32.Parse(reader["CONTEOS_DISPONIBLES"].ToString());
@@ -337,6 +337,7 @@ namespace DAO
         public Response ReporteProducto(
             string codInventario,
             string busqueda = "",
+            int estado = 0,
             int observacion = 0,
             string start = "0",
             string length = "10",
@@ -365,10 +366,11 @@ namespace DAO
                         // Parametros SP
                         comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
                         comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 20).Value = busqueda;
+                        comando.Parameters.Add("@P_ESTADO", SqlDbType.Int).Value = estado;
                         comando.Parameters.Add("@P_OBSERVACION", SqlDbType.Int).Value = observacion;
 
                         comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = int.Parse(start);
-                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
+                        //comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = int.Parse(length);
                         comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = order;
 
                         conexion.Open();
@@ -379,7 +381,7 @@ namespace DAO
                             reporteProductoBE.ProductosInventariados = (reader["PRODUCTOS_INVENTARIADOS"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_INVENTARIADOS"].ToString());
                             reporteProductoBE.ProductosConDiferencia = (reader["PRODUCTOS_CON_DIFERENCIA"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_CON_DIFERENCIA"].ToString());
                             reporteProductoBE.ProductosSinDiferencia = (reader["PRODUCTOS_SIN_DIFERENCIA"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_SIN_DIFERENCIA"].ToString());
-                            reporteProductoBE.ProductosFueraInventario = (reader["PRODUCTOS_FUERA_INVENTARIO"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_FUERA_INVENTARIO"].ToString());
+                            reporteProductoBE.ProductosNoLecturados = (reader["PRODUCTOS_NO_LECTURADOS"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_NO_LECTURADOS"].ToString());
                             reporteProductoBE.ProductosUbicacionDiferente = (reader["PRODUCTOS_UBICACION_DIFERENTE"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_UBICACION_DIFERENTE"].ToString());
                             reporteProductoBE.ProductosLoteDiferente = (reader["PRODUCTOS_LOTE_DIFERENTE"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_LOTE_DIFERENTE"].ToString());
                             reporteProductoBE.StockInicialTotal = (reader["STOCK_INICIAL_TOTAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INICIAL_TOTAL"].ToString());
@@ -445,10 +447,6 @@ namespace DAO
         }
 
 
-
-       // REPORTE POR UBICACIONES
-
-
         public Response ReporteUbicacion(
             string codInventario,
             string busqueda = "",
@@ -470,20 +468,20 @@ namespace DAO
 
             try
             {
-                using(conexion = new SqlConnection(Connection.AppStringConection()))
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using(comando = new SqlCommand("SP_WEB_reporteXubicaciones_2026", conexion))
+                    using (comando = new SqlCommand("SP_WEB_reporteXubicaciones_2026", conexion))
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
 
                         comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
-                        comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar,200).Value = busqueda;
+                        comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 200).Value = busqueda;
                         comando.Parameters.Add("@P_ESTADO", SqlDbType.VarChar, 20).Value = (object)p_estado ?? DBNull.Value;
                         comando.Parameters.Add("@P_SOLO_DIFERENCIAS", SqlDbType.Int).Value = diferencias;
                         comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = p_idstart;
-                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = p_length;
-                        comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value =(object)p_order ?? DBNull.Value;
+                        //comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = p_length;
+                        comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = (object)p_order ?? DBNull.Value;
 
                         conexion.Open();
                         reader = comando.ExecuteReader();
@@ -519,7 +517,7 @@ namespace DAO
                                 filaTabla.Stock_Contado = (reader["STOCK_CONTADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_CONTADO"].ToString());
                                 filaTabla.Diferencia = (reader["DIFERENCIA"] == DBNull.Value) ? 0 : decimal.Parse(reader["DIFERENCIA"].ToString());
                                 filaTabla.Estado = (reader["ESTADO"] == DBNull.Value) ? string.Empty : reader["ESTADO"].ToString();
-                                
+
                                 listaTabla.Add(filaTabla);
                             }
                         }
@@ -528,6 +526,7 @@ namespace DAO
                         {
                             if (reader.Read())
                             {
+                                totalesFooter.Add((reader["StockTotalProductos"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockTotalProductos"].ToString()));
                                 totalesFooter.Add((reader["StockInicialTotal"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockInicialTotal"].ToString()));
                                 totalesFooter.Add((reader["StockFinalTotal"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockFinalTotal"].ToString()));
                                 totalesFooter.Add((reader["StockDiferencial"] == DBNull.Value) ? 0 : decimal.Parse(reader["StockDiferencial"].ToString()));
@@ -558,7 +557,6 @@ namespace DAO
         }
 
 
-
         public Response ReporteAuditoria(
             string codInventario,
             string busqueda = "",
@@ -577,7 +575,7 @@ namespace DAO
             SqlDataReader reader = null;
             try
             {
-                using(conexion = new SqlConnection(Connection.AppStringConection()))
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
                     using (comando = new SqlCommand("SP_WEB_ReporteAuditoria__2026", conexion))
                     {
@@ -589,14 +587,14 @@ namespace DAO
                         comando.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 200).Value = busqueda;
                         comando.Parameters.Add("@ESTADO", SqlDbType.VarChar, 20).Value = (object)estado ?? DBNull.Value;
                         comando.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = start;
-                        comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = p_length;
+                        //comando.Parameters.Add("@P_LENGTH", SqlDbType.Int).Value = p_length;
                         comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = (object)p_order ?? DBNull.Value;
 
                         conexion.Open();
 
                         using (reader = comando.ExecuteReader())
                         {
-                            if(reader.Read())
+                            if (reader.Read())
                             {
                                 reporteAuditoriaBE.Productos_Inventariados = (reader["PRODUCTOS_INVENTARIADOS"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_INVENTARIADOS"].ToString());
                                 reporteAuditoriaBE.Productos_Con_Diferencia = (reader["PRODUCTOS_CON_DIFERENCIA"] == DBNull.Value) ? 0 : Int32.Parse(reader["PRODUCTOS_CON_DIFERENCIA"].ToString());
@@ -612,13 +610,13 @@ namespace DAO
                             if (reader.NextResult())
                             {
                                 var nroConteo = new List<int>(); // crear lista para guardar numeros de conteo / xd solo existen 3 xd
-                                for(int i = 0; i < reader.FieldCount; i++)// obtenemos las columnas que tiene el resultado del SP y las guardamos en la lista de conteos 
+                                for (int i = 0; i < reader.FieldCount; i++)// obtenemos las columnas que tiene el resultado del SP y las guardamos en la lista de conteos 
                                 {
                                     string colName = reader.GetName(i);
                                     //obtener el campo de Conteo1_Stock, Conteo2_Stock, Conteo3_Stock y asi sucesivamente
                                     if (colName.StartsWith("Conteo") && colName.EndsWith("_Stock"))
                                     {
-                                        string numeroStr = colName.Replace("Conteo","").Replace("_Stock", "");
+                                        string numeroStr = colName.Replace("Conteo", "").Replace("_Stock", "");
                                         //aca ahora lo convertimos de string a int para guardarlo en la lista de conteos 
                                         if (int.TryParse(numeroStr, out int n))
                                         {
@@ -645,7 +643,7 @@ namespace DAO
                                         Conteos = new List<ConteoDetalleBE>()
                                     };
 
-                                    foreach(int n in nroConteo)
+                                    foreach (int n in nroConteo)
                                     {
                                         string colStock = $"Conteo{n}_Stock";
 
@@ -733,6 +731,11 @@ namespace DAO
 
 
 
+
+
+
+
+        // EN DESUSO
 
         public Response ObtenerReporteInventarioCerrado(
         string codInventario,
@@ -1278,11 +1281,5 @@ namespace DAO
 
             return response;
         }
-
-
     }
 }
-
-
-
-

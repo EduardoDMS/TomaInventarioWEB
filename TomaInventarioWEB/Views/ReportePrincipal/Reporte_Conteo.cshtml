@@ -63,31 +63,14 @@
 <div id="seccionReporte" class="row d-none">
     <div class="col-12">
         <div class="card">
-            <!-- Titulo y subtitulo -->
-            <div class="card-header pb-1">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div>
-                        <span class="badge bg-primary-subtle text-primary">Solo se muestran productos con diferencias del último conteo</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-success" id="btnExportarExcel">
-                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
             <div class="card-body">
-                <!-- Información del Inventario -->
+                <!-- Informacion General: Almacen, Código de inventario, Estado de inventario, Conteo actual -->
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-semibold mb-0">Información del Inventario</h6>
                 </div>
-
-                <!-- KPIS: Almacen, Código de inventario, Estado del conteo, Conteo actual, Productos registrados, Productos fuera del inventario, Usuarios participantes, Duracion aprox del conteo -->
-                <div class="row mb-4">
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-secondary">
+                <div class="row mb-5">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text_bg_almacen">
                             <i class="ti ti-building-warehouse fs-6"></i>
                         </div>
                         <div class="align-self-center">
@@ -96,7 +79,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-primary">
                             <i class="ti ti-barcode fs-6 "></i>
                         </div>
@@ -106,17 +89,17 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div id="estadoIcono" class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning">
                             <i class="ti ti-lock-open fs-6"></i>
                         </div>
                         <div class="align-self-center">
                             <h4 id="txtEstadoConteo" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Estado del conteo</p>
+                            <p class="card-subtitle">Estado de inventario</p>
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
                             <i class="ti ti-history fs-6"></i>
                         </div>
@@ -125,46 +108,81 @@
                             <p class="card-subtitle">Conteo actual</p>
                         </div>
                     </div>
+
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
+                        </button>
+                    </div>
                 </div>
 
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0">Indicadores del reporte</h6>
+                </div>
+                <!-- KPIS: Productos registrados, Productos fuera del inventario, Usuarios participantes, Duracion aprox del conteo -->
                 <div class="row mb-3">
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-circle-check fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosRegistrados" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos registrados</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-danger">
-                            <i class="ti ti-alert-triangle fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosFueraInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos fuera inventario</p>
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-info-subtle d-flex align-items-center">
+                                    <h3 class="text-info box mb-0">
+                                        <i class="ti ti-box"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosTotales" class="text-info mb-0 fs-6"></h3>
+                                    <span>Productos totales</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-users fs-6"></i>
+                    @*<div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-package-off"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosFueraInventario" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Productos fuera del inventario</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUsuariosParticipantes" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Usuarios participantes</p>
+                    </div>*@
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-primary-subtle d-flex align-items-center">
+                                    <h3 class="text-primary-emphasis box mb-0">
+                                        <i class="ti ti-users"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtUsuariosParticipantes" class="text-primary-emphasis mb-0 fs-6"></h3>
+                                    <span>Usuarios participantes</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtDuracionConteo" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Duración del conteo</p>
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-warning-subtle d-flex align-items-center">
+                                    <h3 class="text-warning box mb-0">
+                                        <i class="ti ti-hourglass-empty"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtDuracionConteo" class="text-warning mb-0 fs-6"></h3>
+                                    <span>Duración del conteo</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -186,7 +204,7 @@
                                 <div class="col-md-4 mb-2">
                                     <label for="busquedaGeneral" class="form-label">Búsqueda general</label>
                                     <div class="input-group">
-                                        <input id="busquedaGeneral" type="text" class="form-control" placeholder="Producto, Código, Ubicación, Lote, Usuario">
+                                        <input id="busquedaGeneral" type="text" class="form-control" placeholder="Código, Producto, Ubicación, Lote, Usuario">
                                         <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
                                             <i class="ti ti-eraser fs-4"></i>
                                         </button>
@@ -208,11 +226,8 @@
                     </div>
                 </div>
 
-                @*<hr class="my-4">*@
-
                 <!-- Tabla -->
                 <!-- Código, Producto, Ubicación Inicial, Ubicación Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Usuario -->
-
                 <div class="table-responsive">
                     <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
                         <thead class="table-light">
@@ -247,22 +262,12 @@
 </div>
 
 @section scripts {
-    @*<script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
-        <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
-    <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
-    @*<script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
-        <script src="~/Content/matdash/js/forms/select2.init.js"></script>*@
-
     <script nonce="@nonce">
 
         let tblReporteConteo;
         let inventarioSeleccionado = {
+            almacen:'',
             codigo: '',
-            nombre: '',
-            nroConteo: 1
         };
 
         $(document).ready(function () {
@@ -291,8 +296,9 @@
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
 
-                    $('#txtAlmacen').text(selectedValue || '-');
+                    $('#txtAlmacen').text(selectedText || '-');
                     LoadcbxInventario(selectedValue);
+                    inventarioSeleccionado.almacen = selectedText;
                 }
             });
 
@@ -316,9 +322,13 @@
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
                     inventarioSeleccionado.codigo = selectedValue;
-                    inventarioSeleccionado.nombre = selectedText;
 
                     $('#txtCodigoInventario').text(selectedValue || '-');
+
+                    // Limpiar filtros
+                    $('#busquedaGeneral').val('');
+                    $('#slcConteo').val(1);
+
                     cargarDatosInventario();
                 }
             });
@@ -339,13 +349,12 @@
                 }
 
                 inventarioSeleccionado.codigo = selectedValue;
-                inventarioSeleccionado.nombre = selectedText;
 
                 cargarDatosInventario();
             });
 
             $('#btnExportarExcel').click(function () {
-                exportarExcel();
+                ExportarExcelConteo();
             });
 
 
@@ -390,6 +399,7 @@
                 }
             });
         }
+
 
         // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
         async function LoadcbxInventario(idAlmacen) {
@@ -451,13 +461,14 @@
             //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
             $('#seccionResumen').removeClass('d-none');
 
+            //console.log(inventarioSeleccionado.codigo);
             CargarReporteInventarioConteo(inventarioSeleccionado.codigo);
-            console.log(inventarioSeleccionado.codigo);
 
             $('#seccionReporte').removeClass('d-none');
-    }
+        }
 
 
+        // NUEVO METODO CARGAR REPORTE CONTEO
         async function CargarReporteInventarioConteo(codInventario) {
 
              const obj = {
@@ -482,11 +493,11 @@
                  }
 
                  const result = await response.json();
-                 console.log(result);
+                 //console.log(result);
 
                  // UMBRAL PARA FILTROS AL SERVIDOR
                  let totalProductos = result.Entity.ProductosInventariados;
-                 modoFiltrado = totalProductos > 1 ? "SERVIDOR" : "LOCAL";
+                 modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
                  //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                  // VERIFICAR CONTEOS DISPONIBLES
@@ -511,83 +522,92 @@
             $('#txtEstadoConteo').text(kpis.EstadoConteo || '0');
             CambiarIconoEstado(kpis.EstadoConteo);
             $('#txtConteoActual').text(kpis.ConteoSeleccionado || '0');
-            $('#txtProductosRegistrados').text(kpis.ProductosLecturados || '0');
-            $('#txtProductosFueraInventario').text(kpis.ProductosFueraInventario || '0');
+            $('#txtProductosTotales').text(kpis.ProductosInventariados || '0');
+            //$('#txtProductosFueraInventario').text(kpis.ProductosFueraInventario || '0');
             $('#txtUsuariosParticipantes').text(kpis.UsuariosParticipantes || '0');
             $('#txtDuracionConteo').text(kpis.DuracionConteo || '0');
         }
 
         function CargarTabla(datos) {
 
-        if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
-            $('#tblReporteInventario').DataTable().destroy();
+            if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
+                $('#tblReporteInventario').DataTable().destroy();
+            }
+
+            $('#tblReporteInventario tbody').empty();
+
+            tblReporteInventario = $('#tblReporteInventario').DataTable({
+
+                data: datos,
+
+                columns: [
+                    {
+                        data: "CodProducto",
+                        //className: "text-center"
+                    },
+
+                    {
+                        data: "DscProducto",
+                        //className: "text-center"
+                    },
+
+                    {
+                        data: "UbicacionInicial",
+                        className: "text-center"
+                    },
+
+                    {
+                        data: "UbicacionContada",
+                        className: "text-center"
+                    },
+
+                    {
+                        data: "LoteInicial",
+                        className: "text-center"
+                    },
+
+                    {
+                        data: "LoteContado",
+                        className: "text-center"
+                    },
+
+                    {
+                        data: "StockInicial",
+                        className: "text-center"
+                    },
+
+                    {
+                        data: "StockContado",
+                        className: "text-center"
+                    },
+
+                    {
+                        data: "StockDiferencial",
+                        className: "text-center"
+                    },
+
+                    {
+                        data: "Usuario",
+                        className: "text-center"
+                    }
+                ],
+
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        render: function (data) {
+                            return data == null || data === "" ? "-" : data;
+                        }
+                    }
+                ],
+
+                pageLength: 25,
+                searching: true,
+                dom: 'lrtip',
+                language: españolTbl
+            });
+
         }
-
-        $('#tblReporteInventario tbody').empty();
-
-        tblReporteInventario = $('#tblReporteInventario').DataTable({
-
-            data: datos,
-
-            columns: [
-                {
-                    data: "CodProducto",
-                    className: "text-center"
-                },
-
-                {
-                    data: "DscProducto",
-                    className: "text-center"
-                },
-
-                {
-                    data: "UbicacionInicial",
-                    className: "text-center"
-                },
-
-                {
-                    data: "UbicacionContada",
-                    className: "text-center"
-                },
-
-                {
-                    data: "LoteInicial",
-                    className: "text-center"
-                },
-
-                {
-                    data: "LoteContado",
-                    className: "text-center"
-                },
-
-                {
-                    data: "StockInicial",
-                    className: "text-center"
-                },
-
-                {
-                    data: "StockContado",
-                    className: "text-center"
-                },
-
-                {
-                    data: "StockDiferencial",
-                    className: "text-center"
-                },
-
-                {
-                    data: "Usuario",
-                    className: "text-center"
-                }
-            ],
-
-            pageLength: 25,
-            searching: true,
-            dom: 'lrtip',
-            language: españolTbl
-        });
-
-    }
 
         function CargarFooterTabla(datosFooter) {
             if (datosFooter && datosFooter.length >= 3) {
@@ -600,7 +620,6 @@
             }
         }
 
-        // Icono lock
         function CambiarIconoEstado(estado) {
             //console.log(estado);
             if (estado === "ABIERTO") {
@@ -650,41 +669,84 @@
             } else {
                 $select.val('1');
             }
-        } 
-
-
-
-
-        function exportarExcel() {
-    if (!inventarioSeleccionado.codigo || !inventarioSeleccionado.nroConteo) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Atención',
-            text: 'Debe seleccionar un inventario primero'
-        });
-        return;
-    }
-
-    Swal.fire({
-        title: 'Generando Excel...',
-        html: 'Por favor espere',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        didOpen: () => {
-            Swal.showLoading();
         }
-    });
 
-    let baseUrl = '@Url.Action("ExportarExcelReportePorConteo", "ReportePrincipal")';
-    let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
-                 '&nroConteo=' + inventarioSeleccionado.nroConteo;
+        // Descargar reporte en excel
+        async function ExportarExcelConteo() {
 
-    window.location.href = baseUrl + params;
+            if (!inventarioSeleccionado.codigo) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: 'Debe seleccionar un inventario primero'
+                });
+                return;
+            }
 
-    setTimeout(function() {
-        Swal.close();
-    }, 1000);
-    }
+            const obj = {
+                almacen: inventarioSeleccionado.almacen,
+                codInventario: inventarioSeleccionado.codigo,
+                nroConteo: $('#slcConteo').val() || 1,
+                busqueda: $('#busquedaGeneral').val().trim()
+            };
 
+            Swal.fire({
+                title: 'Generando Excel...',
+                html: 'Por favor espere',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+
+                const response = await fetch(
+                    '@Url.Action("ExportarExcelConteo", "ReportePrincipal")',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('No se pudo generar el archivo Excel.');
+                }
+                console.log(response);
+                // Obtener archivo
+                const blob = await response.blob();
+
+                // Crear URL temporal
+                const url = window.URL.createObjectURL(blob);
+
+                // Crear enlace de descarga
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Reporte_Conteo${obj.nroConteo}_${obj.codInventario}.xlsx`;
+
+                document.body.appendChild(a);
+                a.click();
+
+                // Limpiar
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+                Swal.close();
+
+            } catch (error) {
+
+                console.error(error);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Ocurrió un error al generar el Excel.'
+                });
+            }
+        }
     </script>
 }

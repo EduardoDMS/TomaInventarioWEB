@@ -3,17 +3,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
 }
-@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
-    <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
-    <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">*@
+
 
 <!-- Sección Seleccionar Almacen e inventario -->
 <div class="card text-bg-primary text-white mb-3">
     <div class="card-body p-3">
         <div class="d-flex align-items-center justify-content-center">
-            <h2 class="fs-8 fw-bolder text-white mb-0">Reporte Auditoria</h2>
+            <h2 class="fs-8 fw-bolder text-white mb-0">Reporte de Auditoría</h2>
         </div>
     </div>
 </div>
@@ -58,37 +54,18 @@
 </div>
 
 
-
-
-<!-- Reporte por Ubicación -->
+<!-- Reporte Auditoria -->
 <div id="seccionReporte" class="row d-none">
     <div class="col-12">
         <div class="card">
-            <!-- Titulo y subtitulo -->
-            <div class="card-header pb-1">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div>
-                        <span class="badge bg-primary-subtle text-primary">Mostrara el historial completo de un producto desde el ultimo conteo inventariado</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-success" id="btnExportarExcel">
-                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
             <div class="card-body">
-                <!-- Información del Inventario -->
+                <!-- Informacion General: Almacen, Código de inventario, Estado de inventario, Conteo actual -->
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-semibold mb-0">Información del Inventario</h6>
                 </div>
-
-                <!-- KPIS: Almacen, Código de inventario, Estado del conteo, Conteo actual, Productos registrados, Productos con diferencia, Productos sin diferencia, Productos fuera de inventario, Productos fuera de ubicacion, Productos con lote diferente -->
-                <div class="row mb-4">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-secondary">
+                <div class="row mb-5">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text_bg_almacen">
                             <i class="ti ti-building-warehouse fs-6"></i>
                         </div>
                         <div class="align-self-center">
@@ -97,7 +74,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-primary">
                             <i class="ti ti-barcode fs-6 "></i>
                         </div>
@@ -107,17 +84,17 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div id="estadoIcono" class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning">
                             <i class="ti ti-lock-open fs-6"></i>
                         </div>
                         <div class="align-self-center">
                             <h4 id="txtEstadoInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Estado del Inventario</p>
+                            <p class="card-subtitle">Estado de inventario</p>
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
                             <i class="ti ti-history fs-6"></i>
                         </div>
@@ -127,195 +104,204 @@
                         </div>
                     </div>
 
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-circle-check fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosInventariados" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos Inventariados</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-danger">
-                            <i class="ti ti-alert-triangle fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosConDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos Con Diferencias</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-users fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosSinDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos sin Diferecia</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUsuariosParticipantes" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Usuarios Participantes</p>
-                        </div>
-                    </div>
-
-                    @*<div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUbicacionesNoIniciadas" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones no iniciadas</p>
-                        </div>
-                    </div>*@
-
-                    @*<div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                            <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                                <i class="ti ti-clock-hour-5 fs-6"></i>
-                            </div>
-                            <div class="align-self-center">
-                                <h4 id="txtProductosLoteDiferente" class="card-title mb-1"></h4>
-                                <p class="card-subtitle">Productos con lote diferente</p>
-                            </div>
-                        </div>*@
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtPrimeraLectura" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Primera Lectura</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUltimaLectura" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ultima Lectura</p>
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>
-            <!-- } -->
-            <!-- Filtros -->
-            <!-- Busqueda(Producto, Ubicacion, Lote, Usuario), Observación(0, 1, 2, 3, 4, 5) -->
-            <div class="accordion mb-4" id="accordionFiltros">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <h6 class="fs-4 mb-0">Filtros de búsqueda </h6>
-                            @*<small class="text-muted ms-1">(Opcional)</small>*@
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
                         </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body row">
-                            <!-- Busqueda general -->
-                            <div class="col-md-4 mb-2">
-                                <label for="busquedaGeneral" class="form-label">Búsqueda general</label>
-                                <div class="input-group">
-                                    <input id="busquedaGeneral" type="text" class="form-control" placeholder="Codigo o descripcion de la ubicacion">
-                                    <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
-                                        <i class="ti ti-eraser fs-4"></i>
-                                    </button>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0">Indicadores del reporte</h6>
+                </div>
+                <!-- KPIS: Productos totales, Productos con diferencia, Productos sin diferencia, Usuarios participantes, Primera lectura, Ultima lectura -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-info-subtle d-flex align-items-center">
+                                    <h3 class="text-info box mb-0">
+                                        <i class="ti ti-box"></i>
+                                    </h3>
                                 </div>
-                                @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="Código o descripción del producto" />*@
+                                <div class="p-3">
+                                    <h3 id="txtProductosTotales" class="text-info mb-0 fs-6"></h3>
+                                    <span>Productos totales</span>
+                                </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Seleccionar observación -->
-                            <div class="col-md-4 mb-2">
-                                <label for="slcEstado" class="form-label">Estado</label>
-                                <select id="slcEstado" class="form-select">
-                                    <option value="TODOS" selected>Todos</option>
-                                    <option value="COINCIDE">Coincide</option>
-                                    <option value="DIFERENCIA">Diferencias</option>
-                                </select>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-circle-check"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosSinDiferencia" class="text-success mb-0 fs-6"></h3>
+                                    <span>Productos sin diferencias</span>
+                                </div>
                             </div>
+                        </div>
+                    </div>
 
-                            @*<div class="col-md-4 mb-2">
-                                <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Mostrar Solo Diferencias
-                                </label>
-                            </div>*@
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-alert-triangle"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosConDiferencia" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Productos con diferencia</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-primary-subtle d-flex align-items-center">
+                                    <h3 class="text-primary-emphasis box mb-0">
+                                        <i class="ti ti-users"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtUsuariosParticipantes" class="text-primary-emphasis mb-0 fs-6"></h3>
+                                    <span>Usuarios participantes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-clock-play"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtPrimeraLectura" class="text-success mb-0 fs-6"></h3>
+                                    <span>Primera Lectura</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-warning-subtle d-flex align-items-center">
+                                    <h3 class="text-warning box mb-0">
+                                        <i class="ti ti-clock-stop"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtUltimaLectura" class="text-warning mb-0 fs-6"></h3>
+                                    <span>Ultima Lectura</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            @*<hr class="my-4">*@
 
-            <!-- Tabla -->
-            <!-- Código, Producto, Ubicación Inicial, Ubicación Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Observacion, Usuarios -->
+                <!-- Filtros -->
+                <!-- Busqueda(Producto, Ubicacion, Lote, Usuario), Observación(0, 1, 2, 3, 4, 5) -->
+                <div class="accordion mb-4" id="accordionFiltros">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <h6 class="fs-4 mb-0">Filtros de búsqueda </h6>
+                                @*<small class="text-muted ms-1">(Opcional)</small>*@
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body row">
+                                <!-- Busqueda general -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="busquedaGeneral" class="form-label">Búsqueda general</label>
+                                    <div class="input-group">
+                                        <input id="busquedaGeneral" type="text" class="form-control" placeholder="Código, Producto, Ubicación, Lote, Usuario">
+                                        <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
+                                            <i class="ti ti-eraser fs-4"></i>
+                                        </button>
+                                    </div>
+                                    @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="Código o descripción del producto" />*@
+                                </div>
 
-            <div class="table-responsive">
-                <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center">Código</th>
-                            <th class="text-center">Producto</th>
-                            <th class="text-center">Stock Inicial</th>
-                            <th class="text-center">Ubicacion Inicial</th>
-                            <th class="text-center">Lote Inicial</th>
-                            <th class="text-center">Stock final</th>
-                            <th class="text-center">Diferencia</th>
-                            <th class="text-center">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot class="table-light">
-                        <tr id="filaFooterDinamica">
-                            
-                            @*<td colspan="3" class="fw-bolder">TOTALES</td>
-                            <td class="text-end fw-bold" id="footerStockInicial">0</td>
-                            <td colspan="1" class="fw-bolder"></td>
-                            <td class="text-end fw-bold" id="footerStockFinal">0</td>
-                            <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
-                            <td colspan="1"></td>*@
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+                                <!-- Seleccionar observación -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="slcEstado" class="form-label">Estado</label>
+                                    <select id="slcEstado" class="form-select">
+                                        <option value="TODOS" selected>Todos</option>
+                                        <option value="COINCIDE">Coincide</option>
+                                        <option value="DIFERENCIA">Diferencias</option>
+                                    </select>
+                                </div>
+
+                                @*<div class="col-md-4 mb-2">
+                            <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Mostrar Solo Diferencias
+                            </label>
+                        </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Tabla -->
+                <!-- Código, Producto, Ubicación Inicial, Ubicación Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Observacion, Usuarios -->
+                <div class="table-responsive">
+                    <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Código</th>
+                                <th class="text-center">Producto</th>
+                                <th class="text-center">Stock Inicial</th>
+                                <th class="text-center">Ubicacion Inicial</th>
+                                <th class="text-center">Lote Inicial</th>
+                                <th class="text-center">Stock final</th>
+                                <th class="text-center">Diferencia</th>
+                                <th class="text-center">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="table-light">
+                            <tr id="filaFooterDinamica">
+
+                                @*<td colspan="3" class="fw-bolder">TOTALES</td>
+                        <td class="text-end fw-bold" id="footerStockInicial">0</td>
+                        <td colspan="1" class="fw-bolder"></td>
+                        <td class="text-end fw-bold" id="footerStockFinal">0</td>
+                        <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
+                        <td colspan="1"></td>*@
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>           
         </div>
     </div>
 </div>
 
 @section scripts {
-    @*<script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
-        <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
-    <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
-    @*<script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
-        #busquedaGeneral
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
-        <script src="~/Content/matdash/js/forms/select2.init.js"></script>*@
-
-<script nonce="@nonce">
+    <script nonce="@nonce">
+        let modoFiltrado;
         let tblReporteInventario;
         let inventarioSeleccionado = {
+            almacen: '',
             codigo: '',
-            nombre: '',
-            observacion: 0
         };
 
         $(document).ready(function () {
@@ -344,8 +330,9 @@
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
 
-                    $('#txtAlmacen').text(selectedValue || '-');
+                    $('#txtAlmacen').text(selectedText || '-');
                     LoadcbxInventario(selectedValue);
+                    inventarioSeleccionado.almacen = selectedText;
                 }
             });
 
@@ -369,16 +356,17 @@
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
                     inventarioSeleccionado.codigo = selectedValue;
-                    inventarioSeleccionado.nombre = selectedText;
 
                     $('#txtCodigoInventario').text(selectedValue || '-');
+
+                    // Limpiar filtros
+                    $('#busquedaGeneral').val('');
+                    $('#slcEstado').val('TODOS');
+
                     cargarDatosInventario();
                 }
             });
         }
-
-
-        // hasa aqui comrpobar
 
         function inicializarEventos() {
             $('#btnCargarInventario').click(function () {
@@ -395,13 +383,12 @@
                 }
 
                 inventarioSeleccionado.codigo = selectedValue;
-                inventarioSeleccionado.nombre = selectedText;
 
                 cargarDatosInventario();
             });
 
             $('#btnExportarExcel').click(function () {
-                exportarExcel();
+                ExportarExcelAuditoria();
             });
 
 
@@ -437,25 +424,16 @@
                 CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
             });
 
-            // Filtro observación
-            //$('#slcObservacion').on('change', function () {
-            //    if (modoFiltrado === "SERVIDOR") {
-            //        CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
-            //    } else {
-            //        tblReporteInventario.column(10).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
-            //    }
-            //});
-
-                $('#slcEstado').on('change', function () {
+            // Filtro estado
+            $('#slcEstado').on('change', function () {
+                if (modoFiltrado === "SERVIDOR") {
                     CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
-                });
+                } else {
+                    tblReporteInventario.column(11).search($(this).val() === "TODOS" ? "" : $(this).val()).draw();
+                }
+            });
+        }
 
-                ////in_soloDiferencias
-                //$('#in_soloDiferencias').on('change', function () {
-                //    CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
-                //});
-
-            }
 
         // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
         async function LoadcbxInventario(idAlmacen) {
@@ -513,29 +491,27 @@
             }
         }
 
-
         function cargarDatosInventario() {
             //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
             $('#seccionResumen').removeClass('d-none');
 
             CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
-            console.log(inventarioSeleccionado.codigo);
+            //console.log(inventarioSeleccionado.codigo);
 
             $('#seccionReporte').removeClass('d-none');
         }
 
 
+        // NUEVO METODO CARGAR REPORTE AUDITORIA
         async function CargarReporteInventarioAuditoria(codInventario) {
 
             const obj = {
                 codInventario: codInventario,
                 busqueda: $('#busquedaGeneral').val().trim(),
                 estado : $('#slcEstado').val(),
-                // diferencias : $('#in_soloDiferencias').is(':checked') ? 1 : 0,
-                //observacion: parseInt($('#slcObservacion').val()),
             };
 
-            console.log(obj);
+            //console.log(obj);
 
             try {
                 const response = await fetch("ObtenerReporteAuditoria", {
@@ -551,12 +527,12 @@
                 }
 
                 const result = await response.json();
-                console.log(result);
+                //console.log(result);
 
                 // UMBRAL PARA FILTROS AL SERVIDOR
                 let totalProductos = result.Entity.Productos_Inventariados;
                 modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
-                console.log(`¿Filtro a usar? = ${modoFiltrado}`);
+                //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                 // CARGAR KPIS ubicacion
                 CargarKPIs(result.Entity);
@@ -566,7 +542,6 @@
 
                 // CARGAR FOOTER
                 //CargarFooterTabla(result.Entity.Footer);
-                // function
             }
             catch (error) {
                 console.error("Error:", error);
@@ -577,205 +552,133 @@
             $('#txtEstadoInventario').text(kpis.Estado_Inventario || '0');
             CambiarIconoEstado(kpis.Estado_Inventario);
             $('#txtConteoActual').text(kpis.Conteo_Actual || '0');
-            $('#txtProductosInventariados').text(kpis.Productos_Inventariados || '0');
+            $('#txtProductosTotales').text(kpis.Productos_Inventariados || '0');
             $('#txtProductosConDiferencia').text(kpis.Productos_Con_Diferencia || '0');
             $('#txtProductosSinDiferencia').text(kpis.Productos_Sin_Diferencia || '0');
             $('#txtUsuariosParticipantes').text(kpis.Usuarios_Participantes || '0');
-            $('#txtPrimeraLectura').text(kpis.Primera_Lectura || '0');
-            $('#txtUltimaLectura').text(kpis.Ultima_Lectura || '0');
+            $('#txtPrimeraLectura').text(kpis.Primera_Lectura || '-');
+            $('#txtUltimaLectura').text(kpis.Ultima_Lectura || '-');
         }
 
+        function CargarTabla(datos, footerData) {
 
-    //function CargarTabla(datos) {
-
-    //    if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
-    //        $('#tblReporteInventario').DataTable().destroy();
-    //    }
-
-    //    $('#tblReporteInventario tbody').empty();
-
-    //    let numerosConteo = [];
-
-    //    datos.forEach(item => {
-    //        if (!item.Conteos) return;
-    //        item.Conteos.forEach(conteo => {
-    //            if (!numerosConteo.includes(conteo.Nro_Conteo)) {
-    //                numerosConteo.push(conteo.Nro_Conteo);
-    //            }
-    //        });
-    //    });
-    //    numerosConteo.sort((a, b) => a - b);
-
-    //    let columnas = [
-    //        { data: "Codigo", title: "Código", className: "text-center" },
-    //        { data: "Producto", title: "Producto", className: "text-center" },
-    //        { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
-    //        { data: "Ubicacion_Inicial", title: "Ubicación Inicial", className: "text-center" },
-    //        { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" }
-    //    ];
-
-    //    numerosConteo.forEach(n => {
-    //        columnas.push({
-    //            data: null,
-    //            title: `Conteo ${n}`,
-    //            className: "text-center",
-    //            render: function (data, type, row) {
-    //                if (!row.Conteos) return "";
-    //                const conteo = row.Conteos.find(x => x.Nro_Conteo === n);
-    //                if (!conteo) return "";
-    //                return `
-    //                <div class="text-start">
-    //                    <div><strong>Stock:</strong> ${conteo.Stock_Contado ?? 0}</div>
-    //                    <div><strong>Ubicación:</strong> ${conteo.Ubicaciones_Contadas || "-"}</div>
-    //                    <div><strong>Lote:</strong> ${conteo.Lote_Contado || "-"}</div>
-    //                    <div><strong>Usuario:</strong> ${conteo.Usuario || "-"}</div>
-    //                    <div><strong>Hora:</strong> ${conteo.Hora_Registro || "-"}</div>
-    //                </div>
-    //            `;
-    //            }
-    //        });
-    //    });
-
-    //    columnas.push(
-    //        { data: "Stock_Final", title: "Stock Final", className: "text-center" },
-    //        { data: "Diferencia", title: "Diferencia", className: "text-center" },
-    //        { data: "Estado", title: "Estado", className: "text-center" }
-    //    );
-
-    //    // thead dinamico (ya lo tenias)
-    //    let header = $('#tblReporteInventario thead tr');
-    //    header.empty();
-    //    columnas.forEach(columna => {
-    //        header.append(`<th class="text-center">${columna.title}</th>`);
-    //    });
-
-    //    tblReporteInventario = $('#tblReporteInventario').DataTable({
-    //        data: datos,
-    //        columns: columnas,
-    //        pageLength: 25,
-    //        searching: true,
-    //        dom: 'lrtip',
-    //        language: españolTbl
-    //    });
-
-    //    // guardamos para reusar en el footer sin recalcular
-    //    window._numerosConteoActual = numerosConteo;
-    //}
-
-    function CargarTabla(datos, footerData) {   // <-- ahora recibe tambien el footer
-
-        if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
-            $('#tblReporteInventario').DataTable().destroy();
-        }
-
-        $('#tblReporteInventario tbody').empty();
-        $('#filaFooterDinamica').empty(); // limpieza defensiva tambien aca
-
-        let numerosConteo = [];
-
-        datos.forEach(item => {
-            if (!item.Conteos) return;
-            item.Conteos.forEach(conteo => {
-                if (!numerosConteo.includes(conteo.Nro_Conteo)) {
-                    numerosConteo.push(conteo.Nro_Conteo);
-                }
-            });
-        });
-        numerosConteo.sort((a, b) => a - b);
-
-        let columnas = [
-            { data: "Codigo", title: "Código", className: "text-center" },
-            { data: "Producto", title: "Producto", className: "text-center" },
-            { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
-            { data: "Ubicacion_Inicial", title: "Ubicación Inicial", className: "text-center" },
-            { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" }
-        ];
-
-        numerosConteo.forEach(n => {
-            columnas.push({
-                data: null,
-                title: `Conteo ${n}`,
-                className: "text-center",
-                render: function (data, type, row) {
-                    if (!row.Conteos) return "";
-                    const conteo = row.Conteos.find(x => x.Nro_Conteo === n);
-                    if (!conteo) return "";
-                    return `
-                    <div class="text-start">
-                        <div><strong>Stock:</strong> ${conteo.Stock_Contado ?? 0}</div>
-                        <div><strong>Ubicación:</strong> ${conteo.Ubicaciones_Contadas || "-"}</div>
-                        <div><strong>Lote:</strong> ${conteo.Lote_Contado || "-"}</div>
-                        <div><strong>Usuario:</strong> ${conteo.Usuario || "-"}</div>
-                        <div><strong>Hora:</strong> ${conteo.Hora_Registro || "-"}</div>
-                    </div>
-                `;
-                }
-            });
-        });
-
-        columnas.push(
-            { data: "Stock_Final", title: "Stock Final", className: "text-center" },
-            { data: "Diferencia", title: "Diferencia", className: "text-center" },
-            { data: "Estado", title: "Estado", className: "text-center" }
-        );
-
-        let header = $('#tblReporteInventario thead tr');
-        header.empty();
-        columnas.forEach(columna => {
-            header.append(`<th class="text-center">${columna.title}</th>`);
-        });
-
-        window._numerosConteoActual = numerosConteo;
-
-        tblReporteInventario = $('#tblReporteInventario').DataTable({
-            data: datos,
-            columns: columnas,
-            pageLength: 25,
-            searching: true,
-            dom: 'lrtip',
-            language: españolTbl,
-            // CLAVE: esto se ejecuta despues de CADA draw (init, busqueda, sort, pagina)
-            // asi el footer se re-pinta siempre, sin importar que DataTables toque el DOM
-            drawCallback: function (settings) {
-                CargarFooterTabla(footerData, numerosConteo);
+            if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
+                $('#tblReporteInventario').DataTable().destroy();
             }
-        });
-    }
 
+            $('#tblReporteInventario tbody').empty();
+            $('#filaFooterDinamica').empty();
 
-    function CargarFooterTabla(footer, numerosConteo) {
-        let fila = $('#filaFooterDinamica');
-        fila.empty();
+            let numerosConteo = [];
 
-        if (!footer) {
-            console.warn("Footer no recibido, revisa result.Entity.Footer en la respuesta");
-            return;
+            datos.forEach(item => {
+                if (!item.Conteos) return;
+                item.Conteos.forEach(conteo => {
+                    if (!numerosConteo.includes(conteo.Nro_Conteo)) {
+                        numerosConteo.push(conteo.Nro_Conteo);
+                    }
+                });
+            });
+            numerosConteo.sort((a, b) => a - b);
+
+            let columnas = [
+                { data: "Codigo", title: "Código", /*className: "text-center"*/ },
+                { data: "Producto", title: "Producto", /*className: "text-center"*/ },
+                { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
+                { data: "Ubicacion_Inicial", title: "Ubicación Inicial", className: "text-center" },
+                { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" }
+            ];
+
+            numerosConteo.forEach(n => {
+                columnas.push({
+                    data: null,
+                    title: `Conteo ${n}`,
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        if (!row.Conteos) return "";
+                        const conteo = row.Conteos.find(x => x.Nro_Conteo === n);
+                        if (!conteo) return "";
+                        return `
+                        <div class="text-start">
+                            <div><strong>Stock:</strong> ${conteo.Stock_Contado ?? 0}</div>
+                            <div><strong>Ubicación:</strong> ${conteo.Ubicaciones_Contadas || "-"}</div>
+                            <div><strong>Lote:</strong> ${conteo.Lote_Contado || "-"}</div>
+                            <div><strong>Usuario:</strong> ${conteo.Usuario || "-"}</div>
+                            <div><strong>Hora:</strong> ${conteo.Hora_Registro || "-"}</div>
+                        </div>
+                    `;
+                    }
+                });
+            });
+
+            columnas.push(
+                { data: "Stock_Final", title: "Stock Final", className: "text-center" },
+                { data: "Diferencia", title: "Diferencia", className: "text-center" },
+                { data: "Estado", title: "Estado", className: "text-center" }
+            );
+
+            let header = $('#tblReporteInventario thead tr');
+            header.empty();
+            columnas.forEach(columna => {
+                header.append(`<th class="text-center">${columna.title}</th>`);
+            });
+
+            window._numerosConteoActual = numerosConteo;
+
+            tblReporteInventario = $('#tblReporteInventario').DataTable({
+                data: datos,
+                columns: columnas,
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        render: function (data) {
+                            return data == null || data === "" ? "-" : data;
+                        }
+                    }
+                ],
+                pageLength: 25,
+                searching: true,
+                dom: 'lrtip',
+                language: españolTbl,
+                // CLAVE: esto se ejecuta despues de CADA draw (init, busqueda, sort, pagina)
+                // asi el footer se re-pinta siempre, sin importar que DataTables toque el DOM
+                drawCallback: function (settings) {
+                    CargarFooterTabla(footerData, numerosConteo);
+                }
+            });
         }
 
-        numerosConteo = numerosConteo || [];
+        function CargarFooterTabla(footer, numerosConteo) {
+            let fila = $('#filaFooterDinamica');
+            fila.empty();
 
-        fila.append(`<td colspan="2" class="fw-bolder">TOTALES</td>`);
-        fila.append(`<td class="text-end fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
-        fila.append(`<td></td>`);
-        fila.append(`<td></td>`);
+            if (!footer) {
+                console.warn("Footer no recibido, revisa result.Entity.Footer en la respuesta");
+                return;
+            }
 
-        numerosConteo.forEach(n => {
-            let totalConteo = (footer.TotalesPorConteo || []).find(t => t.Nro_ConteoTotal === n);
-            let valor = totalConteo && totalConteo.Total_Stock != null ? totalConteo.Total_Stock : 0;
-            fila.append(`<td class="text-end fw-bold">${valor}</td>`);
-        });
+            numerosConteo = numerosConteo || [];
 
-        fila.append(`<td class="text-end fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
+            fila.append(`<td colspan="2" class="fw-bolder">TOTALES</td>`);
+            fila.append(`<td class="text-end fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
+            fila.append(`<td></td>`);
+            fila.append(`<td></td>`);
 
-        let diferencial = footer.StockDiferencial ?? 0;
-        let clase = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
-        fila.append(`<td class="text-end"><span class="${clase}">${diferencial}</span></td>`);
+            numerosConteo.forEach(n => {
+                let totalConteo = (footer.TotalesPorConteo || []).find(t => t.Nro_ConteoTotal === n);
+                let valor = totalConteo && totalConteo.Total_Stock != null ? totalConteo.Total_Stock : 0;
+                fila.append(`<td class="text-end fw-bold">${valor}</td>`);
+            });
 
-        fila.append(`<td></td>`);
-    }
+            fila.append(`<td class="text-end fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
 
-        
-        // Icono lock
+            let diferencial = footer.StockDiferencial ?? 0;
+            let clase = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
+            fila.append(`<td class="text-end"><span class="${clase}">${diferencial}</span></td>`);
+
+            fila.append(`<td></td>`);
+        }
+
         function CambiarIconoEstado(estado) {
             //console.log(estado);
             if (estado === "ABIERTO") {
@@ -800,8 +703,9 @@
 
 
 
+        // Descargar reporte en excel
+        async function ExportarExcelAuditoria() {
 
-        function exportarExcel() {
             if (!inventarioSeleccionado.codigo) {
                 Swal.fire({
                     icon: 'warning',
@@ -811,7 +715,12 @@
                 return;
             }
 
-            let busqueda = $('#customSearch').val() || '';
+            const obj = {
+                almacen: inventarioSeleccionado.almacen,
+                codInventario: inventarioSeleccionado.codigo,
+                busqueda: $('#busquedaGeneral').val().trim(),
+                estado: $('#slcEstado').val(),
+            };
 
             Swal.fire({
                 title: 'Generando Excel...',
@@ -823,16 +732,53 @@
                 }
             });
 
-            let baseUrl = '@Url.Action("ExportarExcelReporteProducto", "ReportePrincipal")';
-            let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
-                         '&busqueda=' + encodeURIComponent(busqueda);
+            try {
 
-            window.location.href = baseUrl + params;
+                const response = await fetch(
+                    '@Url.Action("ExportarExcelAuditoria", "ReportePrincipal")',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    }
+                );
 
-            setTimeout(function() {
+                if (!response.ok) {
+                    throw new Error('No se pudo generar el archivo Excel.');
+                }
+
+                // Obtener archivo
+                const blob = await response.blob();
+
+                // Crear URL temporal
+                const url = window.URL.createObjectURL(blob);
+
+                // Crear enlace de descarga
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Reporte_Auditoria_${obj.codInventario}.xlsx`;
+
+                document.body.appendChild(a);
+                a.click();
+
+                // Limpiar
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
                 Swal.close();
-            }, 500);
-        }
 
-</script>
+            } catch (error) {
+
+                console.error(error);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Ocurrió un error al generar el Excel.'
+                });
+            }
+        }
+    </script>
 }

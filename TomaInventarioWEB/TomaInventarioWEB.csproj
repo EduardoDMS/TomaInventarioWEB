@@ -4365,6 +4365,8 @@
     <Content Include="ConnectionStrings.config" />
     <Content Include="licencia.json" />
     <Content Include="Plantillas\Plantilla_Inventario.xlsx" />
+    <Content Include="Plantillas\Plantilla_Reporte_Nuevo.xlsx" />
+    <Content Include="Plantillas\Plantilla_Reportes_Nuevo.xlsx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />

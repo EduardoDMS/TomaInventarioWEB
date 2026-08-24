@@ -8,7 +8,7 @@ namespace BE.Reportes
         public int ProductosInventariados { get; set; }
         public int ProductosConDiferencia { get; set; }
         public int ProductosSinDiferencia { get; set; }
-        public int ProductosFueraInventario { get; set; }
+        public int ProductosNoLecturados { get; set; }
         public int ProductosUbicacionDiferente { get; set; }
         public int ProductosLoteDiferente { get; set; }
         public decimal StockInicialTotal { get; set; }

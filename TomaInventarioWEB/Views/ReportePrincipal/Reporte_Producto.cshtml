@@ -3,11 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
 }
-@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
-    <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
-    <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">*@
 
 
 <!-- Sección Seleccionar Almacen e inventario -->
@@ -63,31 +58,14 @@
 <div id="seccionReporte" class="row d-none">
     <div class="col-12">
         <div class="card">
-            <!-- Titulo y subtitulo -->
-            <div class="card-header pb-1">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div>
-                        <span class="badge bg-primary-subtle text-primary">Solo se muestran productos con diferencias del último conteo</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-success" id="btnExportarExcel">
-                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
             <div class="card-body">
-                <!-- Información del Inventario -->
+                <!-- Informacion General: Almacen, Código de inventario, Estado de inventario, Conteo actual -->
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-semibold mb-0">Información del Inventario</h6>
                 </div>
-
-                <!-- KPIS: Almacen, Código de inventario, Estado del conteo, Conteo actual, Productos registrados, Productos con diferencia, Productos sin diferencia, Productos fuera de inventario, Productos fuera de ubicacion, Productos con lote diferente -->
-                <div class="row mb-4">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-secondary">
+                <div class="row mb-5">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text_bg_almacen">
                             <i class="ti ti-building-warehouse fs-6"></i>
                         </div>
                         <div class="align-self-center">
@@ -96,7 +74,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-primary">
                             <i class="ti ti-barcode fs-6 "></i>
                         </div>
@@ -106,17 +84,17 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div id="estadoIcono" class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning">
                             <i class="ti ti-lock-open fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtEstadoConteo" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Estado del conteo</p>
+                            <h4 id="txtEstadoInventario" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Estado de inventario</p>
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
                             <i class="ti ti-history fs-6"></i>
                         </div>
@@ -125,65 +103,113 @@
                             <p class="card-subtitle">Conteo actual</p>
                         </div>
                     </div>
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-circle-check fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosRegistrados" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos registrados</p>
-                        </div>
+
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
+                        </button>
                     </div>
                 </div>
 
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0">Indicadores del reporte</h6>
+                </div>
+                <!-- KPIS: Productos totales, Productos con diferencia, Productos sin diferencia, Productos fuera de inventario, Productos fuera de ubicacion, Productos con lote diferente -->
                 <div class="row mb-3">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-danger">
-                            <i class="ti ti-alert-triangle fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosConDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos con diferencia</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-users fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosSinDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos sin diferencia</p>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-info-subtle d-flex align-items-center">
+                                    <h3 class="text-info box mb-0">
+                                        <i class="ti ti-box"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosTotales" class="text-info mb-0 fs-6"></h3>
+                                    <span>Productos totales</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosFueraInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos fuera del inventario</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosFueraUbicacion" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos fuera de ubicación</p>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-circle-check"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosSinDiferencia" class="text-success mb-0 fs-6"></h3>
+                                    <span>Productos sin diferencias</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-alert-triangle"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosConDiferencia" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Productos con diferencias</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosLoteDiferente" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos con lote diferente</p>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-package-off"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosNoLecturados" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Productos no lecturados</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-map-pin-off"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosFueraUbicacion" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Productos fuera de ubicación</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-warning-subtle d-flex align-items-center">
+                                    <h3 class="text-warning box mb-0">
+                                        <i class="ti ti-arrows-exchange"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosLoteDiferente" class="text-warning mb-0 fs-6"></h3>
+                                    <span>Productos con lote diferente</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -205,7 +231,7 @@
                                 <div class="col-md-4 mb-2">
                                     <label for="busquedaGeneral" class="form-label">Búsqueda general</label>
                                     <div class="input-group">
-                                        <input id="busquedaGeneral" type="text" class="form-control" placeholder="Producto, Código, Ubicación, Lote, Usuario">
+                                        <input id="busquedaGeneral" type="text" class="form-control" placeholder="Código, Producto, Ubicación, Lote, Usuario">
                                         <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
                                             <i class="ti ti-eraser fs-4"></i>
                                         </button>
@@ -213,16 +239,25 @@
                                     @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="Código o descripción del producto" />*@
                                 </div>
 
+                                <!-- Seleccionar estado -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="slcEstado" class="form-label">Estado</label>
+                                    <select id="slcEstado" class="form-select">
+                                        <option value="0" selected>Todos</option>
+                                        <option value="1">Coincide</option>
+                                        <option value="2">Diferencia</option>
+                                    </select>
+                                </div>
+
                                 <!-- Seleccionar observación -->
                                 <div class="col-md-4 mb-2">
                                     <label for="slcObservacion" class="form-label">Observación</label>
                                     <select id="slcObservacion" class="form-select">
                                         <option value="0" selected>Todos</option>
-                                        <option value="1">Correcto</option>
-                                        <option value="5">Diferencia</option>
+                                        <option value="1">Ubicación diferente</option>
                                         <option value="2">Lote diferente</option>
-                                        <option value="3">Ubicación diferente</option>
-                                        <option value="4">Lote y ubicación diferente</option>
+                                        <option value="3">Lote y ubicación diferente</option>
+                                        <option value="4">Producto no lecturado</option>
                                     </select>
                                 </div>
                             </div>
@@ -270,24 +305,12 @@
 </div>
 
 @section scripts {
-    @*<script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
-        <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
-    <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
-    @*<script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
-        <script src="~/Content/matdash/js/forms/select2.init.js"></script>*@
-
     <script nonce="@nonce">
-
-
-
+        let modoFiltrado;
         let tblReporteUbicacion;
         let inventarioSeleccionado = {
+            almacen: '',
             codigo: '',
-            nombre: '',
-            observacion: 0
         };
 
         $(document).ready(function () {
@@ -316,8 +339,9 @@
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
 
-                    $('#txtAlmacen').text(selectedValue || '-');
+                    $('#txtAlmacen').text(selectedText || '-');
                     LoadcbxInventario(selectedValue);
+                    inventarioSeleccionado.almacen = selectedText;
                 }
             });
 
@@ -340,10 +364,14 @@
                 let selectedText = $('#cbxInventariosPorAlmacen option:selected').text();
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
-                    inventarioSeleccionado.codigo = selectedValue;
-                    inventarioSeleccionado.nombre = selectedText;
+                    inventarioSeleccionado.codigo = selectedText;
 
                     $('#txtCodigoInventario').text(selectedValue || '-');
+
+                    // Limpiar filtros
+                    $('#busquedaGeneral').val('');
+                    $('#slcObservacion').val(0);
+
                     cargarDatosInventario();
                 }
             });
@@ -364,13 +392,12 @@
                 }
 
                 inventarioSeleccionado.codigo = selectedValue;
-                inventarioSeleccionado.nombre = selectedText;
 
                 cargarDatosInventario();
             });
 
             $('#btnExportarExcel').click(function () {
-                exportarExcel();
+                ExportarExcelProducto();
             });
 
 
@@ -404,6 +431,14 @@
                 $('#busquedaGeneral').val('');
                 tblReporteInventario.search('').draw();
                 CargarReporteInventarioProducto(inventarioSeleccionado.codigo);
+            });
+            // Filtro estado
+            $('#slcEstado').on('change', function () {
+                if (modoFiltrado === "SERVIDOR") {
+                    CargarReporteInventarioProducto(inventarioSeleccionado.codigo);
+                } else {
+                    tblReporteInventario.column(5).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                }
             });
 
             // Filtro observación
@@ -476,19 +511,21 @@
             //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
             $('#seccionResumen').removeClass('d-none');
 
+            //console.log(inventarioSeleccionado.codigo);
             CargarReporteInventarioProducto(inventarioSeleccionado.codigo);
-            console.log(inventarioSeleccionado.codigo);
 
             $('#seccionReporte').removeClass('d-none');
         }
 
 
+        // NUEVO METODO CARGAR REPORTE PRODUCTO
         async function CargarReporteInventarioProducto(codInventario) {
 
             const obj = {
                 codInventario: codInventario,
                 busqueda: $('#busquedaGeneral').val().trim(),
-                observacion: parseInt($('#slcObservacion').val()),               
+                estado: $('#slcEstado').val(),
+                observacion: parseInt($('#slcObservacion').val()),
             };
 
             //console.log(obj);
@@ -507,12 +544,12 @@
                 }
 
                 const result = await response.json();
-                console.log(result);
+                //console.log(result);
 
                 // UMBRAL PARA FILTROS AL SERVIDOR
                 let totalProductos = result.Entity.ProductosInventariados;
-                modoFiltrado = totalProductos > 1 ? "SERVIDOR" : "LOCAL";
-                console.log(`¿Filtro a usar? = ${modoFiltrado}`);
+                modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
+                //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                 // CARGAR KPIS INVENTARIO
                 CargarKPIs(result.Entity);
@@ -530,13 +567,13 @@
         }
 
         function CargarKPIs(kpis) {
-            $('#txtEstadoConteo').text(kpis.EstadoConteo || '0');
+            $('#txtEstadoInventario').text(kpis.EstadoConteo || '0');
             CambiarIconoEstado(kpis.EstadoConteo);
             $('#txtConteoActual').text(kpis.ConteoSeleccionado || '0');
-            $('#txtProductosRegistrados').text(kpis.ProductosInventariados || '0');
+            $('#txtProductosTotales').text(kpis.ProductosInventariados || '0');
             $('#txtProductosConDiferencia').text(kpis.ProductosConDiferencia || '0');
             $('#txtProductosSinDiferencia').text(kpis.ProductosSinDiferencia || '0');
-            $('#txtProductosFueraInventario').text(kpis.ProductosFueraInventario || '0');
+            $('#txtProductosNoLecturados').text(kpis.ProductosNoLecturados || '0');
             $('#txtProductosFueraUbicacion').text(kpis.ProductosUbicacionDiferente || '0');
             $('#txtProductosLoteDiferente').text(kpis.ProductosLoteDiferente || '0');
         }
@@ -556,12 +593,12 @@
                 columns: [
                     {
                         data: "CodProducto",
-                        className: "text-center"
+                        /*className: "text-center"*/
                     },
 
                     {
                         data: "DscProducto",
-                        className: "text-center"
+                        /*className: "text-center"*/
                     },
 
                     {
@@ -610,6 +647,15 @@
                     }
                 ],
 
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        render: function (data) {
+                            return data == null || data === "" ? "-" : data;
+                        }
+                    }
+                ],
+
                 pageLength: 25,
                 searching: true,
                 dom: 'lrtip',
@@ -629,7 +675,6 @@
             }
         }
 
-        // Icono lock
         function CambiarIconoEstado(estado) {
             //console.log(estado);
             if (estado === "ABIERTO") {
@@ -651,42 +696,84 @@
                     .addClass("ti ti-lock fs-6");
             }
         }
-        
 
+         // Descargar reporte en excel
+         async function ExportarExcelProducto() {
 
+             if (!inventarioSeleccionado.codigo) {
+                 Swal.fire({
+                     icon: 'warning',
+                     title: 'Atención',
+                     text: 'Debe seleccionar un inventario primero'
+                 });
+                 return;
+             }
 
-        function exportarExcel() {
-            if (!inventarioSeleccionado.codigo) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Atención',
-                    text: 'Debe seleccionar un inventario primero'
-                });
-                return;
-            }
+             const obj = {
+                 almacen: inventarioSeleccionado.almacen,
+                 codInventario: inventarioSeleccionado.codigo,
+                 busqueda: $('#busquedaGeneral').val().trim(),
+                 estado: $('#slcEstado').val(),
+                 observacion: parseInt($('#slcObservacion').val()),
+             };
 
-            let busqueda = $('#customSearch').val() || '';
+             Swal.fire({
+                 title: 'Generando Excel...',
+                 html: 'Por favor espere',
+                 allowOutsideClick: false,
+                 allowEscapeKey: false,
+                 didOpen: () => {
+                     Swal.showLoading();
+                 }
+             });
 
-            Swal.fire({
-                title: 'Generando Excel...',
-                html: 'Por favor espere',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+             try {
 
-            let baseUrl = '@Url.Action("ExportarExcelReporteProducto", "ReportePrincipal")';
-            let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
-                         '&busqueda=' + encodeURIComponent(busqueda);
+                 const response = await fetch(
+                     '@Url.Action("ExportarExcelProducto", "ReportePrincipal")',
+                     {
+                         method: 'POST',
+                         headers: {
+                             'Content-Type': 'application/json'
+                         },
+                         body: JSON.stringify(obj)
+                     }
+                 );
 
-            window.location.href = baseUrl + params;
+                 if (!response.ok) {
+                     throw new Error('No se pudo generar el archivo Excel.');
+                 }
 
-            setTimeout(function() {
-                Swal.close();
-            }, 500);
-        }
+                 // Obtener archivo
+                 const blob = await response.blob();
 
+                 // Crear URL temporal
+                 const url = window.URL.createObjectURL(blob);
+
+                 // Crear enlace de descarga
+                 const a = document.createElement('a');
+                 a.href = url;
+                 a.download = `Reporte_Producto_${obj.codInventario}.xlsx`;
+
+                 document.body.appendChild(a);
+                 a.click();
+
+                 // Limpiar
+                 a.remove();
+                 window.URL.revokeObjectURL(url);
+
+                 Swal.close();
+
+             } catch (error) {
+
+                 console.error(error);
+
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: error.message || 'Ocurrió un error al generar el Excel.'
+                 });
+             }
+         }
     </script>
 }

@@ -108,6 +108,7 @@ namespace BL
         public Response ObtenerDatosReporteProducto(
             string codInventario,
             string busqueda,
+            int estado = 0,
             int observacion = 0,
             string start = "0",
             string length = "10",
@@ -124,7 +125,7 @@ namespace BL
                     return response;
                 }
 
-                response = new ReportePrincipalDAO().ReporteProducto(codInventario, busqueda, observacion);
+                response = new ReportePrincipalDAO().ReporteProducto(codInventario, busqueda, estado, observacion);
             }
             catch (Exception ex)
             {
@@ -134,7 +135,6 @@ namespace BL
             }
             return response;
         }
-
 
 
         public Response ObtenerDatosReporteUbicacion(
@@ -154,8 +154,8 @@ namespace BL
                     response.HUBO_ERROR = true;
                     response.MENSAJE_ERROR = "El código de inventario es obligatorio";
                     return response;
-                }                                                                                   
-                response = new ReportePrincipalDAO().ReporteUbicacion(codInventario, busqueda,estado,diferencias);
+                }
+                response = new ReportePrincipalDAO().ReporteUbicacion(codInventario, busqueda, estado, diferencias);
             }
             catch (Exception ex)
             {
@@ -164,7 +164,6 @@ namespace BL
             }
             return response;
         }
-
 
 
         public Response ObtenerDatosReporteAuditoria(
@@ -197,7 +196,7 @@ namespace BL
 
 
 
-
+        // EN DESUSO
 
         public Response ObtenerReporteInventarioCerrado(
         string codInventario,

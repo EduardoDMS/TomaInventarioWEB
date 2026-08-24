@@ -3,13 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
 }
-@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
-    <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
-    <link href="~/Content/css/select2.css" rel="stylesheet" />
-    <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">*@
-
 
 
 <!-- Sección Seleccionar Almacen e inventario -->
@@ -79,31 +72,14 @@
 <div id="seccionReporte" class="row d-none">
     <div class="col-12">
         <div class="card">
-            <!-- Titulo y subtitulo -->
-            <div class="card-header pb-1">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div>
-                        <span class="badge bg-primary-subtle text-primary">Solo se muestran productos con diferencias del último conteo</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-success" id="btnExportarExcel">
-                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
             <div class="card-body">
-                <!-- Información del Inventario -->
+                <!-- Informacion General: Almacen, Código de inventario, Estado de inventario, Conteo actual -->
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-semibold mb-0">Información del Inventario</h6>
                 </div>
-
-                <!-- KPIS: Código de inventario, Almacen, Estado de inventario, Conteo actual, Productos sin diferencia, Productos con diferencia, Productos sobrantes, Productos faltantes -->
-                <div class="row mb-4">
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-secondary">
+                <div class="row mb-5">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text_bg_almacen">
                             <i class="ti ti-building-warehouse fs-6"></i>
                         </div>
                         <div class="align-self-center">
@@ -112,7 +88,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-primary">
                             <i class="ti ti-barcode fs-6 "></i>
                         </div>
@@ -122,7 +98,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div id="estadoIcono" class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning">
                             <i class="ti ti-lock-open fs-6"></i>
                         </div>
@@ -132,7 +108,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
                             <i class="ti ti-history fs-6"></i>
                         </div>
@@ -141,46 +117,97 @@
                             <p class="card-subtitle">Conteo actual</p>
                         </div>
                     </div>
+
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
+                        </button>
+                    </div>
                 </div>
 
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0">Indicadores del reporte</h6>
+                </div>
+                <!-- KPIS: Productos totales, Productos sin diferencia, Productos con diferencia, Productos sobrantes, Productos faltantes -->
                 <div class="row mb-3">
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-circle-check fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosSinDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos sin diferencias</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-danger">
-                            <i class="ti ti-alert-triangle fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosConDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos con diferencia</p>
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-info-subtle d-flex align-items-center">
+                                    <h3 class="text-info box mb-0">
+                                        <i class="ti ti-box"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosTotales" class="text-info mb-0 fs-6"></h3>
+                                    <span>Productos totales</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-arrow-big-up fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosSobrantes" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos sobrantes</p>
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-circle-check"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosSinDiferencia" class="text-success mb-0 fs-6"></h3>
+                                    <span>Productos sin diferencias</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-danger">
-                            <i class="ti ti-arrow-big-down fs-6"></i>
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-alert-triangle"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosConDiferencia" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Productos con diferencia</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosFaltantes" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos faltantes</p>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-arrow-big-up"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosSobrantes" class="text-success mb-0 fs-6"></h3>
+                                    <span>Stock sobrante</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-arrow-big-down"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtProductosFaltantes" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Stock faltante</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -230,20 +257,17 @@
                                     </select>
                                 </div>
                                 @*<div class="col-md-3 d-flex justify-content-center align-items-end mb-2">
-                            <button id="btn_limpiar" class="btn btn-secondary">
-                                <i class="ti ti-eraser me-2"></i>Limpiar Filtros
-                            </button>
-                        </div>*@
+                                        <button id="btn_limpiar" class="btn btn-secondary">
+                                            <i class="ti ti-eraser me-2"></i>Limpiar Filtros
+                                        </button>
+                                    </div>*@
                             </div>
                         </div>
                     </div>
                 </div>
 
-                @*<hr class="my-4">*@
-
                 <!-- Tabla -->
                 <!-- Código, Producto, Ubicación, Lote, Stock Inicial, Stock Final, Diferencia, Estado -->
-
                 <div class="table-responsive">
                     <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
                         <thead class="table-light">
@@ -275,585 +299,412 @@
 </div>
 
 @section scripts {
-    @*<script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
-        <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
-    <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
-    @*<script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
-        <script src="~/Content/matdash/js/forms/select2.init.js"></script>*@
-
     <script nonce="@nonce">
+            let modoFiltrado;
+            let tblReporteInventario;
+            let inventarioSeleccionado = {
+                almacen:'',
+                codigo: '',
+            };
 
-        let modoFiltrado;
-        let tblReporteInventario;
-        let inventarioSeleccionado = {
-            codigo: '',
-            nombre: '',
-            ultimoConteo: 0,
-            estado: ''
-        };
+            $(document).ready(function () {
+                inicializarComponentes();
+                inicializarEventos();
+            });
 
-        $(document).ready(function () {
-            inicializarComponentes();
-            inicializarEventos();
-        });
-
-        function inicializarComponentes() {
-            // ALMACEN
-            $('#cbxAlmacenes').select2({
-                /*theme: 'bootstrap-5',*/
-                width: '100%',
-                placeholder: 'Seleccione un almacen',
-                allowClear: false,
-                /*dropdownParent: $('#cbxAlmacenes').parent(),*/ // O el contenedor específico
-                language: {
-                    noResults: function () {
-                        return "No se encontraron resultados";
-                    },
-                    searching: function () {
-                        return "Buscando...";
+            function inicializarComponentes() {
+                // ALMACEN
+                $('#cbxAlmacenes').select2({
+                    /*theme: 'bootstrap-5',*/
+                    width: '100%',
+                    placeholder: 'Seleccione un almacen',
+                    allowClear: false,
+                    /*dropdownParent: $('#cbxAlmacenes').parent(),*/ // O el contenedor específico
+                    language: {
+                        noResults: function () {
+                            return "No se encontraron resultados";
+                        },
+                        searching: function () {
+                            return "Buscando...";
+                        }
                     }
-                }
-            });
-            $('#cbxAlmacenes').on('change', function () {
-                let selectedValue = $(this).val();
-                let selectedText = $('#cbxAlmacenes option:selected').text();
+                });
+                $('#cbxAlmacenes').on('change', function () {
+                    let selectedValue = $(this).val();
+                    let selectedText = $('#cbxAlmacenes option:selected').text();
 
-                if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
-                    // console.log(selectedValue);
-                    // console.log(typeof selectedValue);
+                    if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
+                        //console.log(selectedText);
+                        // console.log(typeof selectedValue);
 
-                    $('#txtAlmacen').text(selectedValue || '-');
-                    LoadcbxInventario(selectedValue);
-
-
-                    //inventarioSeleccionado.codigo = selectedValue;
-                    //inventarioSeleccionado.nombre = selectedText;
-                    //cargarDatosInventario();
-                }
-            });
-
-            // INVENTARIO
-            $('#cbxInventariosPorAlmacen').select2({
-                /*theme: 'bootstrap-5',*/
-                width: '100%',
-                placeholder: 'Seleccione un inventario',
-                allowClear: false,
-                /*dropdownParent: $('#cbxInventariosCerrados').parent(),*/ // O el contenedor específico
-                language: {
-                    noResults: function () {
-                        return "No se encontraron resultados";
-                    },
-                    searching: function () {
-                        return "Buscando...";
+                        $('#txtAlmacen').text(selectedText || '-');
+                        LoadcbxInventario(selectedValue);
+                        inventarioSeleccionado.almacen = selectedText;
                     }
-                }
-            });
-            $('#cbxInventariosPorAlmacen').on('change', function () {
-                let selectedValue = $(this).val();
-                let selectedText = $('#cbxInventariosPorAlmacen option:selected').text();
+                });
 
-                if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
+                // INVENTARIO
+                $('#cbxInventariosPorAlmacen').select2({
+                    /*theme: 'bootstrap-5',*/
+                    width: '100%',
+                    placeholder: 'Seleccione un inventario',
+                    allowClear: false,
+                    /*dropdownParent: $('#cbxInventariosCerrados').parent(),*/ // O el contenedor específico
+                    language: {
+                        noResults: function () {
+                            return "No se encontraron resultados";
+                        },
+                        searching: function () {
+                            return "Buscando...";
+                        }
+                    }
+                });
+                $('#cbxInventariosPorAlmacen').on('change', function () {
+                    let selectedValue = $(this).val();
+                    let selectedText = $('#cbxInventariosPorAlmacen option:selected').text();
+
+                    if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
+                        inventarioSeleccionado.codigo = selectedValue;
+
+                        $('#txtCodigoInventario').text(selectedValue || '-');
+
+                        // Limpiar filtros
+                        $('#busquedaGeneral').val('');
+                        $('#slcEstado').val('Todos');
+                        $('#slcTipoDiferencia').val('Todos');
+
+                        cargarDatosInventario();
+                    }
+                });
+            }
+
+            function inicializarEventos() {
+                $('#btnCargarInventario').click(function () {
+                    let selectedValue = $('#cbxInventariosCerrados').val();
+                    let selectedText = $('#cbxInventariosCerrados option:selected').text();
+
+                    if (!selectedValue || selectedValue === '-1' || selectedValue === '') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atención',
+                            text: 'Debe seleccionar un inventario válido'
+                        });
+                        return;
+                    }
+
                     inventarioSeleccionado.codigo = selectedValue;
-                    inventarioSeleccionado.nombre = selectedText;
 
-                    $('#txtCodigoInventario').text(selectedValue || '-');
                     cargarDatosInventario();
+                });
+
+                $('#btnExportarExcel').click(function () {
+                    ExportarExcelDiferencial();
+                });
+
+
+                // Busqueda general
+                let timeoutBusqueda = null;
+
+                $('#busquedaGeneral').on('input', function () {
+                    if (modoFiltrado === "LOCAL") {
+                        tblReporteInventario.search(this.value, false, false).draw();
+                        return;
+                    }
+
+                    clearTimeout(timeoutBusqueda);
+
+                    timeoutBusqueda = setTimeout(() => {
+                        CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                    }, 400);
+                })
+
+                $('#busquedaGeneral').on('keydown', function (e) {
+                    if (e.key !== "Enter")
+                        return;
+
+                    clearTimeout(timeoutBusqueda);
+
+                    CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                });
+
+                // Limpiar busqueda
+                $('#btnLimpiarBusqueda').on('click', function () {
+                    $('#busquedaGeneral').val('');
+                    tblReporteInventario.search('').draw();
+                    CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                });
+
+                // Filtro estado
+                $('#slcEstado').on('change', function () {
+                    if (modoFiltrado === "SERVIDOR") {
+                        CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                    } else {
+                        tblReporteInventario.column(5).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                    }
+                });
+
+                // Filtro diferencia
+                $('#slcTipoDiferencia').on('change', function () {
+                    if (modoFiltrado==="SERVIDOR") {
+                        CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                    } else {
+                        tblReporteInventario.column(6).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                    }
+                });
+            }
+
+
+            // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
+            async function LoadcbxInventario(idAlmacen) {
+            $("#cbxInventariosPorAlmacen").empty();
+            //console.log(idAlmacen);
+
+                const obj = {
+                    idAlmacen: idAlmacen
                 }
-            });
+
+                try {
+                    const response = await fetch("FillCbxInventariosPorAlmacen", {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(obj)
+                    });
+                    //console.log(response.url);
+
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    //console.log(result);
+
+                    if (!result.success) {
+                        console.error(result.mensaje);
+                        return;
+                    }
+
+                    const data = result.data;
+
+                    let opcion = "";
+
+                    if (data.length === 0) {
+                        opcion += "<option value='-1' disabled selected> --No se encuentran inventarios asociados al almacen --</option>";
+                    } else {
+                        data.forEach(item => {
+                            opcion += `<option value="${item.vchValue}">${item.vchdesc}</option>`;
+                            /*opcion += `<option value="${item.vchValue}">${item.vchValue}</option>`;*/
+                        });
+                    }
+
+                    $("#cbxInventariosPorAlmacen").html(opcion).trigger("change.select2");
+
+                    $("#cbxInventariosPorAlmacen").select2({
+                        width: "100%",
+                        language: "es",
+                        placeholder: "--Seleccione un inventario--"
+                    });
+                }
+                catch (error) {
+                    console.error("Error:", error);
+                }
         }
 
-        function inicializarEventos() {
-            $('#btnCargarInventario').click(function () {
-                let selectedValue = $('#cbxInventariosCerrados').val();
-                let selectedText = $('#cbxInventariosCerrados option:selected').text();
+            function cargarDatosInventario() {
+                //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
+                $('#seccionResumen').removeClass('d-none');
 
-                if (!selectedValue || selectedValue === '-1' || selectedValue === '') {
+                //console.log(inventarioSeleccionado.codigo);
+                CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+
+                $('#seccionReporte').removeClass('d-none');
+            }
+
+
+            // NUEVO METODO CARGAR REPORTE DIFERENCIAL
+            async function CargarReporteInventarioDiferencial(codInventario) {
+
+                const obj = {
+                    codInventario: codInventario,
+                    estado: $('#slcEstado').val(),
+                    tipoDiferencia: $('#slcTipoDiferencia').val(),
+                    busqueda: $('#busquedaGeneral').val().trim()
+                };
+
+                //console.log(obj);
+
+                try {
+                    const response = await fetch("ObtenerReporteDiferencial", {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type":"application/json"
+                        },
+                        body: JSON.stringify(obj)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    //console.log(result);
+
+                    // UMBRAL PARA FILTROS AL SERVIDOR
+                    let totalProductos = result.Entity.ProductosInventariados;
+                    modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
+                    //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
+
+                    // CARGAR KPIS INVENTARIO
+                    CargarKPIs(result.Entity);
+
+                    // CARGAR TABLA
+                    CargarTabla(result.Entity.TblReporteDiferencial);
+
+                    // CARGAR FOOTER
+                    CargarFooterTabla(result.footerTable);
+                }
+                catch(error) {
+                    console.error("Error:", error);
+                }
+            }
+
+            function CargarKPIs(kpis) {
+                $('#txtProductosTotales').text(kpis.ProductosInventariados || '0');
+                $('#txtProductosConDiferencia').text(kpis.ProductosConDiferencia || '0');
+                $('#txtProductosSinDiferencia').text(kpis.ProductosSinDiferencia || '0');
+                $('#txtProductosSobrantes').text(kpis.TotalDeSobrantes || '0');
+                $('#txtProductosFaltantes').text(kpis.TotalDeFaltantes || '0');
+                //$('#txtDiferenciaNeta').text(kpis.DiferenciaNetaInventario || '0');
+                $('#txtEstadoInventario').text(kpis.EstadoInventario || '-');
+                CambiarIconoEstado(kpis.EstadoInventario);
+                //$('#txtCodigoInventario').text(kpis.ProductosInventariados || '-');
+                //$('#txtAlmacen').text(kpis.ProductosInventariados || '-');
+                $('#txtConteoActual').text(kpis.ConteoActual || '-');
+                //$('#txtUltimoConteoFinalizado').text(kpis.UltimoConteoFinalizado || '-');
+            }
+
+            function CargarTabla(datos) {
+
+                if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
+                    $('#tblReporteInventario').DataTable().destroy();
+                }
+
+                $('#tblReporteInventario tbody').empty();
+
+                tblReporteInventario = $('#tblReporteInventario').DataTable({
+
+                    data: datos,
+
+                    columns: [
+                        {
+                            data: "CodProducto",
+                            /*className: "text-center"*/
+                        },
+
+                        {
+                            data: "DscProducto",
+                            /*className: "text-center"*/
+                        },
+
+                        {
+                            data: "StockInicial",
+                            className: "text-center"
+                        },
+
+                        {
+                            data: "StockFinal",
+                            className: "text-center"
+                        },
+
+                        {
+                            data: "StockDiferencial",
+                            className: "text-center"
+                        },
+
+                        {
+                            data: "Estado",
+                            className: "text-center"
+                        },
+
+                        {
+                            data: "TipoDiferencia",
+                            className: "text-center"
+                        }
+                    ],
+
+                    columnDefs: [
+                        {
+                            targets: '_all',
+                            render: function (data) {
+                                return data == null || data === "" ? "-" : data;
+                            }
+                        }
+                    ],
+
+                    pageLength: 25,
+                    searching: true,
+                    dom:'lrtip',
+                    language: españolTbl
+                });
+
+            }
+
+            function CargarFooterTabla(datosFooter) {
+                if (datosFooter && datosFooter.length >= 3) {
+                    $('#footerStockInicial').text(datosFooter[0]);
+                    $('#footerStockFinal').text(datosFooter[1]);
+
+                    let diferencial = datosFooter[2];
+                    let clase = diferencial < 0 ? 'text-danger fw-bold':'text-success fw-bold';
+                    $('#footerStockDiferencial').html('<span class="' + clase + '">' + diferencial + '</span>');
+                }
+            }
+
+            function CambiarIconoEstado(estado) {
+            //console.log(estado);
+            if (estado === "ABIERTO") {
+                $("#estadoIcono")
+                    .removeClass()
+                    .addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning");
+
+                $("#estadoIcono i")
+                    .removeClass()
+                    .addClass("ti ti-lock-open fs-6");
+            }
+            else {
+                $("#estadoIcono")
+                    .removeClass()
+                    .addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success");
+
+                $("#estadoIcono i")
+                    .removeClass()
+                    .addClass("ti ti-lock fs-6");
+            }
+        }
+
+            // Descargar reporte en excel
+            async function ExportarExcelDiferencial() {
+
+                if (!inventarioSeleccionado.codigo) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Atención',
-                        text: 'Debe seleccionar un inventario válido'
+                        text: 'Debe seleccionar un inventario primero'
                     });
                     return;
                 }
 
-                inventarioSeleccionado.codigo = selectedValue;
-                inventarioSeleccionado.nombre = selectedText;
+                const obj = {
+                    almacen: inventarioSeleccionado.almacen,
+                    codInventario: inventarioSeleccionado.codigo,
+                    estado: $('#slcEstado').val(),
+                    tipoDiferencia: $('#slcTipoDiferencia').val(),
+                    busqueda: $('#busquedaGeneral').val().trim()
+                };
 
-                cargarDatosInventario();
-            });
-
-            $('#btnExportarExcel').click(function () {
-                exportarExcel();
-            });
-
-
-            // Busqueda general
-            let timeoutBusqueda = null;
-
-            $('#busquedaGeneral').on('input', function () {
-                if (modoFiltrado === "LOCAL") {
-                    tblReporteInventario.search(this.value, false, false).draw();
-                    return;
-                }
-
-                clearTimeout(timeoutBusqueda);
-
-                timeoutBusqueda = setTimeout(() => {
-                    CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-                }, 400);
-            })
-
-            $('#busquedaGeneral').on('keydown', function (e) {
-                if (e.key !== "Enter")
-                    return;
-
-                clearTimeout(timeoutBusqueda);
-
-                CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-            });
-
-            // Limpiar busqueda
-            $('#btnLimpiarBusqueda').on('click', function () {               
-                $('#busquedaGeneral').val('');
-                tblReporteInventario.search('').draw();
-                CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-            });
-
-            // Filtro estado
-            $('#slcEstado').on('change', function () {
-                if (modoFiltrado === "SERVIDOR") {
-                    CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-                } else {
-                    tblReporteInventario.column(5).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
-                }
-
-            });
-
-            // Filtro diferencia
-            $('#slcTipoDiferencia').on('change', function () {
-                if (modoFiltrado==="SERVIDOR") {
-                    CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-                } else {
-                    tblReporteInventario.column(6).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
-                }
-            });
-        }
-
-
-        // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
-        async function LoadcbxInventario(idAlmacen) {
-        $("#cbxInventariosPorAlmacen").empty();
-        //console.log(idAlmacen);
-
-            const obj = {
-                idAlmacen: idAlmacen
-            }
-
-            try {
-                const response = await fetch("FillCbxInventariosPorAlmacen", {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(obj)
-                });
-                //console.log(response.url);
-
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-
-                const result = await response.json();
-                //console.log(result);
-
-                if (!result.success) {
-                    console.error(result.mensaje);
-                    return;
-                }
-
-                const data = result.data;
-
-                let opcion = "";
-
-                if (data.length === 0) {
-                    opcion += "<option value='-1' disabled selected> --No se encuentran inventarios asociados al almacen --</option>";
-                } else {
-                    data.forEach(item => {
-                        opcion += `<option value="${item.vchValue}">${item.vchdesc}</option>`;
-                    });
-                }
-
-                $("#cbxInventariosPorAlmacen").html(opcion).trigger("change.select2");
-
-                $("#cbxInventariosPorAlmacen").select2({
-                    width: "100%",
-                    language: "es",
-                    placeholder: "--Seleccione un inventario--"
-                });
-            }
-            catch (error) {
-                console.error("Error:", error);
-            }
-    }
-
-        function cargarDatosInventario() {
-            //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
-            $('#seccionResumen').removeClass('d-none');
-
-            CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-
-            //CargarTablaReporteInventario(inventarioSeleccionado.codigo);
-
-            $('#seccionReporte').removeClass('d-none');
-        }
-
-
-        // NUEVO METODO CARGAR REPORTE DIFERENCIAL
-        async function CargarReporteInventarioDiferencial(codInventario) {
-
-            const obj = {
-                codInventario: codInventario,
-                estado: $('#slcEstado').val(),
-                tipoDiferencia: $('#slcTipoDiferencia').val(),
-                busqueda: $('#busquedaGeneral').val().trim()
-            };
-
-            //console.log(obj);
-
-            try {
-                const response = await fetch("ObtenerReporteDiferencial", {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type":"application/json"
-                    },
-                    body: JSON.stringify(obj)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-
-                const result = await response.json();
-                //console.log(result);
-
-                // UMBRAL PARA FILTROS AL SERVIDOR
-                let totalProductos = result.Entity.ProductosInventariados;
-                modoFiltrado = totalProductos > 1 ? "SERVIDOR" : "LOCAL";
-                //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
-
-                // CARGAR KPIS INVENTARIO
-                CargarKPIs(result.Entity);
-
-                // CARGAR TABLA
-                CargarTabla(result.Entity.TblReporteDiferencial);
-
-                // CARGAR FOOTER
-                CargarFooterTabla(result.footerTable);
-
-            }
-            catch(error) {
-                console.error("Error:", error);
-            }
-        }
-
-        function CargarKPIs(kpis) {
-            //$('#txtProductosInventariado').text(kpis.ProductosInventariados || '0');
-            $('#txtProductosConDiferencia').text(kpis.ProductosConDiferencia || '0');
-            $('#txtProductosSinDiferencia').text(kpis.ProductosSinDiferencia || '0');
-            $('#txtProductosSobrantes').text(kpis.TotalDeSobrantes || '0');
-            $('#txtProductosFaltantes').text(kpis.TotalDeFaltantes || '0');
-            //$('#txtDiferenciaNeta').text(kpis.DiferenciaNetaInventario || '0');
-            $('#txtEstadoInventario').text(kpis.EstadoInventario || '-');
-            CambiarIconoEstado(kpis.EstadoInventario);
-            //$('#txtCodigoInventario').text(kpis.ProductosInventariados || '-');
-            //$('#txtAlmacen').text(kpis.ProductosInventariados || '-');
-            $('#txtConteoActual').text(kpis.ConteoActual || '-');
-            //$('#txtUltimoConteoFinalizado').text(kpis.UltimoConteoFinalizado || '-');
-        }
-
-        function CargarTabla(datos) {
-
-            if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
-                $('#tblReporteInventario').DataTable().destroy();
-            }
-
-            $('#tblReporteInventario tbody').empty();
-
-            tblReporteInventario = $('#tblReporteInventario').DataTable({
-
-                data: datos,
-
-                columns: [
-                    {
-                        data: "CodProducto",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "DscProducto",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "StockInicial",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "StockFinal",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "StockDiferencial",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "Estado",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "TipoDiferencia",
-                        className: "text-center"
-                    }
-                ],
-
-                pageLength: 25,
-                searching: true,
-                dom:'lrtip',
-                language: españolTbl
-            });
-
-        }
-
-        function CargarFooterTabla(datosFooter) {
-            if (datosFooter && datosFooter.length >= 3) {
-                $('#footerStockInicial').text(datosFooter[0]);
-                $('#footerStockFinal').text(datosFooter[1]);
-
-                let diferencial = datosFooter[2];
-                let clase = diferencial < 0 ? 'text-danger fw-bold':'text-success fw-bold';
-                $('#footerStockDiferencial').html('<span class="' + clase + '">' + diferencial + '</span>');
-            }
-        }
-
-        // Icono lock
-        function CambiarIconoEstado(estado) {
-        console.log(estado);
-        if (estado === "ABIERTO") {
-            $("#estadoIcono")
-                .removeClass()
-                .addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning");
-
-            $("#estadoIcono i")
-                .removeClass()
-                .addClass("ti ti-lock-open fs-6");
-        }
-        else {
-            $("#estadoIcono")
-                .removeClass()
-                .addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success");
-
-            $("#estadoIcono i")
-                .removeClass()
-                .addClass("ti ti-lock fs-6");
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-        function exportarExcel() {
-    if (!inventarioSeleccionado.codigo) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Atención',
-            text: 'Debe seleccionar un inventario primero'
-        });
-        return;
-    }
-
-    let searchValue = $('#customSearch').val() || '';
-
-    Swal.fire({
-        title: 'Generando Excel...',
-        html: 'Por favor espere',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-
-    let baseUrl = '@Url.Action("ExportarExcelReporteDiferencial", "ReportePrincipal")';
-    let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
-                 '&searchValue=' + encodeURIComponent(searchValue);
-
-    //console.log(baseUrl + params);
-    window.location.href = baseUrl + params;
-
-    // TIEMPO PUESTO MANUAL
-    setTimeout(function() {
-        Swal.close();
-    }, 500);
-    }
-
-
-
-
-
-        //-- ELIMINAR --//
-        function CargarTablaReporteInventario(codInventario) {
-            if (typeof tblReporteInventario !== 'undefined') {
-                tblReporteInventario.destroy();
-            }
-
-            tblReporteInventario = $('#tblReporteInventario').DataTable({
-                "serverSide": true,
-                "ajax": {
-                    "url": "@Url.Action("ObtenerDatosReporteDiferencial", "ReportePrincipal")",
-                    "type": "POST",
-                    "datatype": "json",
-                    "data": function (d) {
-                        d.codInventario = codInventario;
-                        d.searchValue = $('#customSearch').val();
-                        toggle_Loadingtb('tbLoading', true);
-                    },
-                    "complete": function (response) {
-                        toggle_Loadingtb('tbLoading', false);
-
-                        //console.log(response);
-                        if (response.responseJSON) {
-                            if (response.responseJSON.error) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: response.responseJSON.error
-                                });
-                            }
-
-                            if (response.responseJSON.listFooter && response.responseJSON.listFooter.length > 0) {
-                                CargarFooterReporte(response.responseJSON.listFooter);
-                            }
-
-                            // Cargar información del inventario
-                            if (response.responseJSON.infoInventario && response.responseJSON.infoInventario.length >= 8) {
-                                let info = response.responseJSON.infoInventario;
-                                $('#txtResumenNombreAlmacen').text(info[0] || '-');
-                                $('#txtResumenFechaRegistro').text(info[1] || '-');
-                                $('#txtResumenUltimoConteo').text(info[5] || '-');
-                                $('#txtResumenConteoActual').text(info[6] || '-');
-
-
-                                let estado = info[4] || '-';
-                                $('#badgeEstadoInventario').text(estado);
-                                $('#badgeEstadoInventario').removeClass('bg-success-subtle text-success bg-warning-subtle text-warning');
-                                if (estado === 'CERRADO') {
-                                    $('#badgeEstadoInventario').addClass('bg-success-subtle text-success');
-                                } else {
-                                    $('#badgeEstadoInventario').addClass('bg-warning-subtle text-warning');
-                                }
-
-                                inventarioSeleccionado.ultimoConteo = info[5];
-                                inventarioSeleccionado.estado = estado;
-                            }
-                        }
-                    },
-                    "error": function(xhr, error, thrown) {
-                        toggle_Loadingtb('tbLoading', false);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error al cargar datos',
-                            text: 'Ocurrió un error al cargar la información'
-                        });
-                    }
-                },
-                "columns": [
-                    { "data": "Cod_Producto", "title": "CÓDIGO" },
-                    { "data": "Dsc_Producto", "title": "PRODUCTO" },
-                    { "data": "Cod_ubicacion", "title": "UBICACIÓN" },
-                    { "data": "Lote_Producto", "title": "LOTE" },
-                    /*{ "data": "Serie_Producto", "title": "SERIE" },*/
-                    {
-                        "data": "Stock_inicial",
-                        "title": "STOCK INICIAL",
-                        "className": "text-end",
-                        "render": function (data) {
-                            return data != null ? Math.round(parseFloat(data)).toString() : '0';
-                        }
-                    },
-                    {
-                        "data": "Ultimo_Conteo_Finalizado",
-                        "title": "ÚLTIMO CONTEO",
-                        "className": "text-center",
-                        "render": function (data) {
-                            return '<span class="badge bg-primary-subtle text-primary">Conteo ' + (data || '0') + '</span>';
-                        }
-                    },
-                    {
-                        "data": "Stock_Ultimo_Conteo",
-                        "title": "STOCK CONTEO",
-                        "className": "text-end",
-                        "render": function (data) {
-                            return data != null ? Math.round(parseFloat(data)).toString() : '0';
-                        }
-                    },
-                    {
-                        "data": "Stock_Diferencial",
-                        "title": "DIFERENCIAL",
-                        "className": "text-end",
-                        "render": function (data) {
-                            if (data == null) return '0';
-                            let value = Math.round(parseFloat(data));
-                            let clase = value > 0 ? 'text-success fw-bold' : value < 0 ? 'text-danger fw-bold' : '';
-                            return '<span class="' + clase + '">' + value + '</span>';
-                        }
-                    },
-                    { "data": "Cod_Usuario_Registro", "title": "USUARIO" }
-                ],
-                "paging": true,
-                "pageLength": 10,
-                "searching": false,
-                "lengthChange": true,
-                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
-                "responsive": false,
-                "language": españolTbl
-            });
-        }
-        function CargarFooterReporte(listFooter) {
-            if (listFooter && listFooter.length >= 3) {
-                $('#footerStockInicial').text(formatNumber(listFooter[0]));
-                $('#footerStockConteo').text(formatNumber(listFooter[1]));
-
-                let diferencial = listFooter[2];
-                let diferencialFormatted = formatNumber(diferencial);
-                let clase = diferencial > 0 ? 'text-success fw-bold' : diferencial < 0 ? 'text-danger fw-bold' : '';
-                $('#footerDiferencial').html('<span class="' + clase + '">' + diferencialFormatted + '</span>');
-
-                // Estadísticas adicionales
-                if (listFooter.length >= 7) {
-                    $('#txtResumenConDiferencias').text(formatNumber(listFooter[3]));
-                    //$('#txtResumenAjustesPositivos').text(formatNumber(listFooter[5]));
-                    //$('#txtResumenAjustesNegativos').text(formatNumber(listFooter[6]));
-                }
-            }
-        }
-        function toggle_Loadingtb(idLoading, mostrar) {
-            if (mostrar) {
                 Swal.fire({
-                    title: 'Cargando...',
+                    title: 'Generando Excel...',
                     html: 'Por favor espere',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
@@ -861,14 +712,54 @@
                         Swal.showLoading();
                     }
                 });
-            } else {
-                Swal.close();
+
+                try {
+
+                    const response = await fetch(
+                        '@Url.Action("ExportarExcelDiferencial", "ReportePrincipal")',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(obj)
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error('No se pudo generar el archivo Excel.');
+                    }
+
+                    // Obtener archivo
+                    const blob = await response.blob();
+
+                    // Crear URL temporal
+                    const url = window.URL.createObjectURL(blob);
+
+                    // Crear enlace de descarga
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Reporte_Diferencial_${obj.codInventario}.xlsx`;
+
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Limpiar
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+
+                    Swal.close();
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Ocurrió un error al generar el Excel.'
+                    });
+                }
             }
-    }
-        function formatNumber(value) {
-            if (value == null || value === '') return '0';
-            return Math.round(parseFloat(value)).toString();
-        }
-        //-- ELIMINAR --//
     </script>
 }

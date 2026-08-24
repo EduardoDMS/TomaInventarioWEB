@@ -144,7 +144,8 @@
             </a>
 
             <div class="sidebar__item" data-menu="inventario" title="Inventario">
-                <i class="ti ti-archive"></i>
+                @*<i class="ti ti-archive"></i>*@
+                <i class="ti ti-clipboard-list"></i>
                 <small>Inventario</small>
             </div>
             <div class="sidebar__item" data-menu="reportes" title="Reportes">
@@ -162,7 +163,8 @@
                 </div>
             </a>
             <div class="sidebar__item" data-menu="gestionRecursos" title="Gestión de recursos">
-                <i class="ti ti-adjustments-horizontal"></i>
+                @*<i class="ti ti-adjustments-horizontal"></i>*@
+                <i class="ti ti-layout-grid"></i>
                 <small>Gestión de recursos</small>
             </div>
             <div class="sidebar__item" data-menu="ajustes" title="Ajustes">
@@ -206,24 +208,27 @@
         <div class="submenu__secundario" id="reportes" data-nombre="Reportes">
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Diferencial", "ReportePrincipal")">
                 <span class="submenu__titulo">Diferencial</span>
-                <small>Muestra las diferencias entre el stock inicial y el conteo final</small>
+                <small>Identifica sobrantes y faltantes del inventario</small>
             </a>
 
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Conteo", "ReportePrincipal")">
                 <span class="submenu__titulo">Conteo</span>
-                <small>Muestra el número de conteo y stock diferencial</small>
+                <small>Revisa los resultados de cada pasada de inventario</small>
             </a>
+
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Usuario", "ReportePrincipal")">
                 <span class="submenu__titulo">Usuario</span>
-                <small>Muestra el stock inventariado por un usuario seleccionado</small>
+                <small>Analiza la participación y productividad de cada usuario</small>
             </a>
+
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Producto", "ReportePrincipal")">
                 <span class="submenu__titulo">Producto</span>
-                <small>Muestra el stock inventariado, el usuario por un producto seleccionado</small>
+                <small>Consulta el resultado y las variaciones de cada producto</small>
             </a>
+
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Ubicacion", "ReportePrincipal")">
                 <span class="submenu__titulo">Ubicación</span>
-                <small>Muestra el stock inventariado, el usuario en una ubicación seleccionada</small>
+                <small>Visualiza el avance del inventario por ubicación</small>
             </a>
             @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Principal", "ReportePrincipal")">
             <span class="submenu__titulo">Detalle inventario</span>
@@ -232,10 +237,6 @@
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Auditoria", "ReportePrincipal")">
                 <span class="submenu__titulo">Auditoria</span>
                 <small>Muestra un reporte general que vea todo el historial de un producto en un inventario</small>
-            </a>
-            <a class="submenu__secundario--item" href="@Url.Action("AquiVaElNombreDelMetodoparatraerlodemasoseaelreportedecostosporprotductoyesascosasuwuwuwuwuwu", "ReportePrincipal")">
-                <span class="submenu__titulo">Costos</span>
-                <small>Muestra un reporte basandose en los costos que registro cada inventario </small>
             </a>
 
             @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Lectura", "Reportes")">

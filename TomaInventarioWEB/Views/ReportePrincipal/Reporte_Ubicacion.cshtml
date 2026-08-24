@@ -3,17 +3,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
 }
-@*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
-    <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
-    <link href="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="~/Content/matdash/libs/select2/dist/css/select2.min.css" rel="stylesheet">*@
+
 
 <!-- Sección Seleccionar Almacen e inventario -->
 <div class="card text-bg-primary text-white mb-3">
     <div class="card-body p-3">
         <div class="d-flex align-items-center justify-content-center">
-            <h2 class="fs-8 fw-bolder text-white mb-0">Reporte por Ubicacion</h2>
+            <h2 class="fs-8 fw-bolder text-white mb-0">Reporte por Ubicación</h2>
         </div>
     </div>
 </div>
@@ -59,36 +55,18 @@
 
 
 
-
 <!-- Reporte por Ubicación -->
 <div id="seccionReporte" class="row d-none">
     <div class="col-12">
         <div class="card">
-            <!-- Titulo y subtitulo -->
-            <div class="card-header pb-1">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div>
-                        <span class="badge bg-primary-subtle text-primary">Solo se muestran las ubicaciones con diferencias del último conteo</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-success" id="btnExportarExcel">
-                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
             <div class="card-body">
-                <!-- Información del Inventario -->
+                <!-- Informacion General: Almacen, Código de inventario, Estado de inventario, Conteo actual -->
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-semibold mb-0">Información del Inventario</h6>
                 </div>
-
-                <!-- KPIS: Almacen, Código de inventario, Estado del conteo, Conteo actual, Productos registrados, Productos con diferencia, Productos sin diferencia, Productos fuera de inventario, Productos fuera de ubicacion, Productos con lote diferente -->
-                <div class="row mb-4">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-secondary">
+                <div class="row mb-5">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text_bg_almacen">
                             <i class="ti ti-building-warehouse fs-6"></i>
                         </div>
                         <div class="align-self-center">
@@ -97,7 +75,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-primary">
                             <i class="ti ti-barcode fs-6 "></i>
                         </div>
@@ -107,17 +85,17 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div id="estadoIcono" class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning">
                             <i class="ti ti-lock-open fs-6"></i>
                         </div>
                         <div class="align-self-center">
                             <h4 id="txtEstadoInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Estado del Inventario</p>
+                            <p class="card-subtitle">Estado de inventario</p>
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
                         <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
                             <i class="ti ti-history fs-6"></i>
                         </div>
@@ -126,195 +104,219 @@
                             <p class="card-subtitle">Conteo actual</p>
                         </div>
                     </div>
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-circle-check fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUbicacionesTotales" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones Totales</p>
-                        </div>
+
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
+                        </button>
                     </div>
                 </div>
 
+                <!-- KPIS: Ubicaciones totales, Ubicaciones nuevas, Ubicaciones completas, Ubicaciones en progreso, Ubicaciones no iniciadas, Top 3 mayor diferencia, Top 3 menor diferencia-->
                 <div class="row mb-3">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-danger">
-                            <i class="ti ti-alert-triangle fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUbicacionesNuevas" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones Nuevas</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success">
-                            <i class="ti ti-users fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUbicacionesCompletas" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones Completas</p>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-primary-subtle d-flex align-items-center">
+                                    <h3 class="text-primary-emphasis box mb-0">
+                                        <i class="ti ti-map-pins"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtUbicacionesTotales" class="text-primary-emphasis mb-0 fs-6"></h3>
+                                    <span>Ubicaciones Totales</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUbicacionesProgreso" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones en progreso</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtUbicacionesNoIniciadas" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Ubicaciones no iniciadas</p>
-                        </div>
-                    </div>
-
-                    @*<div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtProductosLoteDiferente" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Productos con lote diferente</p>
+                    @*<div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-info-subtle d-flex align-items-center">
+                                    <h3 class="text-info box mb-0">
+                                        <i class="ti ti-map-pin-plus"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtUbicacionesNuevas" class="text-info mb-0 fs-6"></h3>
+                                    <span>Ubicaciones Nuevas</span>
+                                </div>
+                            </div>
                         </div>
                     </div>*@
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtMayorDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Top 3 mayor diferencia</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-clock-hour-5 fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtMenorDiferencia" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Top 3 menor diferencia</p>
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>
-            <!-- } -->
-            <!-- Filtros -->
-            <!-- Busqueda(Producto, Ubicacion, Lote, Usuario), Observación(0, 1, 2, 3, 4, 5) -->
-            <div class="accordion mb-4" id="accordionFiltros">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <h6 class="fs-4 mb-0">Filtros de búsqueda </h6>
-                            @*<small class="text-muted ms-1">(Opcional)</small>*@
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body row">
-                            <!-- Busqueda general -->
-                            <div class="col-md-4 mb-2">
-                                <label for="busquedaGeneral" class="form-label">Búsqueda general</label>
-                                <div class="input-group">
-                                    <input id="busquedaGeneral" type="text" class="form-control" placeholder="Codigo o descripcion de la ubicacion">
-                                    <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
-                                        <i class="ti ti-eraser fs-4"></i>
-                                    </button>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-map-pin-check"></i>
+                                    </h3>
                                 </div>
-                                @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="Código o descripción del producto" />*@
+                                <div class="p-3">
+                                    <h3 id="txtUbicacionesCompletas" class="text-success mb-0 fs-6"></h3>
+                                    <span>Ubicaciones Completas</span>
+                                </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Seleccionar observación -->
-                            <div class="col-md-4 mb-2">
-                                <label for="slcEstado" class="form-label">Estado</label>
-                                <select id="slcEstado" class="form-select">
-                                    <option value="" selected>Todos</option>
-                                    <option value="COMPLETA">Completa</option>
-                                    <option value="PROCESO">En Proceso</option>
-                                    <option value="NOINICIADA">No Iniciada</option>
-                                    <option value="NUEVA">Nueva Ubicacion</option>
-                                </select>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-warning-subtle d-flex align-items-center">
+                                    <h3 class="text-warning box mb-0">
+                                        <i class="ti ti-map-pin"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtUbicacionesProgreso" class="text-warning mb-0 fs-6"></h3>
+                                    <span>Ubicaciones en progreso</span>
+                                </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <div class="col-md-4 mb-2">
-                                <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Mostrar Solo Diferencias
-                                </label>
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-secondary-subtle d-flex align-items-center">
+                                    <h3 class="text-secondary box mb-0">
+                                        <i class="ti ti-map-pin-off"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtUbicacionesNoIniciadas" class="text-secondary mb-0 fs-6"></h3>
+                                    <span>Ubicaciones no iniciadas</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-chart-bar"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtMayorDiferencia" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Top 3 mayor diferencia</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-chart-bar-off"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtMenorDiferencia" class="text-success mb-0 fs-6"></h3>
+                                    <span>Top 3 menor diferencia</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            @*<hr class="my-4">*@
 
-            <!-- Tabla -->
-            <!-- Código, Producto, Ubicación Inicial, Ubicación Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Observacion, Usuarios -->
+                <!-- Filtros -->
+                <!-- Busqueda(Codigo, Ubicacion), Estado() -->
+                <div class="accordion mb-4" id="accordionFiltros">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <h6 class="fs-4 mb-0">Filtros de búsqueda </h6>
+                                @*<small class="text-muted ms-1">(Opcional)</small>*@
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body row">
+                                <!-- Busqueda general -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="busquedaGeneral" class="form-label">Búsqueda general</label>
+                                    <div class="input-group">
+                                        <input id="busquedaGeneral" type="text" class="form-control" placeholder="Código o ubicación">
+                                        <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
+                                            <i class="ti ti-eraser fs-4"></i>
+                                        </button>
+                                    </div>
+                                    @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="Código o descripción del producto" />*@
+                                </div>
 
-            <div class="table-responsive">
-                <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center">Código</th>
-                            <th class="text-center">Ubicacion</th>
-                            <th class="text-center">Productos Totales</th>
-                            <th class="text-center">Stock Inicial</th>
-                            <th class="text-center">Productos Contados</th>
-                            <th class="text-center">Stock Contado</th>
-                            <th class="text-center">Diferencia</th>
-                            <th class="text-center">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot class="table-light">
-                        <tr>
-                            <td colspan="3" class="fw-bolder">TOTALES</td>
-                            <td class="text-end fw-bold" id="footerStockInicial">0</td>
-                            <td colspan="1" class="fw-bolder"></td>
-                            <td class="text-end fw-bold" id="footerStockFinal">0</td>
-                            <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
-                            <td colspan="1"></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                                <!-- Seleccionar observación -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="slcEstado" class="form-label">Estado</label>
+                                    <select id="slcEstado" class="form-select">
+                                        <option selected>Todos</option>
+                                        <option value="COMPLETA">Completa</option>
+                                        <option value="PROCESO">En Proceso</option>
+                                        <option value="NOINICIADA">No Iniciada</option>
+                                        @*<option value="NUEVA">Nueva Ubicacion</option>*@
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 gap-2 mb-2 d-flex align-items-center">
+                                    <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Mostrar Solo Diferencias
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <!-- Código, Producto, Ubicación Inicial, Ubicación Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Observacion, Usuarios -->
+                <div class="table-responsive">
+                    <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Código</th>
+                                <th class="text-center">Ubicacion</th>
+                                <th class="text-center">Productos Totales</th>
+                                <th class="text-center">Stock Inicial</th>
+                                <th class="text-center">Productos Contados</th>
+                                <th class="text-center">Stock Contado</th>
+                                <th class="text-center">Diferencia</th>
+                                <th class="text-center">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="2" class="fw-bolder">TOTALES</td>
+                                <td class="text-end fw-bold" id="footerStockTotalProductos">0</td>
+                                <td class="text-end fw-bold" id="footerStockInicial">0</td>
+                                <td colspan="1" class="fw-bolder"></td>
+                                <td class="text-end fw-bold" id="footerStockFinal">0</td>
+                                <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
+                                <td colspan="1"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-@section scripts {
-    @*<script src="~/Content/matdash/libs/jquery-validation/dist/jquery.validate.min.js"></script>
-        <script src="~/Content/matdash/libs/sweetalert2/dist/sweetalert2.min.js"></script>*@
-    <!--<script src="~/Content/matdash/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
-    @*<script src="~/Content/matdash/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="~/Content/matdash/js/datatable/datatable-api.init.js"></script>
-        #busquedaGeneral
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.min.js"></script>
-        <script src="~/Content/matdash/libs/select2/dist/js/select2.full.min.js"></script>
-        <script src="~/Content/matdash/js/forms/select2.init.js"></script>*@
-    
-<script nonce="@nonce">
+@section scripts {   
+    <script nonce="@nonce">
+        let modoFiltrado;
         let tblReporteInventario;
         let inventarioSeleccionado = {
+            almacen: '',
             codigo: '',
-            nombre: '',
-            observacion: 0
         };
 
         $(document).ready(function () {
@@ -343,8 +345,9 @@
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
 
-                    $('#txtAlmacen').text(selectedValue || '-');
+                    $('#txtAlmacen').text(selectedText || '-');
                     LoadcbxInventario(selectedValue);
+                    inventarioSeleccionado.almacen = selectedText;
                 }
             });
 
@@ -368,16 +371,18 @@
 
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
                     inventarioSeleccionado.codigo = selectedValue;
-                    inventarioSeleccionado.nombre = selectedText;
 
                     $('#txtCodigoInventario').text(selectedValue || '-');
+
+                    // Limpiar filtros
+                    $('#busquedaGeneral').val('');
+                    $('#slcEstado').val('Todos');
+                    $('#in_soloDiferencias').prop('checked', false);
+
                     cargarDatosInventario();
                 }
             });
         }
-
-
-        // hasa aqui comrpobar
 
         function inicializarEventos() {
             $('#btnCargarInventario').click(function () {
@@ -394,13 +399,12 @@
                 }
 
                 inventarioSeleccionado.codigo = selectedValue;
-                inventarioSeleccionado.nombre = selectedText;
 
                 cargarDatosInventario();
             });
 
             $('#btnExportarExcel').click(function () {
-                exportarExcel();
+                ExportarExcelUbicacion();
             });
 
 
@@ -436,25 +440,22 @@
                 CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
             });
 
-            // Filtro observación
-            //$('#slcObservacion').on('change', function () {
-            //    if (modoFiltrado === "SERVIDOR") {
-            //        CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
-            //    } else {
-            //        tblReporteInventario.column(10).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
-            //    }
-            //});
-
-                $('#slcEstado').on('change', function () {
+            // Filtro estado
+            $('#slcEstado').on('change', function () {
+                if (modoFiltrado === "SERVIDOR") {
                     CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
-                });
-
-                //in_soloDiferencias
-                $('#in_soloDiferencias').on('change', function () {
-                     CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
-                });
+                } else {
+                    tblReporteInventario.column(8).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                }
                     
-            }
+            });
+
+            // Filtro diferencias
+            $('#in_soloDiferencias').on('change', function () {
+                     CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
+            });
+        }
+
 
         // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
         async function LoadcbxInventario(idAlmacen) {
@@ -512,18 +513,18 @@
             }
         }
 
-
         function cargarDatosInventario() {
             //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
             $('#seccionResumen').removeClass('d-none');
 
-            CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);
-            console.log(inventarioSeleccionado.codigo);
+            //console.log(inventarioSeleccionado.codigo);
+            CargarReporteInventarioUbicacion(inventarioSeleccionado.codigo);        
 
             $('#seccionReporte').removeClass('d-none');
         }
 
 
+        // NUEVO METODO CARGAR REPORTE UBICACION
         async function CargarReporteInventarioUbicacion(codInventario) {
 
             const obj = {
@@ -531,10 +532,9 @@
                 busqueda: $('#busquedaGeneral').val().trim(),
                 estado : $('#slcEstado').val(),
                 diferencias : $('#in_soloDiferencias').is(':checked') ? 1 : 0,
-                //observacion: parseInt($('#slcObservacion').val()),
             };
 
-            console.log(obj);
+            //console.log(obj);
 
             try {
                 const response = await fetch("ObtenerReporteUbicacion", {
@@ -550,12 +550,12 @@
                 }
 
                 const result = await response.json();
-                console.log(result);
+                //console.log(result);
 
                 // UMBRAL PARA FILTROS AL SERVIDOR
-                let totalUbicaciones = result.Entity.UbicacionesTotales;
+                let totalUbicaciones = result.Entity.Ubicaciones_Totales;
                 modoFiltrado = totalUbicaciones > 0 ? "SERVIDOR" : "LOCAL";
-                console.log(`¿Filtro a usar? = ${modoFiltrado}`);
+                //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                 // CARGAR KPIS ubicacion
                 CargarKPIs(result.Entity);
@@ -565,7 +565,6 @@
 
                 // CARGAR FOOTER
                 CargarFooterTabla(result.footerTable);
-                // function 
             }
             catch (error) {
                 console.error("Error:", error);
@@ -581,8 +580,8 @@
             $('#txtUbicacionesCompletas').text(kpis.Ubicaciones_Completas || '0');
             $('#txtUbicacionesProgreso').text(kpis.Ubicaciones_En_Proceso || '0');
             $('#txtUbicacionesNoIniciadas').text(kpis.Ubicaciones_No_Iniciadas || '0');
-            $('#txtMayorDiferencia').text(kpis.Top3_Mayor_Diferencia || '0');
-            $('#txtMenorDiferencia').text(kpis.Top3_Menor_Diferencia || '0');
+            $('#txtMayorDiferencia').text(kpis.Top3_Mayor_Diferencia || '-');
+            $('#txtMenorDiferencia').text(kpis.Top3_Menor_Diferencia || '-');
         }
 
         function CargarTabla(datos) {
@@ -600,12 +599,12 @@
                 columns: [
                     {
                         data: "Cod_Ubicacion",
-                        className: "text-center"
+                        /*className: "text-center"*/
                     },
 
                     {
                         data: "Descripcion_Ubicacion",
-                        className: "text-center"
+                        /*className: "text-center"*/
                     },
 
                     {
@@ -639,6 +638,15 @@
                     }
                 ],
 
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        render: function (data) {
+                            return data == null || data === "" ? "-" : data;
+                        }
+                    }
+                ],
+
                 pageLength: 25,
                 searching: true,
                 dom: 'lrtip',
@@ -648,17 +656,18 @@
         }
 
         function CargarFooterTabla(datosFooter) {
+            //console.log(datosFooter);
             if (datosFooter && datosFooter.length >= 3) {
-                $('#footerStockInicial').text(datosFooter[0]);
-                $('#footerStockFinal').text(datosFooter[1]);
+                $('#footerStockTotalProductos').text(datosFooter[0]);
+                $('#footerStockInicial').text(datosFooter[1]);
+                $('#footerStockFinal').text(datosFooter[2]);
 
-                let diferencial = datosFooter[2];
+                let diferencial = datosFooter[3];
                 let clase = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
                 $('#footerStockDiferencial').html('<span class="' + clase + '">' + diferencial + '</span>');
             }
         }
 
-        // Icono lock
         function CambiarIconoEstado(estado) {
             //console.log(estado);
             if (estado === "ABIERTO") {
@@ -681,10 +690,9 @@
             }
         }
 
+        // Descargar reporte en excel
+        async function ExportarExcelUbicacion() {
 
-
-
-        function exportarExcel() {
             if (!inventarioSeleccionado.codigo) {
                 Swal.fire({
                     icon: 'warning',
@@ -694,7 +702,13 @@
                 return;
             }
 
-            let busqueda = $('#customSearch').val() || '';
+            const obj = {
+                almacen: inventarioSeleccionado.almacen,
+                codInventario: inventarioSeleccionado.codigo,
+                busqueda: $('#busquedaGeneral').val().trim(),
+                estado: $('#slcEstado').val(),
+                diferencias: $('#in_soloDiferencias').is(':checked') ? 1 : 0,
+            };
 
             Swal.fire({
                 title: 'Generando Excel...',
@@ -706,16 +720,54 @@
                 }
             });
 
-            let baseUrl = '@Url.Action("ExportarExcelReporteProducto", "ReportePrincipal")';
-            let params = '?codInventario=' + encodeURIComponent(inventarioSeleccionado.codigo) +
-                         '&busqueda=' + encodeURIComponent(busqueda);
+            try {
 
-            window.location.href = baseUrl + params;
+                const response = await fetch(
+                    '@Url.Action("ExportarExcelUbicacion", "ReportePrincipal")',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    }
+                );
 
-            setTimeout(function() {
+                if (!response.ok) {
+                    throw new Error('No se pudo generar el archivo Excel.');
+                }
+
+                // Obtener archivo
+                const blob = await response.blob();
+
+                // Crear URL temporal
+                const url = window.URL.createObjectURL(blob);
+
+                // Crear enlace de descarga
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Reporte_Ubicacion_${obj.codInventario}.xlsx`;
+
+                document.body.appendChild(a);
+                a.click();
+
+                // Limpiar
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
                 Swal.close();
-            }, 500);
+
+            } catch (error) {
+
+                console.error(error);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Ocurrió un error al generar el Excel.'
+                });
+            }
         }
 
-</script>
+    </script>
 }

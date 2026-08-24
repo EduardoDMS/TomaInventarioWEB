@@ -11,8 +11,7 @@
     --radio-borde: 8px;
     --color-bordes: #e0e6eb;
     --fuente: "Manrope", sans-serif;
-
-
+    --color-almacen: rgba(205, 104, 42, 1);
 
 
     --color-titulo: white;
@@ -83,6 +82,10 @@ body {
     font-weight: 600;
     padding: 1rem 0.5rem 0.5rem 0.5rem;
     color: var(--color-primario);
+}
+
+.text_bg_almacen{
+    background-color: var(--color-almacen);
 }
 
 .input_placeholder::placeholder {

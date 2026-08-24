@@ -215,7 +215,25 @@ function Charge_RImport_Modal(Jsondata) {
                     "render": function (data, type, row, meta) {
                         return data || '-';
                     }
+                },//ZEUS
+                {
+                    "data": "Objeto.precioCosto",
+                    "title": "Valor del producto",
+                    "className": "NOSE XDDDDD",
+                    "render": function (data, type, row, meta) {
+                        return data || "-";
+                    }
                 },
+                {
+                    "data": "Objeto.codMoneda",
+                    "title": "Tipo de moneda",
+                    "className": "Nose xdddd",
+                    "render": function (data, type, row, meta) {
+                        return data || "-";
+                    }
+
+                },
+                //ZEUS
                 {
                     "data": "Mensaje",
                     "title": "Mensaje",
@@ -249,3 +267,67 @@ function Charge_RImport_Modal(Jsondata) {
         $('#RImport_modal').modal('show');
     });
 }
+
+function Charge_ImportxProdxCosto_Modal(Jsondata) {
+    const importModal = document.getElementById('ImportxProdxCosto_Modal');
+    const bsImportModal = bootstrap.Modal.getInstance(importModal);
+
+    if (bsImportModal) {
+        bsImportModal.hide();
+    } else {
+        $('#ImportxProdxCosto_Modal').modal('hide');
+    }
+
+    $(importModal).one('hidden.bs.modal', function () {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+        $('body').css('overflow', '');
+        $('body').css('padding-right', '');
+
+        if ($.fn.DataTable.isDataTable('#RImportCosto_Tbl')) {
+            $('#RImportCosto_Tbl').DataTable().destroy();
+        }
+
+        RImportCosto_tabla = $('#RImportCosto_Tbl').DataTable({
+            "data": Jsondata,
+            "createdRow": function (row, data, dataIndex) {
+                if (data.Flg_pass == 0 || data.Flg_Pass == 0) {
+                    $(row).addClass('table-danger');
+                } else {
+                    $(row).addClass('table-info');
+                }
+            },
+            "columns": [
+                { "data": "Objeto.vchCodProducto", "title": "Código", "className": "fw-semibold" },
+                {
+                    "data": "Objeto.precioCosto", "title": "Nuevo precio",
+                    "render": function (data) { return data || "-"; }
+                },
+                {
+                    "data": "Objeto.codMoneda", "title": "Moneda",
+                    "render": function (data) { return data || "-"; }
+                },
+                { "data": "Mensaje", "title": "Mensaje", "className": "text-start" },
+                {
+                    "data": null, "orderable": false, "searchable": false,
+                    "title": "Estado", "className": "text-center",
+                    "render": function (data) {
+                        if (data.Flg_pass == 0 || data.Flg_Pass == 0) {
+                            return '<span class="badge bg-danger"><i class="ti ti-x fs-4"></i> Error</span>';
+                        }
+                        return '<span class="badge bg-info"><i class="ti ti-check fs-4"></i> Actualizado</span>';
+                    }
+                }
+            ],
+            "paging": true,
+            "pageLength": 10,
+            "searching": true,
+            "lengthChange": true,
+            "responsive": true,
+            "order": [[4, "desc"]]
+        });
+
+        $('#RImportCosto_modal').modal('show');
+    });
+}
+                    

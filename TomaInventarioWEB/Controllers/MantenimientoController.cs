@@ -1,5 +1,7 @@
-﻿using BE;
+﻿using Antlr.Runtime.Misc;
+using BE;
 using BL;
+using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -250,6 +252,11 @@ namespace TomaInventarioWEB.Controllers
             listUM = (List<CombosBE>)new CombosBL().cbxUM().Entity;
             ViewBag.ListaUM = listUM;
 
+            List<CombosBE> listMon = new List<CombosBE>();
+
+            listMon = (List<CombosBE>)new CombosBL().cbxMon().Entity;
+            ViewBag.listMon = listMon;
+
             return View();
         }
 
@@ -274,11 +281,16 @@ namespace TomaInventarioWEB.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateProducto(string codProducto, string descProducto, int UM)
+        public JsonResult CreateProducto(string codProducto, string descProducto, int UM, decimal costo, int idMoneda)
         {
-            var response = new MantenimientosBL().CreateProducto(codProducto, descProducto, UM);
+            var response = new MantenimientosBL().CreateProducto(codProducto, descProducto, UM, costo, idMoneda);
             return Json(response);
         }
+
+
+
+
+
         [HttpPost]
         public JsonResult GetProducto(int id)
         {
@@ -286,11 +298,13 @@ namespace TomaInventarioWEB.Controllers
             return Json(response);
         }
         [HttpPost]
-        public JsonResult UpdateProducto(int id, string codProducto, string descProducto, bool activo, int UM)
+        public JsonResult UpdateProducto(int id, string codProducto, string descProducto, bool activo,decimal costo, int idMoneda, int UM)
         {
-            var response = new MantenimientosBL().UpdateProducto(id, codProducto, descProducto, Session["UserName"].ToString(), activo, UM);
+            var response = new MantenimientosBL().UpdateProducto(id, codProducto, descProducto, Session["UserName"].ToString(), activo,costo, idMoneda, UM);
             return Json(response);
         }
+
+
 
 
         [HttpPost]
@@ -401,6 +415,66 @@ namespace TomaInventarioWEB.Controllers
             return Json(response);
         }
 
+
+        #endregion
+
+        #region Mantenimiento_TipoMoneda
+        [GenerateNonce]
+        public ActionResult TipoMonedaMant()
+        {
+            Session["NavIndex"] = "4";
+            return View();
+        }
+
+        public JsonResult ListarTipoMonedas(string codMoneda, string dscMoneda, string activo)
+        {
+            MantenimientosBL response = new MantenimientosBL();
+            List<TipoMonedaBE> List = response.ListarTipoMonedas(codMoneda,dscMoneda, activo);
+            var json = Json(new { data = List });
+            return json;
+
+        }
+
+        [HttpPost]
+        public JsonResult ActivarInactivarTipoMoneda(int idMoneda, bool flgActivo)
+        {
+            MantenimientosBL bl = new MantenimientosBL();
+            Response response = bl.ActivarInactivarTipoMoneda(idMoneda, flgActivo);
+            return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult InsertarTipoMoneda(string codMoneda, string dscMoneda)
+        {
+            if(string.IsNullOrWhiteSpace(codMoneda) || string.IsNullOrWhiteSpace(dscMoneda))
+            {
+                return Json(new Response { HUBO_ERROR = true, MENSAJE_ERROR = "Codigo o descripcion vacios ingresa datos p, eres o te haces?" });
+            }
+
+            MantenimientosBL bl = new MantenimientosBL();
+            Response response = bl.InsertarTipoMoneda(codMoneda.Trim(), dscMoneda.Trim());
+            return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult EditarTipoMoneda(int idMoneda, string dscMoneda,bool flgActivo)
+        {
+            if (string.IsNullOrWhiteSpace(dscMoneda))
+            {
+                return Json(new Response { HUBO_ERROR = true, MENSAJE_ERROR = "La descripcion se encuentra vacia p" });
+            }
+
+            MantenimientosBL bl = new MantenimientosBL();
+            Response response = bl.EditarTipoMoneda(idMoneda, dscMoneda.Trim(), flgActivo);
+                return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerTipoMonedaId(int idTipoMoneda)
+        {
+            var response = new MantenimientosBL().ObtenerTipoMoneda(idTipoMoneda);
+            return Json(response);
+        }
 
         #endregion
 

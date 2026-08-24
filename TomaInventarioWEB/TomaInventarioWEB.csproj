@@ -131,6 +131,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\Filters\ValidarSesionUnicaAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Assets\Clases\CheckSession.cs" />
     <Compile Include="Assets\Clases\CspNonce.cs" />
@@ -247,8 +248,11 @@
     <Content Include="Assets\JS\LoginJS.js" />
     <Content Include="Assets\JS\MantenimientosJS\AlmacenMant\AlmacenMantJS.js" />
     <Content Include="Assets\JS\MantenimientosJS\AlmacenMant\AlmacenTable.js" />
+    <Content Include="Assets\JS\MantenimientosJS\ProductosMant\Costos\ActualizarCostoJS.js" />
     <Content Include="Assets\JS\MantenimientosJS\ProductosMant\ProductoMantJS.js" />
     <Content Include="Assets\JS\MantenimientosJS\ProductosMant\ProductoTable.js" />
+    <Content Include="Assets\JS\MantenimientosJS\TipoMonedaMant\TipoMonedaMantJS.js" />
+    <Content Include="Assets\JS\MantenimientosJS\TipoMonedaMant\TipoMonedaTable.js" />
     <Content Include="Assets\JS\MantenimientosJS\UbicacionMant\UbicacionMantJS.js" />
     <Content Include="Assets\JS\MantenimientosJS\UbicacionMant\UbicacionTable.js" />
     <Content Include="Assets\JS\MantenimientosJS\UnidadMedidaMant\UMJS.js" />
@@ -4365,6 +4369,7 @@
     <Content Include="ConnectionStrings.config" />
     <Content Include="licencia.json" />
     <Content Include="Plantillas\Plantilla_Inventario.xlsx" />
+    <Content Include="Plantillas\Plantilla_Producto_Costos.xlsx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -4432,6 +4437,8 @@
     <Content Include="Views\Reportes\Reporte_Conteo.cshtml" />
     <Content Include="Views\ReportePrincipal\Reporte_Conteo.cshtml" />
     <Content Include="Views\ReportePrincipal\Reporte_Auditoria.cshtml" />
+    <Content Include="Views\Mantenimiento\TipoMonedaMant.cshtml" />
+    <Content Include="Views\Mantenimiento\Modals\ModalsTipoMonedaMant.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

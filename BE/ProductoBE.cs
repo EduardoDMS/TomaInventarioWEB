@@ -15,6 +15,13 @@ namespace BE
         public int intActivo { get; set; }
         public int intUM { get; set; }
         public string vchCodUniMed { get; set; } // agregado, si ocurre un error, eliminar esta propiedad y usar intUM
+
+        //AGREGADO _ ZEUS
+        public decimal precioCosto { get; set; }
+
+
+        public int idMoneda { get; set; }
+        public string codMoneda { get; set; }
     }
     public class ProductoBEAPI
     {

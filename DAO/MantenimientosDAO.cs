@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.Remoting.Messaging;
 using System.Xml;
 
 namespace DAO
@@ -1007,7 +1008,7 @@ namespace DAO
 
 
 
-        public Response CreateProducto(string codProducto, string descProducto, int UM)
+        public Response CreateProducto(string codProducto, string descProducto, int UM, decimal costo, int idMoneda)
         {
             Response response = new Response();
             SqlConnection con = null;
@@ -1018,14 +1019,15 @@ namespace DAO
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("WEB_createProducto_2024", con))
+                    using (cmd = new SqlCommand("WEB_createProducto_2026", con))// aqui tambien pena de muerte xd
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear();
                         cmd.Parameters.Add("@codProducto", SqlDbType.VarChar, 20).Value = codProducto;
                         cmd.Parameters.Add("@dscProducto", SqlDbType.VarChar, 200).Value = descProducto;
                         cmd.Parameters.Add("@UM", SqlDbType.Int).Value = UM;
-
+                        cmd.Parameters.Add("@costo", SqlDbType.Decimal).Value = costo;
+                        cmd.Parameters.Add("@IdMoneda",SqlDbType.VarChar,10).Value = idMoneda;
                         cmd.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
                         con.Open();
@@ -1048,6 +1050,12 @@ namespace DAO
             }
             return response;
         }
+
+
+
+        /// <summary> Añadir el tema de costos y el cod de moneda :v en ambos 
+       
+
         public Response GetProducto(int id)
         {
             //List<UsuarioBE> Lista_result = new List<UsuarioBE>();
@@ -1060,7 +1068,7 @@ namespace DAO
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (comando = new SqlCommand("WEB_GetProducto_2024", conexion))
+                    using (comando = new SqlCommand("WEB_GetProducto_2026", conexion)) // a partir de ahora doy por sentenciado pena de muerte para el get producto 2024 y renacera en getproducto 2026
                     {
                         comando.CommandType = CommandType.StoredProcedure;
                         comando.Parameters.Clear();
@@ -1078,6 +1086,10 @@ namespace DAO
                                 entity.vchDescripcion = (reader["DSC_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["DSC_PRODUCTO"].ToString();
                                 entity.intActivo = (reader["FLG_ACTIVO"] == DBNull.Value) ? 0 : Int32.Parse(reader["FLG_ACTIVO"].ToString());
                                 entity.intUM = (reader["IntUniMed"] == DBNull.Value) ? 0 : Int32.Parse(reader["IntUniMed"].ToString());
+                                entity.precioCosto = (reader["PRECIO_COSTO"] == DBNull.Value) ? 0 : decimal.Parse(reader["PRECIO_COSTO"].ToString());
+                                entity.idMoneda = (reader["ID_MONEDA"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_MONEDA"].ToString());
+                                entity.codMoneda = (reader["COD_MONEDA"] == DBNull.Value) ? String.Empty : reader["COD_MONEDA"].ToString();
+                                
                                 response.Entity = entity;
                             }
                         }
@@ -1099,7 +1111,7 @@ namespace DAO
             return response;
 
         }
-        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo, int UM)
+        public Response UpdateProducto(int id, string codProducto, string descProducto, string usuario, bool activo,decimal costo,int idMoneda ,int UM)
         {
             Response response = new Response();
             SqlConnection con = null;
@@ -1110,7 +1122,7 @@ namespace DAO
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("WEB_updateProducto_2024", con))
+                    using (cmd = new SqlCommand("WEB_updateProducto_2026", con))// y doy por escrito la pena de muerte para este sp reemplazandolo por su hermano mayor (hasta que le demos pena de muerte tambien xd)
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Clear();
@@ -1119,12 +1131,14 @@ namespace DAO
                         cmd.Parameters.Add("@DSC_Producto", SqlDbType.VarChar, 200).Value = descProducto;
                         cmd.Parameters.Add("@Usuario", SqlDbType.VarChar, 50).Value = usuario;
                         cmd.Parameters.Add("@Activo", SqlDbType.Bit).Value = activo;
+                        cmd.Parameters.Add("@Costo", SqlDbType.Decimal).Value = costo;
+                        cmd.Parameters.Add("@IdMoneda", SqlDbType.Int).Value = idMoneda;
                         cmd.Parameters.Add("@UM", SqlDbType.Int).Value = UM;
 
                         cmd.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
                         con.Open();
-                        cmd.ExecuteReader();
+                        cmd.ExecuteNonQuery();
 
                         response.MENSAJE_ERROR = (string)cmd.Parameters["@msg"].Value ?? "";
                         response.HUBO_ERROR = (bool)cmd.Parameters["@Hubo_error"].Value;
@@ -1143,6 +1157,17 @@ namespace DAO
             }
             return response;
         }
+
+
+
+        /// </summary>
+
+
+
+
+
+
+
 
         public Response GetAPIProductos()
         {
@@ -1264,6 +1289,11 @@ namespace DAO
                                 entity.vchCodProducto = (reader["Cod_Producto"] == DBNull.Value) ? String.Empty : reader["Cod_Producto"].ToString();
                                 entity.vchDescripcion = (reader["Desc_Producto"] == DBNull.Value) ? String.Empty : reader["Desc_Producto"].ToString();
                                 entity.vchCodUniMed = (reader["Cod_Unidad_Medida"] == DBNull.Value) ? String.Empty : reader["Cod_Unidad_Medida"].ToString();
+                                // ZEUS --- I
+                                entity.precioCosto = (reader["PrecioCosto"] == DBNull.Value) ? 0 : decimal.Parse(reader["PrecioCosto"].ToString());
+                                entity.idMoneda = (reader["intIdMoneda"] == DBNull.Value) ? 0 : Int32.Parse(reader["intIdMoneda"].ToString());
+                                entity.codMoneda = (reader["CodMoneda"] == DBNull.Value) ? String.Empty : reader["CodMoneda"].ToString();
+                                // ZEUS -- F
                                 Importobj.Objeto = entity;
                                 Importobj.Flg_pass = (reader["Flg_Pass"] == DBNull.Value) ? 0 : Int32.Parse(reader["Flg_Pass"].ToString());
                                 Importobj.Mensaje = (reader["Desc_Error"] == DBNull.Value) ? String.Empty : reader["Desc_Error"].ToString();
@@ -1351,6 +1381,65 @@ namespace DAO
             return Lista_result;
 
         }
+
+        public List<ImportBE> ActualizarCostos_x_Productos(XmlDocument xml)
+        {
+            //Response response = new Response();
+
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+            List<ImportBE> lista_result = new List<ImportBE>();
+
+            try { 
+                using(cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_Actualizar_Costo_Producto_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 120;
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.Add("@P_XML_IMPORT", SqlDbType.Xml, 999999999).Value = xml.InnerXml.ToString();
+                        cn.Open();
+
+                        using (dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                ProductoBE entity = new ProductoBE();
+                                ImportBE import = new ImportBE();
+                                entity.vchCodProducto = (dr["Cod_Producto"] == DBNull.Value) ? String.Empty : dr["Cod_Producto"].ToString();
+                                entity.precioCosto = (dr["PrecioCosto"] == DBNull.Value) ? 0 : decimal.Parse(dr["PrecioCosto"].ToString());
+                    //          entity.idMoneda = (dr["intTipoMoneda"] == DBNull.Value) ? 0 : Int32.Parse(dr["intTipoMoneda"].ToString());
+                                entity.codMoneda = (dr["Cod_Tipo_Moneda"] == DBNull.Value) ? String.Empty : dr["Cod_Tipo_Moneda"].ToString();
+                                import.Objeto = entity;
+                                import.Flg_pass = (dr["Flg_Pass"] == DBNull.Value) ? 0 : Int32.Parse(dr["Flg_Pass"].ToString());
+                                import.Mensaje = (dr["Desc_Error"] == DBNull.Value) ? String.Empty : dr["Desc_Error"].ToString();
+                                lista_result.Add(import);
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                lista_result.Add(new ImportBE
+                {
+
+                    Flg_pass = 0,
+                    Mensaje = "Error al importar " + ex.Message
+                });
+            }
+            finally
+            {
+                if(cn != null) { cn.Close(); cn.Dispose();}
+                if(cmd != null) { cmd.Dispose(); }
+                if(dr != null) { dr.Dispose(); }
+            }
+            return lista_result;
+        }
+
+
 
         #endregion
 
@@ -1603,6 +1692,313 @@ namespace DAO
         }
 
 
+        #endregion
+
+        #region Mant Moneda
+        public List<TipoMonedaBE> ListarTipoMonedas(string codMoneda, string dscMoneda, string activo)
+        {
+            List<TipoMonedaBE> lista_moneda = new List<TipoMonedaBE>();
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+
+            try
+            {
+                using (cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_ListarTipoMoneda_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Clear();
+
+                        cmd.Parameters.Add("@vchFiltro", SqlDbType.VarChar, 20).Value = codMoneda;
+                        cmd.Parameters.Add("@vchActivo", SqlDbType.VarChar, 1).Value = activo;
+                        cn.Open();
+
+                        using (dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                response.count = (dr["filas_totales"] == DBNull.Value) ? 0 : Int32.Parse(dr["filas_totales"].ToString());
+                            }
+                            dr.NextResult();
+                            while (dr.Read())
+                            {
+                                TipoMonedaBE entity = new TipoMonedaBE();
+                                entity.idMoneda = (dr["ID_MONEDA"] == DBNull.Value) ? 0 : Int32.Parse(dr["ID_MONEDA"].ToString());
+                                entity.codMoneda = (dr["COD_MONEDA"] == DBNull.Value) ? String.Empty : dr["COD_MONEDA"].ToString();
+                                entity.dscMoneda = (dr["DSC_MONEDA"] == DBNull.Value) ? String.Empty : dr["DSC_MONEDA"].ToString();
+                                entity.flgActivo = (dr["FLG_ACTIVO"] != DBNull.Value) && Convert.ToBoolean(dr["FLG_ACTIVO"]); // ZEUS
+                                lista_moneda.Add(entity);
+                            }
+                            //cmd.ExecuteReader();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (cn != null) { cn.Close(); cn.Dispose(); }
+                if (cn != null) cn.Dispose();
+                if (cn != null) cn.Dispose();
+            }
+            return lista_moneda;
+        }
+        
+
+        public Response ActivarInactivarTipoMoneda(int idMoneda, bool flgActivo)
+        {
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+
+            try
+            {
+                using(cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_ActivarInactivarTipoMoneda_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 120;
+                        cmd.Parameters.Add("@idMoneda", SqlDbType.Int).Value = idMoneda;
+                        cmd.Parameters.Add("@flgActivo", SqlDbType.Bit).Value = flgActivo;
+                        cn.Open();
+
+                        object result = cmd.ExecuteScalar();// NOCOUNT ON -> usamos SELECT 1 + ExecuteScalar, no ExecuteNonQuery
+                        if(result == null || result == DBNull.Value)
+                        {
+                            response.HUBO_ERROR = true;
+                            response.MENSAJE_ERROR = "No se pudo actualizzar el estado de la moneda";
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                response.HUBO_ERROR= true;
+                response.MENSAJE_ERROR = ex.Message.ToString();
+            }
+            finally
+            {
+                if(cn != null)
+                {
+                    cn.Close();
+                    cn.Dispose();
+                }
+            }
+            return response;
+        }
+
+
+        public Response InsertarTipoMoneda(string codMoneda, string dscMoneda)
+        {
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+            try
+            {
+                using(cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_InsertarTipoMoneda_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 120;
+                        cmd.Parameters.Add("@vchCodMoneda", SqlDbType.VarChar, 20).Value = codMoneda;
+                        cmd.Parameters.Add("@vchDscMoneda", SqlDbType.VarChar, 200).Value = dscMoneda;
+                        cn.Open();
+
+                        using (dr = cmd.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                int resultado = (dr["Resultado"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["Resultado"]);
+                                if (resultado == -1)
+                                {
+                                    response.HUBO_ERROR = true;
+                                    response.MENSAJE_ERROR = "Ya existe una moneda registrada con ese código.";
+                                }
+                                // resultado == 1 -> éxito, response queda con HUBO_ERROR = false por default
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message.ToString();
+            }
+            finally
+            {
+                if(cn != null)
+                {
+                    cn.Close();
+                    cn.Dispose();
+                }
+            }
+            return response;
+        
+        }
+
+        public Response EditarTipoMoneda(int idMoneda, string dscMoneda, bool flgActivo)
+        {
+            Response response = new Response();
+            SqlCommand cmd = null;
+            SqlConnection cn = null;
+            SqlDataReader dr = null;
+
+
+            try
+            {
+                using(cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_EditarTipoMoneda_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 120;
+                        cmd.Parameters.Add("@idMoneda", SqlDbType.Int).Value = idMoneda;
+                        cmd.Parameters.Add("@vchDscMoneda", SqlDbType.VarChar, 200).Value = dscMoneda;
+                        cmd.Parameters.Add("@flgActivo", SqlDbType.Bit).Value = flgActivo;
+                        cn.Open();
+
+                        using(dr = cmd.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                int resultado = (dr["Resultado"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["Resultado"]);
+                                if (resultado == -2)
+                                {
+                                    response.HUBO_ERROR = true;
+                                    response.MENSAJE_ERROR = "La moneda que intenta editar ya no existe.";
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch(Exception ex) 
+            {
+                response.HUBO_ERROR= true;
+                response.MENSAJE_ERROR = ex.Message.ToString();
+            }
+            finally
+            {
+                if(cn != null)
+                {
+                    cn.Close();
+                    cn.Dispose();   
+                }
+            }
+            return response;
+        }
+
+        public Response ObtenerTipoMoneda(int idMoneda)
+        {
+            //List<UsuarioBE> Lista_result = new List<UsuarioBE>();
+            Response response = new Response();
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+            TipoMonedaBE entity = new TipoMonedaBE();
+            try
+            {
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (comando = new SqlCommand("WEB_GetTipoMoneda_2026", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.Clear();
+
+                        comando.Parameters.Add("@idMoneda", SqlDbType.Int).Value = idMoneda;
+
+                        conexion.Open();
+
+                        using (reader = comando.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                entity.idMoneda = (reader["ID_MONEDA"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_MONEDA"].ToString());
+                                entity.codMoneda = (reader["COD_MONEDA"] == DBNull.Value) ? String.Empty : reader["COD_MONEDA"].ToString();
+                                entity.dscMoneda = (reader["DSC_MONEDA"] == DBNull.Value) ? String.Empty : reader["DSC_MONEDA"].ToString();
+                                entity.flgActivo = (reader["FLG_ACTIVO"] != DBNull.Value) && Convert.ToBoolean(reader["FLG_ACTIVO"]); // ZEUS
+                                response.Entity = entity;
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+                if (reader != null) reader.Dispose();
+            }
+
+            return response;
+
+        }
+
+
+
+        public List<MonedaEXCELBE> ListarMonedaEXCEL()
+        {
+            List<MonedaEXCELBE> lista = new List<MonedaEXCELBE>();
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+
+            try
+            {
+                using (cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("WEB_ListarTipoMoneda_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add("@vchFiltro", SqlDbType.VarChar, 20).Value = "";
+                        cmd.Parameters.Add("@vchActivo", SqlDbType.VarChar, 1).Value = "1"; // solo monedas activas
+                        cn.Open();
+
+                        using (dr = cmd.ExecuteReader())
+                        {
+                            dr.NextResult();
+                            while (dr.Read())
+                            {
+                                lista.Add(new MonedaEXCELBE
+                                {
+                                    codMoneda = (dr["COD_MONEDA"] == DBNull.Value) ? "" : dr["COD_MONEDA"].ToString(),
+                                    dscMoneda = (dr["DSC_MONEDA"] == DBNull.Value) ? "" : dr["DSC_MONEDA"].ToString()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (cn != null) { cn.Close(); cn.Dispose(); }
+            }
+            return lista;
+        }
+            
         #endregion
 
         #region Importación Maestro

@@ -46,6 +46,7 @@
     <Compile Include="CorreoBE.cs" />
     <Compile Include="DashboardBE.cs" />
     <Compile Include="EmpresaBE.cs" />
+    <Compile Include="EstadoSesionBE.cs" />
     <Compile Include="ImportBE.cs" />
     <Compile Include="InventarioBE.cs" />
     <Compile Include="ProductoBE.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Reportes\TblReporteUsuarioBE.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="TblReportePrincipalV2BE.cs" />
+    <Compile Include="TipoMonedaBE.cs" />
     <Compile Include="UbicacionBE.cs" />
     <Compile Include="UnidadMedidaBE.cs" />
     <Compile Include="UsuarioBE.cs" />

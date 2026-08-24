@@ -25,6 +25,11 @@ namespace BL
         {
             return new CombosDAO().cbxUM();
         }
+
+        public Response cbxMon()
+        {
+            return new CombosDAO().cbxMon();
+        }
         public Response cbxInventariosCerrados()
         {
             return new CombosDAO().cbxInventariosCerrados();

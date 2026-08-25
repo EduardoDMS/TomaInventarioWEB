@@ -59,8 +59,6 @@ namespace DAO
         //    return response;
         //}
 
-
-
         public Response ValidarAcceso(string user, string pass, bool forzarSesion)
         {
             Response response = new Response();

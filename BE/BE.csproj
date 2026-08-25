@@ -57,12 +57,14 @@
     <Compile Include="Reportes\ReporteProductoBE.cs" />
     <Compile Include="Reportes\ReporteUbicacionBE.cs" />
     <Compile Include="Reportes\ReporteUsuarioBE.cs" />
+    <Compile Include="Reportes\ReporteValorizadoBE.cs" />
     <Compile Include="Reportes\TblReporteAuditoriaBE.cs" />
     <Compile Include="Reportes\TblReporteConteoBE.cs" />
     <Compile Include="Reportes\TblReporteDiferencialBE.cs" />
     <Compile Include="Reportes\TblReporteProductoBE.cs" />
     <Compile Include="Reportes\TblReporteUbicacionBE.cs" />
     <Compile Include="Reportes\TblReporteUsuarioBE.cs" />
+    <Compile Include="Reportes\TblReporteValorizadoBE.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="TblReportePrincipalV2BE.cs" />
     <Compile Include="TipoMonedaBE.cs" />

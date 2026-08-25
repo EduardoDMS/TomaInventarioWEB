@@ -1163,12 +1163,6 @@ namespace DAO
         /// </summary>
 
 
-
-
-
-
-
-
         public Response GetAPIProductos()
         {
             //string Stringresult;
@@ -1258,7 +1252,6 @@ namespace DAO
             return response;
 
         }
-
 
         public List<ImportBE> ImportarProductos(XmlDocument xml_import, int limiteProductos)
         {

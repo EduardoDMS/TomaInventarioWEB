@@ -1,0 +1,633 @@
+﻿@{
+    ViewBag.Title = "Reporte por Valorizado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+
+<!-- Sección Seleccionar Almacen e inventario -->
+<div class="card text-bg-primary text-white mb-3">
+    <div class="card-body p-3">
+        <div class="d-flex align-items-center justify-content-center">
+            <h2 class="fs-8 fw-bolder text-white mb-0">Reporte Valorizado</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            <!-- ALMACEN -->
+            <div class="col-md-6">
+                <h5 class="card-title mb-3 fw-semibold">
+                    <i class="ti ti-building-warehouse me-2"></i>
+                    Seleccionar un almacen
+                </h5>
+                <div>
+                    <div class="">
+                        <select class="form-select" id="cbxAlmacenes">
+                            @foreach (var item in ViewBag.ListaAlmacenes)
+                            {
+                                <option value="@item.vchValue">@item.vchdesc</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INVENTARIO -->
+            <div class="col-md-6">
+                <h5 class="card-title mb-3 fw-semibold">
+                    <i class="ti ti-clipboard-check me-2"></i>
+                    Seleccionar un inventario
+                </h5>
+
+                <div>
+                    <div>
+                        <select class="form-select" id="cbxInventariosPorAlmacen">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Reporte Auditoria -->
+<div id="seccionReporte" class="row d-none">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <!-- Informacion General: Almacen, Código de inventario, Estado de inventario, Conteo actual -->
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0">Información del Inventario</h6>
+                </div>
+                <div class="row mb-5">
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text_bg_almacen">
+                            <i class="ti ti-building-warehouse fs-6"></i>
+                        </div>
+                        <div class="align-self-center">
+                            <h4 id="txtAlmacen" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Almacen</p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-primary">
+                            <i class="ti ti-barcode fs-6 "></i>
+                        </div>
+                        <div class="align-self-center">
+                            <h4 id="txtCodigoInventario" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Código de inventario</p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div id="estadoIcono" class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning">
+                            <i class="ti ti-lock-open fs-6"></i>
+                        </div>
+                        <div class="align-self-center">
+                            <h4 id="txtEstadoInventario" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Estado de inventario</p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex flex-row gap-6 align-items-center">
+                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
+                            <i class="ti ti-history fs-6"></i>
+                        </div>
+                        <div class="align-self-center">
+                            <h4 id="txtValorTotalInventario" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Valor total Inventario</p>
+                        </div>
+                    </div>
+
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-success" id="btnExportarExcel">
+                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0">Indicadores del reporte</h6>
+                </div>
+                <!-- KPIS: Productos totales, Productos con diferencia, Productos sin diferencia, Usuarios participantes, Primera lectura, Ultima lectura -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-info-subtle d-flex align-items-center">
+                                    <h3 class="text-info box mb-0">
+                                        <i class="ti ti-box"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtValorFinalInventario" class="text-info mb-0 fs-6"></h3>
+                                    <span>Valor final del inventario</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-circle-check"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtImpactoEconomicoNeto" class="text-success mb-0 fs-6"></h3>
+                                    <span>Impacto Economico Neto</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-alert-triangle"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtValorTotalSobrantes" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Valor total Sobrantes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-primary-subtle d-flex align-items-center">
+                                    <h3 class="text-primary-emphasis box mb-0">
+                                        <i class="ti ti-users"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtValorTotalFaltantes" class="text-primary-emphasis mb-0 fs-6"></h3>
+                                    <span>Valor Total Faltantes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-success-subtle d-flex align-items-center">
+                                    <h3 class="text-success box mb-0">
+                                        <i class="ti ti-clock-play"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtCantidadProductosImpactos" class="text-success mb-0 fs-6"></h3>
+                                    <span>Cantidad de Productos por impacto</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-warning-subtle d-flex align-items-center">
+                                    <h3 class="text-warning box mb-0">
+                                        <i class="ti ti-clock-stop"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtCantidadProductosSinCosto" class="text-warning mb-0 fs-6"></h3>
+                                    <span>Cantidad Productos Sin Costo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Filtros -->
+                <!-- Busqueda(Producto, Ubicacion, Lote, Usuario), Observación(0, 1, 2, 3, 4, 5) -->
+                <div class="accordion mb-4" id="accordionFiltros">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <h6 class="fs-4 mb-0">Filtros de búsqueda </h6>
+                                @*<small class="text-muted ms-1">(Opcional)</small>*@
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body row">
+                                <!-- Busqueda general -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="busquedaGeneral" class="form-label">Búsqueda general</label>
+                                    <div class="input-group">
+                                        <input id="busquedaGeneral" type="text" class="form-control" placeholder="Código, Producto, Ubicación, Lote, Usuario">
+                                        <button id="btnLimpiarBusqueda" class="btn btn-outline-muted" type="button">
+                                            <i class="ti ti-eraser fs-4"></i>
+                                        </button>
+                                    </div>
+                                    @*<input type="text" class="form-control" id="busquedaGeneral" placeholder="Código o descripción del producto" />*@
+                                </div>
+
+                                <!-- Seleccionar observación -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="slcEstado" class="form-label">Estado</label>
+                                    <select id="slcEstado" class="form-select">
+                                        <option value="0" selected>Todos</option>
+                                        <option value="1">Positivo</option>
+                                        <option value="2">Negativo</option>
+                                    </select>
+                                </div>
+
+                                @*<div class="col-md-4 mb-2">
+                                        <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Mostrar Solo Diferencias
+                                        </label>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Tabla -->
+                <!-- Código, Producto, Ubicación Inicial, Ubicación Contada, Lote Inicial, Lote Contado, Stock Inicial, Stock Contado, Diferencia, Observacion, Usuarios -->
+                <div class="table-responsive">
+                    <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Código</th>
+                                <th class="text-center">Producto</th>
+                                <th class="text-center">Ubicacion Inicial</th>
+                                <th class="text-center">Lote Inicial</th>
+                                <th class="text-center">Costo Unitario</th>
+                                <th class="text-center">Stock Inicial</th>
+                                <th class="text-center">Stock final</th>
+                                <th class="text-center">Diferencia</th>
+                                <th class="text-center">Impacto Economico</th>
+                                <th class="text-center">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="table-light">
+                            <tr id="filaFooterDinamica">
+
+                                @*<td colspan="3" class="fw-bolder">TOTALES</td>
+                                    <td class="text-end fw-bold" id="footerStockInicial">0</td>
+                                    <td colspan="1" class="fw-bolder"></td>
+                                    <td class="text-end fw-bold" id="footerStockFinal">0</td>
+                                    <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
+                                    <td colspan="1"></td>*@
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script nonce="@nonce">
+        let modoFiltrado = "SERVIDOR"; // este reporte siempre filtra en servidor
+        let tblReporteInventario;
+        let inventarioSeleccionado = {
+            almacen: '',
+            codigo: '',
+        };
+
+        $(document).ready(function () {
+            inicializarComponentes();
+            inicializarEventos();
+        });
+
+        function inicializarComponentes() {
+            // ALMACEN
+            $('#cbxAlmacenes').select2({
+                width: '100%',
+                placeholder: 'Seleccione un almacen',
+                allowClear: false,
+                language: {
+                    noResults: function () { return "No se encontraron resultados"; },
+                    searching: function () { return "Buscando..."; }
+                }
+            });
+
+            $('#cbxAlmacenes').on('change', function () {
+                let selectedValue = $(this).val();
+                let selectedText = $('#cbxAlmacenes option:selected').text();
+
+                if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
+                    $('#txtAlmacen').text(selectedText || '-');
+                    LoadcbxInventario(selectedValue);
+                    inventarioSeleccionado.almacen = selectedText;
+                }
+            });
+
+            // INVENTARIO
+            $('#cbxInventariosPorAlmacen').select2({
+                width: '100%',
+                placeholder: 'Seleccione un inventario',
+                allowClear: false,
+                language: {
+                    noResults: function () { return "No se encontraron resultados"; },
+                    searching: function () { return "Buscando..."; }
+                }
+            });
+
+            $('#cbxInventariosPorAlmacen').on('change', function () {
+                let selectedValue = $(this).val();
+
+                if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
+                    inventarioSeleccionado.codigo = selectedValue;
+                    $('#txtCodigoInventario').text(selectedValue || '-');
+
+                    // Limpiar filtros
+                    $('#busquedaGeneral').val('');
+                    $('#slcEstado').val('0'); // ⬅️ '0' = Todos, no 'TODOS'
+
+                    cargarDatosInventario();
+                }
+            });
+        }
+
+        function inicializarEventos() {
+            $('#btnExportarExcel').click(function () {
+                ExportarExcelValorizado();
+            });
+
+            // Busqueda general (siempre al servidor en este reporte)
+            let timeoutBusqueda = null;
+
+            $('#busquedaGeneral').on('input', function () {
+                clearTimeout(timeoutBusqueda);
+                timeoutBusqueda = setTimeout(() => {
+                    CargarReporteValorizado(inventarioSeleccionado.codigo);
+                }, 400);
+            });
+
+            $('#busquedaGeneral').on('keydown', function (e) {
+                if (e.key !== "Enter") return;
+                clearTimeout(timeoutBusqueda);
+                CargarReporteValorizado(inventarioSeleccionado.codigo);
+            });
+
+            $('#btnLimpiarBusqueda').on('click', function () {
+                $('#busquedaGeneral').val('');
+                CargarReporteValorizado(inventarioSeleccionado.codigo);
+            });
+
+            // Filtro estado (0=Todos, 1=Positivo, 2=Negativo) -> siempre al servidor
+            $('#slcEstado').on('change', function () {
+                CargarReporteValorizado(inventarioSeleccionado.codigo);
+            });
+        }
+
+        async function LoadcbxInventario(idAlmacen) {
+            $("#cbxInventariosPorAlmacen").empty();
+
+            const obj = { idAlmacen: idAlmacen };
+
+            try {
+                const response = await fetch("FillCbxInventariosPorAlmacen", {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(obj)
+                });
+
+                if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    console.error(result.mensaje);
+                    return;
+                }
+
+                const data = result.data;
+                let opcion = "";
+
+                if (data.length === 0) {
+                    opcion += "<option value='-1' disabled selected>--No se encuentran inventarios asociados al almacen--</option>";
+                } else {
+                    data.forEach(item => {
+                        opcion += `<option value="${item.vchValue}">${item.vchdesc}</option>`;
+                    });
+                }
+
+                $("#cbxInventariosPorAlmacen").html(opcion).trigger("change.select2");
+                $("#cbxInventariosPorAlmacen").select2({
+                    width: "100%",
+                    language: "es",
+                    placeholder: "--Seleccione un inventario--"
+                });
+            }
+            catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        function cargarDatosInventario() {
+            CargarReporteValorizado(inventarioSeleccionado.codigo);
+            $('#seccionReporte').removeClass('d-none');
+        }
+
+        async function CargarReporteValorizado(codInventario) {
+            if (!codInventario) return;
+
+            const obj = {
+                codInventario: codInventario,
+                busqueda: $('#busquedaGeneral').val().trim(),
+                estado: parseInt($('#slcEstado').val(), 10) // 0, 1 o 2
+            };
+
+            try {
+                const response = await fetch("ObtenerReporteValorizado", {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(obj)
+                });
+
+                if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+                const result = await response.json();
+
+                if (result.HUBO_ERROR || result.error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.MENSAJE_ERROR || result.mensaje || 'Error al obtener el reporte'
+                    });
+                    return;
+                }
+
+                CargarKPIs(result.Entity);
+                CargarTabla(result.Entity.tblReporteValorizadoBEs, result.Entity.footer);
+            }
+            catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        function CargarKPIs(kpis) {
+            $('#txtEstadoInventario').text(kpis.Estado_Inventario || '-');
+            CambiarIconoEstado(kpis.Estado_Inventario);
+            $('#txtValorTotalInventario').text(formatearMoneda(kpis.Valorizado_Total_Inventariado));
+            $('#txtValorFinalInventario').text(formatearMoneda(kpis.Valor_final_Inventariado));
+            $('#txtImpactoEconomicoNeto').text(formatearMoneda(kpis.Impacto_Economico_Neto));
+            $('#txtValorTotalSobrantes').text(formatearMoneda(kpis.Valorizado_Sobrantes));
+            $('#txtValorTotalFaltantes').text(formatearMoneda(kpis.Valorizado_Faltantes));
+            $('#txtCantidadProductosImpactos').text(kpis.Cantidad_Productos_Impacto ?? '0');
+            $('#txtCantidadProductosSinCosto').text(kpis.Cantidad_Productos_Sin_Costo ?? '0');
+        }
+
+        function formatearMoneda(valor) {
+            if (valor === null || valor === undefined) return 'S/ 0.00';
+            return 'S/ ' + Number(valor).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function CargarTabla(datos, footer) {
+            datos = datos || [];
+
+            if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
+                $('#tblReporteInventario').DataTable().destroy();
+            }
+
+            $('#tblReporteInventario tbody').empty();
+
+            let columnas = [
+                { data: "Codigo", title: "Código" },
+                { data: "Producto", title: "Producto" },
+                { data: "Ubicacion_Inicial", title: "Ubicación Inicial", className: "text-center" },
+                { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" },
+                { data: "Costo_Unitario", title: "Costo Unitario", className: "text-end",
+                    render: (d) => formatearMoneda(d) },
+                { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
+                { data: "Stock_Final", title: "Stock final", className: "text-center" },
+                { data: "Diferencia", title: "Diferencia", className: "text-center",
+                    render: function (d) {
+                        let clase = d > 0 ? 'text-success fw-bold' : (d < 0 ? 'text-danger fw-bold' : '');
+                        return `<span class="${clase}">${d}</span>`;
+                    }
+                },
+                { data: "Impacto_Economico", title: "Impacto Economico", className: "text-end",
+                    render: function (d) {
+                        let clase = d > 0 ? 'text-success' : (d < 0 ? 'text-danger' : '');
+                        return `<span class="${clase}">${formatearMoneda(d)}</span>`;
+                    }
+                },
+                { data: "Observacion", title: "Estado", className: "text-center" }
+            ];
+
+            tblReporteInventario = $('#tblReporteInventario').DataTable({
+                data: datos,
+                columns: columnas,
+                columnDefs: [
+                    { targets: '_all', render: function (data) { return data == null || data === "" ? "-" : data; } }
+                ],
+                pageLength: 25,
+                searching: false, // la busqueda ya la resuelve el server
+                dom: 'lrtip',
+                language: españolTbl,
+                drawCallback: function () {
+                    CargarFooterTabla(footer);
+                }
+            });
+        }
+
+        function CargarFooterTabla(footer) {
+            let fila = $('#filaFooterDinamica');
+            fila.empty();
+
+            if (!footer) {
+                fila.append(`<td colspan="10" class="text-center text-muted">Sin datos</td>`);
+                return;
+            }
+
+            fila.append(`<td colspan="4" class="fw-bolder">TOTALES</td>`);
+            fila.append(`<td></td>`); // costo unitario, sin total
+            fila.append(`<td class="text-end fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
+            fila.append(`<td class="text-end fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
+
+            let diferencial = footer.StockDiferencial ?? 0;
+            let claseDif = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
+            fila.append(`<td class="text-end"><span class="${claseDif}">${diferencial}</span></td>`);
+
+            let impacto = footer.ImpactoEconomicoTotal ?? 0;
+            let claseImp = impacto < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
+            fila.append(`<td class="text-end"><span class="${claseImp}">${formatearMoneda(impacto)}</span></td>`);
+
+            fila.append(`<td></td>`);
+        }
+
+        function CambiarIconoEstado(estado) {
+            if (estado === "ABIERTO") {
+                $("#estadoIcono").removeClass().addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning");
+                $("#estadoIcono i").removeClass().addClass("ti ti-lock-open fs-6");
+            } else {
+                $("#estadoIcono").removeClass().addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success");
+                $("#estadoIcono i").removeClass().addClass("ti ti-lock fs-6");
+            }
+        }
+
+        async function ExportarExcelValorizado() {
+            if (!inventarioSeleccionado.codigo) {
+                Swal.fire({ icon: 'warning', title: 'Atención', text: 'Debe seleccionar un inventario primero' });
+                return;
+            }
+
+            const obj = {
+                almacen: inventarioSeleccionado.almacen,
+                codInventario: inventarioSeleccionado.codigo,
+                busqueda: $('#busquedaGeneral').val().trim(),
+                estado: parseInt($('#slcEstado').val(), 10)
+            };
+
+            Swal.fire({
+                title: 'Generando Excel...',
+                html: 'Por favor espere',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            try {
+                const response = await fetch(
+                    '@Url.Action("ExportarExcelValorizado", "ReportePrincipal")',
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(obj)
+                    }
+                );
+
+                if (!response.ok) throw new Error('No se pudo generar el archivo Excel.');
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Reporte_Valorizado_${obj.codInventario}.xlsx`;
+
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+                Swal.close();
+            } catch (error) {
+                console.error(error);
+                Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'Ocurrió un error al generar el Excel.' });
+            }
+        }
+    </script>
+}

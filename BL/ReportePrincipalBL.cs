@@ -193,8 +193,31 @@ namespace BL
             return response;
         }
 
-
-
+        public Response ObtenerDatosReporteValorizado(
+            string codInventario,
+            string busqueda = "",
+            int p_impacto = 0,
+            string order = null)
+        {
+            Response response = new Response();
+            try
+            {
+                if (String.IsNullOrEmpty(codInventario))
+                {
+                    response.HUBO_ERROR = true;
+                    response.MENSAJE_ERROR = "El Codigo de Inventario es Obligatorio";
+                    return response;
+                }
+                response = new ReportePrincipalDAO().ReporteValorizado(codInventario, busqueda, p_impacto);
+            }
+            catch(Exception ex)
+            {
+                response.HUBO_ERROR= true;
+                response.MENSAJE_ERROR= ex.Message;
+            }
+            return response;
+        }
+        
 
         // EN DESUSO
 

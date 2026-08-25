@@ -730,9 +730,94 @@ namespace DAO
         }
 
 
+        public Response ReporteValorizado(
+            string codInventario,
+            string busqueda = "",
+            int p_impacto = 0,
+            string p_order = null
+            )
+        {
+            Response response = new Response();
+            ReporteValorizadoBE reporteValorizadoBE = new ReporteValorizadoBE();
+            List<TblReporteValorizadoBE> listaTabla = new List<TblReporteValorizadoBE>();
+            FooterValorizadoBE totalesFooter = new FooterValorizadoBE();
 
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+            try
+            {
+                using (cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("SP_WEB_ReporteValorizado_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Clear();
 
+                        cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar).Value = codInventario;
+                        cmd.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar).Value = busqueda;
+                        cmd.Parameters.Add("@P_IMPACTO", SqlDbType.Int).Value = p_impacto;
+                        cmd.Parameters.Add("@P_ORDER", SqlDbType.VarChar).Value = p_order;
 
+                        cn.Open();
+                        dr = cmd.ExecuteReader();
+
+                        if (dr.Read())
+                        {
+                            reporteValorizadoBE.Codigo_Inventario = (dr["COD_INVENTARIO"] == DBNull.Value) ? String.Empty : dr["COD_INVENTARIO"].ToString();
+                            reporteValorizadoBE.Valorizado_Total_Inventariado = (dr["VALOR_TOTAL_INVENTARIO"] == DBNull.Value) ? 0 : decimal.Parse(dr["VALOR_TOTAL_INVENTARIO"].ToString());
+                            reporteValorizadoBE.Valor_final_Inventariado = (dr["VALOR_FINAL_INVENTARIO"] == DBNull.Value) ? 0 : decimal.Parse(dr["VALOR_FINAL_INVENTARIO"].ToString());
+                            reporteValorizadoBE.Impacto_Economico_Neto = (dr["IMPACTO_ECONOMICO_NETO"] == DBNull.Value) ? 0 : decimal.Parse(dr["IMPACTO_ECONOMICO_NETO"].ToString());
+                            reporteValorizadoBE.Valorizado_Sobrantes = (dr["VALOR_TOTAL_SOBRANTES"] == DBNull.Value) ? 0 : decimal.Parse(dr["VALOR_TOTAL_SOBRANTES"].ToString());
+                            reporteValorizadoBE.Valorizado_Faltantes = (dr["VALOR_TOTAL_FALTANTES"] == DBNull.Value) ? 0 : decimal.Parse(dr["VALOR_TOTAL_FALTANTES"].ToString());
+                            reporteValorizadoBE.Cantidad_Productos_Impacto = (dr["CANT_PRODUCTOS_IMPACTO"] == DBNull.Value) ? 0 : Int32.Parse(dr["CANT_PRODUCTOS_IMPACTO"].ToString());
+                            reporteValorizadoBE.Cantidad_Productos_Sin_Costo = (dr["CANT_PRODUCTOS_SIN_COSTO"] == DBNull.Value) ? 0 : Int32.Parse(dr["CANT_PRODUCTOS_SIN_COSTO"].ToString());
+                            reporteValorizadoBE.Estado_Inventario = (dr["ESTADO_INVENTARIO"] == DBNull.Value) ? String.Empty : dr["ESTADO_INVENTARIO"].ToString();
+                        }
+                        if (dr.NextResult())
+                        {
+                            while (dr.Read())
+                            {
+                                TblReporteValorizadoBE filaTabla = new TblReporteValorizadoBE();
+                                filaTabla.Codigo = (dr["CODIGO"] == DBNull.Value) ? String.Empty : dr["CODIGO"].ToString();
+                                filaTabla.Producto = (dr["PRODUCTO"] == DBNull.Value) ? String.Empty : dr["PRODUCTO"].ToString();
+                                filaTabla.Ubicacion_Inicial = (dr["UBICACION_INICIAL"] == DBNull.Value) ? String.Empty : dr["UBICACION_INICIAL"].ToString();
+                                filaTabla.Lote_Inicial = (dr["LOTE_INICIAL"] == DBNull.Value) ? String.Empty : dr["LOTE_INICIAL"].ToString();
+                                filaTabla.Costo_Unitario = (dr["COSTO_UNITARIO"] == DBNull.Value) ? 0 : decimal.Parse(dr["COSTO_UNITARIO"].ToString());
+                                filaTabla.Stock_Inicial = (dr["STOCK_INICIAL"] == DBNull.Value) ? 0 : decimal.Parse(dr["STOCK_INICIAL"].ToString());
+                                filaTabla.Stock_Final = (dr["STOCK_FINAL"] == DBNull.Value) ? 0 : decimal.Parse(dr["STOCK_FINAL"].ToString());
+                                filaTabla.Diferencia = (dr["DIFERENCIA"] == DBNull.Value) ? 0 : decimal.Parse(dr["DIFERENCIA"].ToString());
+                                filaTabla.Impacto_Economico = (dr["IMPACTO_ECONOMICO"] == DBNull.Value) ? 0 : decimal.Parse(dr["IMPACTO_ECONOMICO"].ToString());
+                                filaTabla.Observacion = (dr["OBSERVACION"] == DBNull.Value) ? String.Empty : dr["OBSERVACION"].ToString();
+
+                                listaTabla.Add(filaTabla);
+                            }
+                        }
+                        if (dr.NextResult())
+                        {
+                            if (dr.Read())
+                            {
+                                totalesFooter.StockInicialTotal = (dr["StockInicialTotal"] == DBNull.Value) ? 0 : decimal.Parse(dr["StockInicialTotal"].ToString());
+                                totalesFooter.StockFinalTotal = (dr["StockFinalTotal"] == DBNull.Value) ? 0 : decimal.Parse(dr["StockFinalTotal"].ToString());
+                                totalesFooter.StockDiferencial = (dr["StockDiferencial"] == DBNull.Value) ? 0 : decimal.Parse(dr["StockDiferencial"].ToString());
+                                totalesFooter.ImpactoEconomicoTotal = (dr["ImpactoEconomicoTotal"] == DBNull.Value) ? 0 : decimal.Parse(dr["ImpactoEconomicoTotal"].ToString());
+                            }
+                        }
+                        reporteValorizadoBE.tblReporteValorizadoBEs = listaTabla;
+                        reporteValorizadoBE.footer = totalesFooter;
+                        dr.Close();
+                    }
+                }
+                response.Entity = reporteValorizadoBE;
+                response.footerTable = totalesFooter;
+            }catch(Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally { dr?.Close(); }
+            return response;
+        }
 
 
         // EN DESUSO

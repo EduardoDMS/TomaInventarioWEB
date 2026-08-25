@@ -1277,8 +1277,238 @@ namespace TomaInventarioWEB.Controllers
         }
 
 
+        // VALORIZADO
+        [GenerateNonce]
+        public ActionResult Reporte_Valorizado()
+        {
+            CombosBE objComboValorizado = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objComboValorizado);
+
+            ViewBag.ListaAlmacenes = listaAlmacenes;
+
+            return View();
+        }
+        [HttpPost]
+        public JsonResult ObtenerReporteValorizado(string codInventario, string busqueda, int estado)
+        {
+            try
+            {
+                var response = new ReportePrincipalBL().ObtenerDatosReporteValorizado(codInventario, busqueda, estado);
+                return Json(response);
+            }
+            catch(Exception ex)
+            {
+                return Json(new
+                {
+                    error = true,
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stack = ex.StackTrace
+                });
+            }
+        }
+        
+        //          >AQUI ESTA PARA EL EXPORTAR POR EXCEL XD<
+        //[HttpPost]
+        //public ActionResult ExportarExcelValorizado(string codInventario, string busqueda, int p_impacto)
+        //{
+        //    try
+        //    {
+        //        var response = new ReportePrincipalBL().ObtenerDatosReporteValorizado(codInventario, busqueda, p_impacto);
+
+        //        if (response == null ||
+        //            response.HUBO_ERROR ||
+        //            response.Entity == null)
+        //        {
+        //            throw new Exception(
+        //                response?.MENSAJE_ERROR ??
+        //                "Error al obtener los datos del reporte"
+        //            );
+        //        }
+
+        //        // Obtener datos
+        //        ReporteValorizadoBE reporte = (ReporteValorizadoBE)response.Entity;
+                
+        //        // Generar Excel
+        //        MemoryStream ms = new MemoryStream();
+
+        //        string plantilla = Server.MapPath(
+        //            @"~\Plantillas\Plantilla_Reportes_Nuevo.xlsx"
+        //        );
+
+        //        using (FileStream fs = System.IO.File.OpenRead(plantilla))
+        //        using (ExcelPackage excelPackage = new ExcelPackage(fs))
+        //        {
+        //            ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets[1];
 
 
+        //            // LOGO - FILA 1
+        //            string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
+        //            if (System.IO.File.Exists(rutaImagen))
+        //            {
+        //                using (System.Drawing.Image imagen = System.Drawing.Image.FromFile(rutaImagen))
+        //                {
+        //                    var picture = excelWorksheet.Drawings.AddPicture("Imagen", imagen);
+        //                    picture.SetSize(240, 100);
+        //                    picture.SetPosition(1, 5, 1, 5);
+        //                }
+        //            }
+
+        //            // TITULO - FILA 2
+        //            excelWorksheet.Cells["D2"].Value = "REPORTE DE VALORIZADO";
+
+        //            // INFORMACIÓN DEL INVENTARIO - FILA 4
+        //            excelWorksheet.Cells["E4"].Value = almacen;
+        //            excelWorksheet.Cells["E5"].Value = codInventario;
+        //            excelWorksheet.Cells["E6"].Value = reporte.Estado_Inventario;
+        //            excelWorksheet.Cells["E7"].Value = reporte.Conteo_Actual;
+
+        //            // INDICADORES DEL REPORTE - FILA 9
+        //            //excelWorksheet.Cells["B9"].Value = "Productos totales";
+        //            //excelWorksheet.Cells["B10"].Value = reporte.Productos_Inventariados;
+
+        //            //excelWorksheet.Cells["D9"].Value = "Productos sin diferencias";
+        //            //excelWorksheet.Cells["D10"].Value = reporte.Productos_Sin_Diferencia;
+
+        //            //excelWorksheet.Cells["F9"].Value = "Productos con diferencias";
+        //            //excelWorksheet.Cells["F10"].Value = reporte.Productos_Con_Diferencia;
+
+        //            //excelWorksheet.Cells["H9"].Value = "Usuarios participantes";
+        //            //excelWorksheet.Cells["H10"].Value = reporte.Usuarios_Participantes;
+
+        //            //excelWorksheet.Cells["J9"].Value = "Primera lectura";
+        //            //excelWorksheet.Cells["J10"].Value = reporte.Primera_Lectura;
+
+        //            //excelWorksheet.Cells["L9"].Value = "Última lectura";
+        //            //excelWorksheet.Cells["L10"].Value = reporte.Ultima_Lectura;
+
+        //            //// Bordes de los indicadores
+        //            //string[] rangosKPI =
+        //            //{
+        //            //    "B9:C10",
+        //            //    "D9:E10",
+        //            //    "F9:G10",
+        //            //    "H9:I10",
+        //            //    "J9:K10",
+        //            //    "L9:M10",
+        //            //};
+
+        //            //foreach (string rango in rangosKPI)
+        //            //{
+        //            //    excelWorksheet.Cells[rango].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+        //            //}
+
+        //            // CABECERA DE TABLA - FILA 12
+        //            string[] headers = { "CÓDIGO", "PRODUCTO", "STOCK INICIAL", "UBICACION INICIAL", "LOTE INICIAL", "CONTEO 1 STOCK", "CONTEO 1 UBICACIÓN", "CONTEO 1 LOTE", "CONTEO 1 USUARIO", "CONTEO 1 HORA", "CONTEO 2 STOCK", "CONTEO 2 UBICACIÓN", "CONTEO 2 LOTE", "CONTEO 2 USUARIO", "CONTEO 2 HORA", "CONTEO 3 STOCK", "CONTEO 3 UBICACIÓN", "CONTEO 3 LOTE", "CONTEO 3 USUARIO", "CONTEO 3 HORA", "STOCK FINAL", "DIFERENCIA", "ESTADO" };
+        //            for (int i = 0; i < headers.Length; i++)
+        //            {
+        //                var cell = excelWorksheet.Cells[9, i + 2];
+        //                cell.Value = headers[i];
+        //                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+        //                cell.Style.Fill.BackgroundColor.SetColor(
+        //                    System.Drawing.ColorTranslator.FromHtml("#305496")
+        //                );
+        //            }
+
+        //            excelWorksheet.Cells["B9:X9"].AutoFilter = true;
+
+        //            // CONTENIDO DE TABLA - FILA 13
+        //            int filaInicio = 10;
+
+        //            foreach (var item in reporte.TblReporteAuditoria)
+        //            {
+        //                excelWorksheet.Cells[filaInicio, 2].Value = item.Codigo;
+        //                excelWorksheet.Cells[filaInicio, 3].Value = item.Producto;
+        //                excelWorksheet.Cells[filaInicio, 4].Value = item.Stock_Inicial;
+        //                excelWorksheet.Cells[filaInicio, 5].Value = item.Ubicacion_Inicial;
+        //                excelWorksheet.Cells[filaInicio, 6].Value = item.Lote_Inicial;
+
+        //                // Conteos
+        //                for (int i = 0; i < item.Conteos.Count; i++)
+        //                {
+        //                    var conteo = item.Conteos[i];
+
+        //                    int columnaInicio = 7 + (i * 5);
+
+        //                    excelWorksheet.Cells[filaInicio, columnaInicio].Value = conteo.Stock_Contado;
+        //                    excelWorksheet.Cells[filaInicio, columnaInicio + 1].Value = conteo.Ubicaciones_Contadas;
+        //                    excelWorksheet.Cells[filaInicio, columnaInicio + 2].Value = conteo.Lote_Contado;
+        //                    excelWorksheet.Cells[filaInicio, columnaInicio + 3].Value = conteo.Usuario;
+        //                    excelWorksheet.Cells[filaInicio, columnaInicio + 4].Value = conteo.Hora_Registro;
+        //                }
+
+        //                excelWorksheet.Cells[filaInicio, 22].Value = item.Stock_Final;
+        //                excelWorksheet.Cells[filaInicio, 23].Value = item.Diferencia;
+        //                excelWorksheet.Cells[filaInicio, 24].Value = item.Estado;
+
+
+        //                filaInicio++;
+        //            }
+
+        //            // FOOTER TOTALES
+        //            int filaTotal = 10 + reporte.TblReporteAuditoria.Count + 1;
+        //            excelWorksheet.Cells[filaTotal, 2].Value = "Totales:";
+        //            excelWorksheet.Cells[filaTotal, 2].Style.Font.Bold = true;
+
+        //            excelWorksheet.Cells[filaTotal, 4].Value = reporte.Footer.StockInicialTotal; // Stock Inicial Total
+
+        //            // Totales por conteo
+        //            for (int i = 0; i < reporte.Footer.TotalesPorConteo.Count; i++)
+        //            {
+        //                var totalConteo = reporte.Footer.TotalesPorConteo[i];
+
+        //                int columnaInicio = 7 + (i * 5);
+
+        //                excelWorksheet.Cells[filaTotal, columnaInicio].Value = totalConteo.Total_Stock;
+        //            }
+
+        //            excelWorksheet.Cells[filaTotal, 22].Value = reporte.Footer.StockFinalTotal; // Stock Conteo Total
+        //            excelWorksheet.Cells[filaTotal, 23].Value = reporte.Footer.StockDiferencial; // Diferencial Total
+
+        //            // Formato para totales
+        //            excelWorksheet.Cells[filaTotal, 4].Style.Font.Bold = true;
+        //            excelWorksheet.Cells[filaTotal, 7].Style.Font.Bold = true;
+        //            excelWorksheet.Cells[filaTotal, 12].Style.Font.Bold = true;
+        //            excelWorksheet.Cells[filaTotal, 17].Style.Font.Bold = true;
+        //            excelWorksheet.Cells[filaTotal, 22].Style.Font.Bold = true;
+        //            excelWorksheet.Cells[filaTotal, 23].Style.Font.Bold = true;
+        //            excelWorksheet.Cells[filaTotal, 23].Style.Font.Color.SetColor(
+        //                reporte.Footer.StockDiferencial < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
+        //            );
+
+        //            // Auto-ajustar columnas
+        //            excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
+        //            for (int i = 1; i <= excelWorksheet.Dimension.End.Column; i++)
+        //            {
+        //                excelWorksheet.Column(i).Width += 3;
+        //            }
+
+        //            excelPackage.SaveAs(ms);
+        //        }
+
+        //        // IMPORTANTE
+        //        ms.Position = 0;
+
+        //        return new FileStreamResult(
+        //            ms,
+        //            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        //        )
+        //        {
+        //            FileDownloadName =
+        //                $"Reporte_Auditoria_{codInventario}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Manejo del error
+        //        return new HttpStatusCodeResult(
+        //            500,
+        //            ex.Message
+        //        );
+        //    }
+        //}
 
 
 

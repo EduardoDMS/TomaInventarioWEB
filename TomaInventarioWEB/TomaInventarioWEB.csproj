@@ -4441,6 +4441,7 @@
     <Content Include="Views\ReportePrincipal\Reporte_Auditoria.cshtml" />
     <Content Include="Views\Mantenimiento\TipoMonedaMant.cshtml" />
     <Content Include="Views\Mantenimiento\Modals\ModalsTipoMonedaMant.cshtml" />
+    <Content Include="Views\ReportePrincipal\Reporte_Valorizado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

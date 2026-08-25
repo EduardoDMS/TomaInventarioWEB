@@ -287,25 +287,19 @@ namespace TomaInventarioWEB.Controllers
             return Json(response);
         }
 
-
-
-
-
         [HttpPost]
         public JsonResult GetProducto(int id)
         {
             var response = new MantenimientosBL().GetProducto(id);
             return Json(response);
         }
+       
         [HttpPost]
         public JsonResult UpdateProducto(int id, string codProducto, string descProducto, bool activo,decimal costo, int idMoneda, int UM)
         {
             var response = new MantenimientosBL().UpdateProducto(id, codProducto, descProducto, Session["UserName"].ToString(), activo,costo, idMoneda, UM);
             return Json(response);
         }
-
-
-
 
         [HttpPost]
         public JsonResult CargarProductosAPIExterna()

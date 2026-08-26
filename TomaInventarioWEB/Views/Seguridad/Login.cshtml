@@ -208,11 +208,11 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Sesión activa',
-                    text: 'Este usuario ya tiene una sesión activa en otro dispositivo. ¿Deseas cerrarla e ingresar aquí?',
+                    text: 'Ya tienes una sesión activa en otro dispositivo. ¿Deseas cerrarla e ingresar aquí?',
                     showCancelButton: true,
-                    confirmButtonText: 'Sí, forzar ingreso',
+                    confirmButtonText: 'Sí, ingresar',
                     cancelButtonText: 'Cancelar',
-                    confirmButtonColor: '#5d87ff'
+                    confirmButtonColor: '#004596'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         Autenticar(true); // reintenta con forzarSesion=true; el backend REVALIDA usuario+contraseña de nuevo

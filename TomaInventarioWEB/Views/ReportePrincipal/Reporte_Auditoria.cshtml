@@ -660,21 +660,21 @@
             numerosConteo = numerosConteo || [];
 
             fila.append(`<td colspan="2" class="fw-bolder">TOTALES</td>`);
-            fila.append(`<td class="text-end fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
+            fila.append(`<td class="text-center fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
             fila.append(`<td></td>`);
             fila.append(`<td></td>`);
 
             numerosConteo.forEach(n => {
                 let totalConteo = (footer.TotalesPorConteo || []).find(t => t.Nro_ConteoTotal === n);
                 let valor = totalConteo && totalConteo.Total_Stock != null ? totalConteo.Total_Stock : 0;
-                fila.append(`<td class="text-end fw-bold">${valor}</td>`);
+                fila.append(`<td class="text-center fw-bold">${valor}</td>`);
             });
 
-            fila.append(`<td class="text-end fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
+            fila.append(`<td class="text-center fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
 
             let diferencial = footer.StockDiferencial ?? 0;
             let clase = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
-            fila.append(`<td class="text-end"><span class="${clase}">${diferencial}</span></td>`);
+            fila.append(`<td class="text-center"><span class="${clase}">${diferencial}</span></td>`);
 
             fila.append(`<td></td>`);
         }

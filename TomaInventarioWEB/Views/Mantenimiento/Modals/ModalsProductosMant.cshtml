@@ -61,7 +61,7 @@
 
                 <div class="mb-4">
                     <label for="txtCosto_add" class="form-label fw-semibold">
-                        Colocar el valor del producto <span class="text-danger">*</span>
+                        Colocar el valor del producto @*<span class="text-danger">*</span>*@
                     </label>
                     <div class="position-relative">
                         <input type="text"
@@ -81,9 +81,9 @@
                     </label>
                     <div class="position-relative">
                         @Html.DropDownList("cbxMon_add", new SelectList(ViewBag.listMon, "intValue", "vchdesc"), new { @Class = "form-select" })
-                        <small class="form-text text-muted d-block mt-1">
+                        @*<small class="form-text text-muted d-block mt-1">
                             <i class="ti ti-info-circle fs-4"></i> Tipo de cambio que tendra el coste del producto
-                        </small>
+                        </small>*@
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@
 
                 <div class="mb-4">
                     <label for="cbxUM_edit" class="form-label fw-semibold">
-                        <i class="ti ti-ruler-measure fs-4 me-1"></i>Unidad de Medida <span class="text-danger">*</span>
+                        @*<i class="ti ti-ruler-measure fs-4 me-1"></i>*@Unidad de Medida <span class="text-danger">*</span>
                     </label>
                     <div class="position-relative">
                         @Html.DropDownList("cbxUM_edit", new SelectList(ViewBag.ListaUM, "intValue", "vchdesc"), new { @Class = "form-select" })
@@ -162,7 +162,7 @@
 
                 <div class="mb-4">
                     <label for="txtCosto_edit" class="form-label fw-semibold">
-                        Colocar el nuevo valor monetario del producto <span class="text-danger">*</span>
+                        Nuevo costo del producto @*<span class="text-danger">*</span>*@
                     </label>
                     <div class="position-relative">
                         <input type="text"
@@ -178,7 +178,7 @@
 
                 <div class="mb-4">
                     <label for="cbxMon_edit" class="form-label fw-semibold">
-                        <i class="ti ti-ruler-measure fs-4 me-1"></i>TipoMonedas <span class="text-danger">*</span>
+                        @*<i class="ti ti-ruler-measure fs-4 me-1"></i>*@Tipo de Moneda @*<span class="text-danger">*</span>*@
                     </label>
                     <div class="position-relative">
                         @Html.DropDownList("cbxMon_edit", new SelectList(ViewBag.listMon, "intValue", "vchdesc"), new { @Class = "form-select" })
@@ -226,7 +226,7 @@
                 <div class="d-flex">
                     <div class="me-3">
                         <h5 class="modal-title fw-bold mb-1" id="importProductoLabel">
-                            <i class="ti ti-file-import me-2 text-success"></i>Importar Productos
+                            <i class="ti ti-file-import me-2 text-primary"></i>Importar Productos
                         </h5>
                         <p class="mb-0 text-muted fs-2">Cargue múltiples productos desde un archivo Excel</p>
                     </div>
@@ -310,7 +310,6 @@
 </div>
 
 @*Resultados de Importación*@
-
 <div class="modal fade" id="RImport_modal" role="dialog" tabindex="-1" aria-labelledby="ttl_ImportModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
@@ -435,7 +434,7 @@
                 <div class="d-flex">
                     <div class="me-3">
                         <h5 class="modal-title fw-bold mb-1" id="importCostoLabel">
-                            <i class="ti ti-file-import me-2 text-success"></i>Actualizar Precios de Productos
+                            <i class="ti ti-report-money me-2 text-primary"></i>Actualizar Costos de Productos
                         </h5>
                         <p class="mb-0 text-muted fs-2">Actualice el costo y moneda de productos existentes desde un archivo Excel</p>
                     </div>
@@ -451,7 +450,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h6 class="fw-semibold mb-2">Descargue la plantilla de Excel</h6>
-                            <p class="text-muted mb-3 fs-2">Solo necesita: código del producto, precio de costo y código de moneda</p>
+                            <p class="text-muted mb-3 fs-2"> Utilice nuestra plantilla para asegurar que los datos estén en el formato correcto</p>
                             <button id="btnTemplateCosto" type="button" class="btn btn-success btn-sm">
                                 <i class="ti ti-download me-1 fs-4"></i>Descargar Plantilla
                             </button>
@@ -484,7 +483,7 @@
                     <div>
                         <strong>Consejos:</strong>
                         <ul class="mb-0 mt-2 ps-3">
-                            <li class="small">Solo se actualizan productos que ya existen — este proceso NO crea productos nuevos</li>
+                            <li class="small">Solo se actualizan productos que ya existen — este proceso <strong>NO </strong>crea productos nuevos</li>
                             <li class="small">Verifique que los precios sean numéricos y el código de moneda exista</li>
                         </ul>
                     </div>

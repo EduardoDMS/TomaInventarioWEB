@@ -84,8 +84,8 @@ $(document).ready(function () {
                         setTimeout(() => {
                             Swal.fire({
                                 icon: 'success',
-                                title: '¡Nuevo valor de moneda creado exitosamente!',
-                                text: 'El nuevo cambio ha sido registrado correctamente.',
+                                title: 'Nuevo valor de moneda creado exitosamente',
+                                text: 'La nueva moneda ha sido registrado correctamente.',
                                 confirmButtonColor: '#5d87ff',
                                 confirmButtonText: 'Aceptar',
                                 timer: 5000,
@@ -226,7 +226,7 @@ function saveEdit() {
                     setTimeout(() => {
                         Swal.fire({
                             icon: 'success',
-                            title: '¡Tipo de Moneda actualizado exitosamente!',
+                            title: 'Tipo de moneda actualizada exitosamente',
                             text: 'Los cambios han sido guardados correctamente.',
                             confirmButtonColor: '#5d87ff',
                             confirmButtonText: 'Aceptar',

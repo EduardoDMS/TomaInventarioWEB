@@ -350,7 +350,7 @@ function editar(id) {
         data: JSON.stringify(obj),
         success: function (response) {
             var objUsuario = response.Entity;
-            console.log(response);
+            //console.log(response);
 
             document.getElementById('txtUsuario_nombre').value = objUsuario[0].Nombre;
             document.getElementById('txtUsuario_apellido').value = objUsuario[0].Apellido;
@@ -440,7 +440,7 @@ function ValidarEdit(obj) {
         //}
         const el = $(input);
         const valor = el.val();
-        console.log(valor);
+        //console.log(valor);
         let esValido = false;
 
         if (Array.isArray(valor)) {

@@ -195,10 +195,10 @@
                     ciclos
                 </small>
             </a>
-            <a class="submenu__secundario--item" href="@Url.Action("Historico_Inventariado", "Reportes")">
+            @*<a class="submenu__secundario--item" href="@Url.Action("Historico_Inventariado", "Reportes")">
                 <span class="submenu__titulo">Historial de Inventario</span>
                 <small class="submenu__descripcion">Administra tus inventarios creados</small>
-            </a>
+            </a>*@
             @*<a class="submenu__secundario--item" href="@Url.Action("ImportacionArchivos", "Importacion")">
                 <span class="submenu__titulo">Importar archivos escenciales</span>
                 <small>Cargue archivos excel para el funcionamiento inicial de la aplicación</small>
@@ -213,7 +213,7 @@
 
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Conteo", "ReportePrincipal")">
                 <span class="submenu__titulo">Conteo</span>
-                <small>Revisa los resultados de cada pasada de inventario</small>
+                <small>Revisa los resultados de cada conteo de inventario</small>
             </a>
 
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Usuario", "ReportePrincipal")">
@@ -230,33 +230,15 @@
                 <span class="submenu__titulo">Ubicación</span>
                 <small>Visualiza el avance del inventario por ubicación</small>
             </a>
-            @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Principal", "ReportePrincipal")">
-            <span class="submenu__titulo">Detalle inventario</span>
-            <small>Acceda a más filtros</small>
-        </a>*@
+
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Auditoria", "ReportePrincipal")">
                 <span class="submenu__titulo">Auditoria</span>
-                <small>Muestra un reporte general que vea todo el historial de un producto en un inventario</small>
+                <small>Investiga el historial y trazabilidad de cada lectura</small>
             </a>
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Valorizado", "ReportePrincipal")">
                 <span class="submenu__titulo">Valorizado</span>
-                <small>Muestra un reporte general que vea todo el valor monetario transcurrido</small>
+                <small>Muestra el valor económico de las diferencias del inventario</small>
             </a>
-
-
-            @*<a class="submenu__secundario--item" href="@Url.Action("Reporte_Lectura", "Reportes")">
-            <span class="submenu__titulo">Lecturas</span>
-            <small>
-                Muestra la fecha, stock inventariado, usuario y terminal donde se registro
-            </small>
-        </a>
-        <a class="submenu__secundario--item" href="@Url.Action("Reporte_Detalle", "Reportes")">
-            <span class="submenu__titulo">Inventario Inicial</span>
-            <small>
-                Muestra los productos iniciales antes de un inventario
-            </small>
-        </a>*@
-
         </div>
         <!-- GESTION DE USUARIO-->
         @*<div class="submenu__secundario" id="gestionUsuario" data-nombre="Gestión de Usuarios">
@@ -268,7 +250,7 @@
                         <span class="submenu__titulo">Usuario Operador</span>
                         <small>Realice modificaciones a sus usuarios (crea, edita y desactive)</small>
                 </a>
-            </div>*@
+        </div>*@
         <!-- GESTION DE RECURSOS-->
     <div class="submenu__secundario" id="gestionRecursos" data-nombre="Gestión de Recursos">
         <a class="submenu__secundario--item" href="@Url.Action("AlmacenesMant", "Mantenimiento")">
@@ -285,12 +267,11 @@
         </a>
         <a class="submenu__secundario--item" href="@Url.Action("UnidadesMant", "Mantenimiento")">
             <span class="submenu__titulo">Unidades de Medida</span>
-            <small>Administra como se cuantificaran tus productos (Ejm: unidades, litros, metros, etc)</small>
+            <small>Administra como se cuantificaran tus productos</small>
         </a>
-        <!-- ZEUS-->
         <a class="submenu__secundario--item" href="@Url.Action("TipoMonedaMant", "Mantenimiento")">
-            <span class="submenu__titulo">Tipo de Moneda</span>
-            <small>Administra el valor monetario de tu inventario (Ejm: USD, PEN, PES, etc)</small>
+            <span class="submenu__titulo">Tipos de Moneda</span>
+            <small>Administra el tipo de moneda que tendrán tus productos</small>
         </a>
     </div>
         <!-- AJUSTES-->
@@ -365,7 +346,7 @@
 
     @RenderSection("scripts", required: false)
 
-    <script nonce="@HttpContext.Current.Items["ScriptNonce"]">
+<script nonce="@HttpContext.Current.Items["ScriptNonce"]">
 
         /*// IR A LA PAGINA DE AYUDA //*/
         document.getElementById("btnAyuda").addEventListener("click", function () {
@@ -386,6 +367,14 @@
             new bootstrap.Tooltip(el);
         });
 
-    </script>
+
+        /*// CERRAR SESION AL CERRAR VENTANA WEB //*/
+        @*window.addEventListener('beforeunload', function () {
+            console.log("SE EJECUTA SENDBEACON");
+            const urlCerrarSesion = '@Url.Action("logout","Seguridad")';
+            navigator.sendBeacon(urlCerrarSesion);
+        });*@
+
+</script>
 </body>
 </html>

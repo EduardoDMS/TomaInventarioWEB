@@ -1,7 +1,6 @@
 ﻿using BE;
 using BL;
 using ExcelDataReader;
-using Microsoft.Ajax.Utilities;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
@@ -143,7 +142,7 @@ namespace TomaInventarioWEB.Controllers
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Hoja1"];
                 if (worksheet != null && listaMonedas.Any())
                 {
-                    int startRow = 2;
+                    int startRow = 3;
                     int startColumn = 6; // columna K
                     var properties = typeof(MonedaEXCELBE).GetProperties();
 
@@ -160,7 +159,7 @@ namespace TomaInventarioWEB.Controllers
                     int endColumn = startColumn + properties.Length - 1;
                     ExcelRange dataRange = worksheet.Cells[startRow, startColumn, endRow, endColumn];
 
-                    ExcelTable table = worksheet.Tables.Add(dataRange, "TablaMonedas"); 
+                    ExcelTable table = worksheet.Tables.Add(dataRange, "TablaMonedas");
                     table.ShowHeader = false;
                     table.TableStyle = TableStyles.Light1;
 
@@ -193,7 +192,6 @@ namespace TomaInventarioWEB.Controllers
             return File(rutaArchivo, tipoMIME, nombreArchivo);
         }
 
-
         public ActionResult DescargarExcelDetalle()
         {
             // Ruta del archivo en el servidor
@@ -208,6 +206,7 @@ namespace TomaInventarioWEB.Controllers
 
             return File(rutaArchivo, tipoMIME, nombreArchivo);
         }
+
 
         #region Importacion Detalle
         public JsonResult SubirArchivo_Detalle(HttpPostedFileBase archivo, int IdAlmacen)
@@ -301,9 +300,9 @@ namespace TomaInventarioWEB.Controllers
                 MaxJsonLength = int.MaxValue
             };
         }
-
-
         #endregion
+
+
         #region Importacion de Mantenimientos
         public DataTable FiltrarTablaProductos(DataTable originalTable)
         {
@@ -359,7 +358,7 @@ namespace TomaInventarioWEB.Controllers
                         newRow["PRECIO_COSTO"] = row["PRECIO_COSTO"];
                         hasContent = true;
                     }
-                    if(filteredTable.Columns.Contains("COD_MONEDA") && originalTable.Columns.Contains("COD_MONEDA") && !string.IsNullOrWhiteSpace(row["COD_MONEDA"]?.ToString()))
+                    if (filteredTable.Columns.Contains("COD_MONEDA") && originalTable.Columns.Contains("COD_MONEDA") && !string.IsNullOrWhiteSpace(row["COD_MONEDA"]?.ToString()))
                     {
                         newRow["COD_MONEDA"] = row["COD_MONEDA"];
                         hasContent = true;
@@ -373,8 +372,6 @@ namespace TomaInventarioWEB.Controllers
 
             return filteredTable;
         }
-
-
 
         public DataTable FiltrarTablaProductos_X_Costos(DataTable originalTable)
         {
@@ -406,7 +403,8 @@ namespace TomaInventarioWEB.Controllers
                     {
                         newRow["COD_PRODUCTO"] = row["COD_PRODUCTO"];
                         hasContent = true;
-                    }  hasContent = true;
+                    }
+                    hasContent = true;
                     if (filteredTable.Columns.Contains("PRECIO_COSTO") && originalTable.Columns.Contains("PRECIO_COSTO") && !string.IsNullOrWhiteSpace(row["PRECIO_COSTO"]?.ToString()))
                     {
                         newRow["PRECIO_COSTO"] = row["PRECIO_COSTO"];
@@ -640,7 +638,7 @@ namespace TomaInventarioWEB.Controllers
                             Lista = ListaResult.Where(x => x.Flg_pass == 0 || x.Flg_pass == 1).ToList(),
                             Errores = ListaResult.Count(x => x.Flg_pass == 0),
                             Actualizados = ListaResult.Count(x => x.Flg_pass == 1),
-                          //  Nuevos = ListaResult.Count(x => x.Flg_pass == 2),
+                            //  Nuevos = ListaResult.Count(x => x.Flg_pass == 2),
                             SinCambios = ListaResult.Count(x => x.Flg_pass == 3),
                         };
 
@@ -664,8 +662,6 @@ namespace TomaInventarioWEB.Controllers
                 MaxJsonLength = int.MaxValue
             };
         }
-
-
 
         public JsonResult SubirArchivo_Ubicaciones(HttpPostedFileBase archivo)
         {
@@ -775,8 +771,8 @@ namespace TomaInventarioWEB.Controllers
                 MaxJsonLength = int.MaxValue
             };
         }
-
         #endregion
+
 
         #region Importacion de Archivos Maestros
         public ActionResult ImportacionMaestros(HttpPostedFileBase Maestro)
@@ -1130,8 +1126,8 @@ namespace TomaInventarioWEB.Controllers
 
             return response;
         }
-
         #endregion
+
 
         #region Importacion de Archivos Inventario
         public ActionResult ImportacionInventario(HttpPostedFileBase Inventario)
@@ -1310,7 +1306,6 @@ namespace TomaInventarioWEB.Controllers
             return response;
         }
 
-
         [HttpPost]
         public JsonResult Select_DET_INV_IMPORT(string start, string length, int draw, string searchValue)
         {
@@ -1331,8 +1326,9 @@ namespace TomaInventarioWEB.Controllers
             return Json(new { draw = draw, recordsFiltered = totalData, recordsTotal = totalData, data = lista });
 
         }
-
         #endregion
+
+
         public string ConvertDataTableToXml(DataTable dataTable)
         {
             DataTable clonedDataTable = dataTable.Clone();

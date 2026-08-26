@@ -1,8 +1,8 @@
+using BE;
+using BL;
 using System;
 using System.Web;
 using System.Web.Mvc;
-using BE;
-using BL;
 
 namespace TomaInventarioWEB.Filters
 {
@@ -43,7 +43,7 @@ namespace TomaInventarioWEB.Filters
                 return;
             }
 
-                Guid? tokenLocal = null;
+            Guid? tokenLocal = null;
 
             if (session["TokenSesion"] != null)
             {
@@ -55,37 +55,37 @@ namespace TomaInventarioWEB.Filters
                 {
                     Guid tokenConvertido;
 
-                    if (Guid.TryParse(session["TokenSesion"].ToString(),out tokenConvertido))
+                    if (Guid.TryParse(session["TokenSesion"].ToString(), out tokenConvertido))
                     {
                         tokenLocal = tokenConvertido;
                     }
                 }
             }
-//comprobamos el estado actual en la bd
+            //comprobamos el estado actual en la bd
             EstadoSesionBE estadoBD;
 
-            //try
-            //{
-            //    estadoBD =
-            //        new SeguridadBL().ObtenerEstadoSesion(idUsuario);
-            //}
-            //catch
-            //{
-            //    session.Clear();
-            //    session.Abandon();
-            //    filterContext.Result = new RedirectResult("~/Seguridad/Login?motivo=sesion_invalida");
-            //    return;
-            //}
             try
             {
-                estadoBD = new SeguridadBL().ObtenerEstadoSesion(idUsuario);
+                estadoBD =
+                    new SeguridadBL().ObtenerEstadoSesion(idUsuario);
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception(
-                    $"Error al validar sesión. ID Usuario: {idUsuario}. " +
-                    $"Detalle: {ex.Message}", ex);
+                session.Clear();
+                session.Abandon();
+                filterContext.Result = new RedirectResult("~/Seguridad/Login?motivo=sesion_invalida");
+                return;
             }
+            //try
+            //{
+            //    estadoBD = new SeguridadBL().ObtenerEstadoSesion(idUsuario);
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new Exception(
+            //        $"Error al validar sesión. ID Usuario: {idUsuario}. " +
+            //        $"Detalle: {ex.Message}", ex);
+            //}
 
             // validar el estado
 
@@ -103,7 +103,7 @@ namespace TomaInventarioWEB.Filters
                 filterContext.Result = new RedirectResult("~/Seguridad/Login?motivo=sesion_expirada");
                 return;
             }
-// evitar el cache o algo asi 
+            // evitar el cache o algo asi 
             httpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
             httpContext.Response.Cache.SetNoStore();
             httpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));

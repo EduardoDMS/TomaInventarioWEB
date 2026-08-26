@@ -99,8 +99,8 @@
                             <i class="ti ti-history fs-6"></i>
                         </div>
                         <div class="align-self-center">
-                            <h4 id="txtValorTotalInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Valor total Inventario</p>
+                            <h4 id="txtConteoActual" class="card-title mb-1"></h4>
+                            <p class="card-subtitle">Conteo actual</p>
                         </div>
                     </div>
 
@@ -111,17 +111,36 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex flex-column mb-3">
                     <h6 class="fw-semibold mb-0">Indicadores del reporte</h6>
+                    <small>
+                        <i class="ti ti-info-circle"></i> Si el inventario contiene <strong>diferentes</strong> monedas, <strong>seleccione una moneda</strong> para visualizar los valores económicos
+                    </small>
                 </div>
                 <!-- KPIS: Productos totales, Productos con diferencia, Productos sin diferencia, Usuarios participantes, Primera lectura, Ultima lectura -->
                 <div class="row mb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-primary-subtle d-flex align-items-center">
+                                    <h3 class="text-primary-emphasis box mb-0">
+                                        <i class="ti ti-cash"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtValorTotalInventario" class="text-primary-emphasis mb-0 fs-6"></h3>
+                                    <span>Valor inicial del inventario</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
                         <div class="card overflow-hidden">
                             <div class="d-flex flex-row">
                                 <div class="p-3 bg-info-subtle d-flex align-items-center">
                                     <h3 class="text-info box mb-0">
-                                        <i class="ti ti-box"></i>
+                                        <i class="ti ti-wallet"></i>
                                     </h3>
                                 </div>
                                 <div class="p-3">
@@ -132,49 +151,17 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="card overflow-hidden">
                             <div class="d-flex flex-row">
-                                <div class="p-3 bg-success-subtle d-flex align-items-center">
-                                    <h3 class="text-success box mb-0">
-                                        <i class="ti ti-circle-check"></i>
+                                <div id="iconoImpactoNeto" class="p-3 bg-warning-subtle d-flex align-items-center">
+                                    <h3 class="text-warning box mb-0">
+                                        <i id="iconoImpactoNetoTipo" class="ti ti-scale"></i>
                                     </h3>
                                 </div>
                                 <div class="p-3">
-                                    <h3 id="txtImpactoEconomicoNeto" class="text-success mb-0 fs-6"></h3>
-                                    <span>Impacto Economico Neto</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card overflow-hidden">
-                            <div class="d-flex flex-row">
-                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
-                                    <h3 class="text-danger box mb-0">
-                                        <i class="ti ti-alert-triangle"></i>
-                                    </h3>
-                                </div>
-                                <div class="p-3">
-                                    <h3 id="txtValorTotalSobrantes" class="text-danger mb-0 fs-6"></h3>
-                                    <span>Valor total Sobrantes</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card overflow-hidden">
-                            <div class="d-flex flex-row">
-                                <div class="p-3 bg-primary-subtle d-flex align-items-center">
-                                    <h3 class="text-primary-emphasis box mb-0">
-                                        <i class="ti ti-users"></i>
-                                    </h3>
-                                </div>
-                                <div class="p-3">
-                                    <h3 id="txtValorTotalFaltantes" class="text-primary-emphasis mb-0 fs-6"></h3>
-                                    <span>Valor Total Faltantes</span>
+                                    <h3 id="txtImpactoEconomicoNeto" class="text-warning mb-0 fs-6"></h3>
+                                    <span>Impacto económico neto</span>
                                 </div>
                             </div>
                         </div>
@@ -185,12 +172,28 @@
                             <div class="d-flex flex-row">
                                 <div class="p-3 bg-success-subtle d-flex align-items-center">
                                     <h3 class="text-success box mb-0">
-                                        <i class="ti ti-clock-play"></i>
+                                        <i class="ti ti-trending-up"></i>
                                     </h3>
                                 </div>
                                 <div class="p-3">
-                                    <h3 id="txtCantidadProductosImpactos" class="text-success mb-0 fs-6"></h3>
-                                    <span>Cantidad de Productos por impacto</span>
+                                    <h3 id="txtValorTotalSobrantes" class="text-success mb-0 fs-6"></h3>
+                                    <span>Valor total de sobrantes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                    <h3 class="text-danger box mb-0">
+                                        <i class="ti ti-trending-down"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtValorTotalFaltantes" class="text-danger mb-0 fs-6"></h3>
+                                    <span>Valor total de faltantes</span>
                                 </div>
                             </div>
                         </div>
@@ -201,12 +204,28 @@
                             <div class="d-flex flex-row">
                                 <div class="p-3 bg-warning-subtle d-flex align-items-center">
                                     <h3 class="text-warning box mb-0">
-                                        <i class="ti ti-clock-stop"></i>
+                                        <i class="ti ti-package"></i>
                                     </h3>
                                 </div>
                                 <div class="p-3">
-                                    <h3 id="txtCantidadProductosSinCosto" class="text-warning mb-0 fs-6"></h3>
-                                    <span>Cantidad Productos Sin Costo</span>
+                                    <h3 id="txtCantidadProductosImpactos" class="text-warning mb-0 fs-6"></h3>
+                                    <span>Productos con impacto</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-secondary-subtle d-flex align-items-center">
+                                    <h3 class="text-secondary box mb-0">
+                                        <i class="ti ti-package-off"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtCantidadProductosSinCosto" class="text-secondary mb-0 fs-6"></h3>
+                                    <span>Productos sin costo</span>
                                 </div>
                             </div>
                         </div>
@@ -248,12 +267,19 @@
                                     </select>
                                 </div>
 
+                                <!-- Seleccionar tipo de moneda -->
+                                <div class="col-md-4 mb-2">
+                                    <label for="slcMoneda" class="form-label">Tipo de Moneda</label>
+                                    <select id="slcMoneda" class="form-select">
+                                    </select>
+                                </div>
+
                                 @*<div class="col-md-4 mb-2">
-                                        <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
-                                        <label class="form-check-label" for="flexCheckDefault">
-                                            Mostrar Solo Diferencias
-                                        </label>
-                                    </div>*@
+            <input class="form-check-input" type="checkbox" value="" id="in_soloDiferencias">
+            <label class="form-check-label" for="flexCheckDefault">
+                Mostrar Solo Diferencias
+            </label>
+        </div>*@
                             </div>
                         </div>
                     </div>
@@ -270,9 +296,10 @@
                                 <th class="text-center">Producto</th>
                                 <th class="text-center">Ubicacion Inicial</th>
                                 <th class="text-center">Lote Inicial</th>
+                                <th class="text-center">Moneda</th>
                                 <th class="text-center">Costo Unitario</th>
                                 <th class="text-center">Stock Inicial</th>
-                                <th class="text-center">Stock final</th>
+                                <th class="text-center">Stock Contado</th>
                                 <th class="text-center">Diferencia</th>
                                 <th class="text-center">Impacto Economico</th>
                                 <th class="text-center">Estado</th>
@@ -390,6 +417,11 @@
             $('#slcEstado').on('change', function () {
                 CargarReporteValorizado(inventarioSeleccionado.codigo);
             });
+
+            // Filtro moneda
+            $('#slcMoneda').on('change', function () {
+                CargarReporteValorizado(inventarioSeleccionado.codigo);
+            });
         }
 
         async function LoadcbxInventario(idAlmacen) {
@@ -447,19 +479,20 @@
             const obj = {
                 codInventario: codInventario,
                 busqueda: $('#busquedaGeneral').val().trim(),
-                estado: parseInt($('#slcEstado').val(), 10) // 0, 1 o 2
+                estado: parseInt($('#slcEstado').val()),
+                moneda: $('#slcMoneda').val() || ""
             };
-
+            console.log(obj);
             try {
                 const response = await fetch("ObtenerReporteValorizado", {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(obj)
-                });
-
+                });               
                 if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
                 const result = await response.json();
+                console.log(result);
 
                 if (result.HUBO_ERROR || result.error) {
                     Swal.fire({
@@ -470,29 +503,83 @@
                     return;
                 }
 
-                CargarKPIs(result.Entity);
-                CargarTabla(result.Entity.tblReporteValorizadoBEs, result.Entity.footer);
+                CargarKPIs(result.Entity, $('#slcMoneda').val());
+                CargarTabla(result.Entity.tblReporteValorizadoBE, result.Entity.Footer);
+                CargarMonedas(result.Entity.tblMonedas);
             }
             catch (error) {
                 console.error("Error:", error);
             }
         }
 
-        function CargarKPIs(kpis) {
-            $('#txtEstadoInventario').text(kpis.Estado_Inventario || '-');
-            CambiarIconoEstado(kpis.Estado_Inventario);
-            $('#txtValorTotalInventario').text(formatearMoneda(kpis.Valorizado_Total_Inventariado));
-            $('#txtValorFinalInventario').text(formatearMoneda(kpis.Valor_final_Inventariado));
-            $('#txtImpactoEconomicoNeto').text(formatearMoneda(kpis.Impacto_Economico_Neto));
-            $('#txtValorTotalSobrantes').text(formatearMoneda(kpis.Valorizado_Sobrantes));
-            $('#txtValorTotalFaltantes').text(formatearMoneda(kpis.Valorizado_Faltantes));
-            $('#txtCantidadProductosImpactos').text(kpis.Cantidad_Productos_Impacto ?? '0');
-            $('#txtCantidadProductosSinCosto').text(kpis.Cantidad_Productos_Sin_Costo ?? '0');
-        }
+        function CargarKPIs(kpis, moneda) {
 
-        function formatearMoneda(valor) {
-            if (valor === null || valor === undefined) return 'S/ 0.00';
-            return 'S/ ' + Number(valor).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            $('#txtEstadoInventario').text(kpis.Estado_Inventario || '-');
+            $('#txtConteoActual').text(kpis.ConteoActual || '-');
+
+            CambiarIconoEstado(kpis.Estado_Inventario);
+
+            // Si está en "Todos", no mostrar valores monetarios
+            if (!moneda) {
+
+                $('#txtValorTotalInventario').text('-');
+                $('#txtValorFinalInventario').text('-');
+                $('#txtImpactoEconomicoNeto').text('-');
+                $('#txtValorTotalSobrantes').text('-');
+                $('#txtValorTotalFaltantes').text('-');
+
+                // No tendría sentido mostrar un impacto económico
+                // cuando estamos mezclando monedas.
+                CambiarIconoNeto(null);
+
+            } else {
+
+                $('#txtValorTotalInventario').text(
+                    formatearMoneda(
+                        kpis.Valorizado_Total_Inventariado,
+                        moneda
+                    )
+                );
+
+                $('#txtValorFinalInventario').text(
+                    formatearMoneda(
+                        kpis.Valor_final_Inventariado,
+                        moneda
+                    )
+                );
+
+                $('#txtImpactoEconomicoNeto').text(
+                    formatearMoneda(
+                        kpis.Impacto_Economico_Neto,
+                        moneda
+                    )
+                );
+
+                CambiarIconoNeto(kpis.Impacto_Economico_Neto);
+
+                $('#txtValorTotalSobrantes').text(
+                    formatearMoneda(
+                        kpis.Valorizado_Sobrantes,
+                        moneda
+                    )
+                );
+
+                $('#txtValorTotalFaltantes').text(
+                    formatearMoneda(
+                        kpis.Valorizado_Faltantes,
+                        moneda
+                    )
+                );
+            }
+
+            // KPIs que no dependen de la moneda
+            $('#txtCantidadProductosImpactos').text(
+                kpis.Cantidad_Productos_Impacto ?? '0'
+            );
+
+            $('#txtCantidadProductosSinCosto').text(
+                kpis.Cantidad_Productos_Sin_Costo ?? '0'
+            );
         }
 
         function CargarTabla(datos, footer) {
@@ -509,8 +596,9 @@
                 { data: "Producto", title: "Producto" },
                 { data: "Ubicacion_Inicial", title: "Ubicación Inicial", className: "text-center" },
                 { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" },
-                { data: "Costo_Unitario", title: "Costo Unitario", className: "text-end",
-                    render: (d) => formatearMoneda(d) },
+                { data: "Cod_Moneda", title: "Moneda", className: "text-center" },
+                { data: "Costo_Unitario", title: "Costo Unitario", className: "text-center",
+                    /*render: (d) => formatearMoneda(d) */},
                 { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
                 { data: "Stock_Final", title: "Stock final", className: "text-center" },
                 { data: "Diferencia", title: "Diferencia", className: "text-center",
@@ -519,10 +607,11 @@
                         return `<span class="${clase}">${d}</span>`;
                     }
                 },
-                { data: "Impacto_Economico", title: "Impacto Economico", className: "text-end",
+                { data: "Impacto_Economico", title: "Impacto Economico", className: "text-center",
                     render: function (d) {
                         let clase = d > 0 ? 'text-success' : (d < 0 ? 'text-danger' : '');
-                        return `<span class="${clase}">${formatearMoneda(d)}</span>`;
+                        /*return `<span class="${clase}">${formatearMoneda(d)}</span>`;*/
+                        return `<span class="${clase}">${d}</span>`;
                     }
                 },
                 { data: "Observacion", title: "Estado", className: "text-center" }
@@ -553,18 +642,19 @@
                 return;
             }
 
-            fila.append(`<td colspan="4" class="fw-bolder">TOTALES</td>`);
-            fila.append(`<td></td>`); // costo unitario, sin total
-            fila.append(`<td class="text-end fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
-            fila.append(`<td class="text-end fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
+            fila.append(`<td colspan="6" class="fw-bolder">TOTALES</td>`);
+            /*fila.append(`<td></td>`); // costo unitario, sin total*/
+            fila.append(`<td class="text-center fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
+            fila.append(`<td class="text-center fw-bold">${footer.StockFinalTotal ?? 0}</td>`);
 
             let diferencial = footer.StockDiferencial ?? 0;
             let claseDif = diferencial < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
-            fila.append(`<td class="text-end"><span class="${claseDif}">${diferencial}</span></td>`);
+            fila.append(`<td class="text-center"><span class="${claseDif}">${diferencial}</span></td>`);
 
             let impacto = footer.ImpactoEconomicoTotal ?? 0;
             let claseImp = impacto < 0 ? 'text-danger fw-bold' : 'text-success fw-bold';
-            fila.append(`<td class="text-end"><span class="${claseImp}">${formatearMoneda(impacto)}</span></td>`);
+            /*fila.append(`<td class="text-end"><span class="${claseImp}">${formatearMoneda(impacto)}</span></td>`);*/
+            fila.append(`<td class="text-center"><span class="${claseImp}">${impacto}</span></td>`);
 
             fila.append(`<td></td>`);
         }
@@ -579,6 +669,105 @@
             }
         }
 
+        function CambiarIconoNeto(valorNeto) {
+            console.log(valorNeto);
+            const $contenedor = $("#iconoImpactoNeto");
+            const $icono = $("#iconoImpactoNetoTipo");
+            const $valor = $("#txtImpactoEconomicoNeto");
+
+            // Limpiar clases anteriores
+            $contenedor.removeClass("bg-success-subtle bg-danger-subtle bg-warning-subtle");
+            $icono.removeClass("ti-scale ti-trending-up ti-trending-down");
+            $icono.parent().removeClass("text-success text-danger text-warning");
+            $valor.removeClass("text-success text-danger text-warning");
+
+            if (valorNeto > 0) {
+
+                // Impacto positivo
+                $contenedor.addClass("bg-success-subtle");
+                $icono.addClass("ti-trending-up-3");
+                $icono.parent().addClass("text-success");
+                $valor.addClass("text-success");
+
+            } else if (valorNeto < 0) {
+
+                // Impacto negativo
+                $contenedor.addClass("bg-danger-subtle");
+                $icono.addClass("ti-trending-down-3");
+                $icono.parent().addClass("text-danger");
+                $valor.addClass("text-danger");
+
+            } else {
+
+                // Sin impacto
+                $contenedor.addClass("bg-warning-subtle");
+                $icono.addClass("ti-scale");
+                $icono.parent().addClass("text-warning");
+                $valor.addClass("text-warning");
+            }
+        }
+
+        function CargarMonedas(monedas) {
+
+            const $select = $('#slcMoneda');
+            const monedaSeleccionada = $select.val();
+
+            $select.empty();
+
+            // Opción Todos
+            $select.append(
+                $('<option>', {
+                    value: '',
+                    text: 'Todos'
+                })
+            );
+
+            if (!monedas || monedas.length === 0) {
+                $select.val('');
+                return;
+            }
+
+            // Ordenar de mayor a menor cantidad de productos
+            const monedasOrdenadas = [...monedas].sort(
+                (a, b) => b.CantidadProducto - a.CantidadProducto
+            );
+
+            monedasOrdenadas.forEach(moneda => {
+
+                $select.append(
+                    $('<option>', {
+                        value: moneda.CodMoneda,
+                        text: `${moneda.CodMoneda} - ${moneda.DscMoneda}`
+                    })
+                );
+            });
+
+            // Mantener la selección anterior si todavía existe
+            if (
+                monedaSeleccionada !== null &&
+                monedaSeleccionada !== undefined &&
+                $select.find(`option[value="${monedaSeleccionada}"]`).length
+            ) {
+                $select.val(monedaSeleccionada);
+            }
+            else {
+                // Por defecto: Todos
+                $select.val('');
+            }
+        }
+
+        function formatearMoneda(valor, codMoneda) {
+
+            if (valor === null || valor === undefined) {
+                return '-';
+            }
+
+            return `${codMoneda} ${Number(valor).toLocaleString('es-PE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
+        }
+
         async function ExportarExcelValorizado() {
             if (!inventarioSeleccionado.codigo) {
                 Swal.fire({ icon: 'warning', title: 'Atención', text: 'Debe seleccionar un inventario primero' });
@@ -589,8 +778,9 @@
                 almacen: inventarioSeleccionado.almacen,
                 codInventario: inventarioSeleccionado.codigo,
                 busqueda: $('#busquedaGeneral').val().trim(),
-                estado: parseInt($('#slcEstado').val(), 10)
+                estado: parseInt($('#slcEstado').val())
             };
+            //console.log(obj);
 
             Swal.fire({
                 title: 'Generando Excel...',

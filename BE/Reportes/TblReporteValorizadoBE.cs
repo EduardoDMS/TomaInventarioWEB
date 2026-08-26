@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BE.Reportes
+﻿namespace BE.Reportes
 {
     public class TblReporteValorizadoBE
     {
@@ -12,6 +6,7 @@ namespace BE.Reportes
         public string Producto { get; set; }
         public string Ubicacion_Inicial { get; set; }
         public string Lote_Inicial { get; set; }
+        public string Cod_Moneda { get; set; }
         public decimal Costo_Unitario { get; set; }
         public decimal Stock_Inicial { get; set; }
         public decimal Stock_Final { get; set; }

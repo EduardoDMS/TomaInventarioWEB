@@ -197,6 +197,7 @@ namespace BL
             string codInventario,
             string busqueda = "",
             int p_impacto = 0,
+            string moneda = "",
             string order = null)
         {
             Response response = new Response();
@@ -208,16 +209,16 @@ namespace BL
                     response.MENSAJE_ERROR = "El Codigo de Inventario es Obligatorio";
                     return response;
                 }
-                response = new ReportePrincipalDAO().ReporteValorizado(codInventario, busqueda, p_impacto);
+                response = new ReportePrincipalDAO().ReporteValorizado(codInventario, busqueda, p_impacto, moneda);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                response.HUBO_ERROR= true;
-                response.MENSAJE_ERROR= ex.Message;
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
             }
             return response;
         }
-        
+
 
         // EN DESUSO
 

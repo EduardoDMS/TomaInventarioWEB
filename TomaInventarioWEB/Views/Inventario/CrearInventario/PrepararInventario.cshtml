@@ -12,6 +12,11 @@
                 <h4 class="mb-1 fw-semibold text-white">Preparación de Inventario</h4>
                 <h7 class="text-white opacity-75">Realice los preparativos para su próximo inventario</h7>
             </div>
+            <div class="d-flex gap-2">
+                <button id="btnResultadoImportacion" class="btn btn-success d-none d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#RImport_modal">
+                    <i class="ti-package-import fs-5 me-3"></i> Resultado de importación  
+                </button>
+            </div>
         </div>
     </div>
     <div class="card-body wizard-content">
@@ -345,28 +350,39 @@
 
                     <!-- TOTAL DE PRODUCTOS SIN CAMBIOS (GRIS)-->
                     @*<div class="card text-bg-muted">
-                        <div class="card-body text-white p-2">
-                            <div class="d-flex flex-row align-items-center">
-                                <div class="ms-3">
-                                    <h4 class="mb-0 text-white fs-6">Productos sin cambios</h4>
-                                </div>
-                                <div class="ms-auto">
-                                    <h2 id="lblSinCambios" class="fs-7 mb-0 text-white">
-                                        6540
-                                    </h2>
-                                </div>
-                            </div>
+                <div class="card-body text-white p-2">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="ms-3">
+                            <h4 class="mb-0 text-white fs-6">Productos sin cambios</h4>
                         </div>
-                    </div>*@
+                        <div class="ms-auto">
+                            <h2 id="lblSinCambios" class="fs-7 mb-0 text-white">
+                                6540
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
                 </div>
 
-                <div class="d-flex align-items-start mb-4" role="alert">
-                    <i class="ti ti-info-circle fs-5 me-2"></i>
-                    <div>
+                <!-- Seleccionar error -->
+                <div class="col mb-2">
+                    <label for="slcErrores" class="form-label">Filtrar errores</label>
+                    <select id="slcErrores" class="form-select form-select">
+                    </select>
+                </div>
+
+                <div class="d-flex align-items-start mb-4">
+                    <small>
+                        <i class="ti ti-info-circle fs-5 me-1"></i>
+                        La siguiente tabla solo muestra los productos <strong class="text-danger">erróneos</strong>.
+                    </small>
+                    @*<i class="ti ti-info-circle fs-5 me-2"></i>*@
+                    <!--<div>-->
                         @*<strong>Importante:</strong> Los registros con errores están resaltados en <span class="text-danger fw-semibold">rojo</span>.
-        Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel antes de importar nuevamente.*@
-                        <strong>La siguiente tabla solo muestra los productos <span class="text-danger fw-semibold">erróneos</span>.</strong>
-                    </div>
+                Revisa la columna "Mensaje" para conocer el motivo del error y corrige tu archivo Excel antes de importar nuevamente.*@
+                        <!--<strong>La siguiente tabla solo muestra los productos <span class="text-danger fw-semibold">erróneos</span>.</strong>
+                    </div>-->
                 </div>
 
                 <div class="table-responsive">
@@ -683,7 +699,7 @@
                     } else {
                         
                         const data = response.Entity;
-
+                        //console.log(data);
                         importacionId = data.importacionId;
 
                         setTimeout(() => {
@@ -699,7 +715,9 @@
                                 allowOutsideClick: false
                             }).then((result) => {
                                 if (result.isConfirmed || result.isDismissed) {
+                                    $("#btnResultadoImportacion").removeClass("d-none");
                                     Charge_RImport_Modal(data.ListaIncorrectos);
+                                    CargarSelectErrores(data.ResultadoErroresImportacion);
                                     $("#PasosPrepararInventario").steps("next");
                                     $("#lblImportados").text(data.TotalImportacion);
                                     $("#lblCorrectos").text(data.Correctos);
@@ -744,7 +762,49 @@
             });
         });
 
+        /* SELECT DINAMICO DE ERRORES DE IMPORTACION */
+        function CargarSelectErrores(listaErrores) {
 
+            const $select = $("#slcErrores");
+
+            $select.empty();
+
+            $select.append(
+                $('<option>', {
+                    value: '',
+                    text: 'TODOS LOS ERRORES'
+                })
+            );
+
+            listaErrores.forEach(function (error) {
+
+                $select.append(
+                    $('<option>', {
+                        value: error.TipoError,
+                        text: `${error.TipoError} (${error.CantidadError})`
+                    })
+                );
+
+            });
+        }
+
+        /* REALIZAR FILTRO DE ERRORES */
+        $("#slcErrores").on("change", function () {
+
+            const tipoError = $(this).val();
+
+            if (tipoError === "") {
+                RImport_tabla.column(6).search("").draw();
+                return;
+            }
+
+            const regex = '^' + $.fn.dataTable.util.escapeRegex(tipoError) + '$';
+
+            RImport_tabla
+                .column(6)
+                .search(regex, true, false)
+                .draw();
+        });
 
         /* DESDE LA OPCION AGREGAR MANUAL IR AL SIGUIENTE PASO */
         //document.getElementById("btnManual_crearInv").addEventListener("click", () => {

@@ -91,6 +91,14 @@ namespace BE
         public int Errores { get; set; }
         public int Correctos { get; set; }
         public int TotalImportacion { get; set; }
+
+        public List<ResultadoErroresImportacion> ResultadoErroresImportacion { get; set; }
+    }
+
+    public class ResultadoErroresImportacion
+    {
+        public string TipoError { get; set; }
+        public int CantidadError { get; set; }
     }
 
     public class CLISTA_DETALLEAPI

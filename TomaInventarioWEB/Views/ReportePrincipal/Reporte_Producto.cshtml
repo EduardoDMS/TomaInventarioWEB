@@ -548,7 +548,7 @@
 
                 // UMBRAL PARA FILTROS AL SERVIDOR
                 let totalProductos = result.Entity.ProductosInventariados;
-                modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
+                modoFiltrado = totalProductos >= 0 ? "SERVIDOR" : "LOCAL";
                 //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                 // CARGAR KPIS INVENTARIO

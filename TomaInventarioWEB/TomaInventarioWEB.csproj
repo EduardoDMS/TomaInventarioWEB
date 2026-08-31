@@ -4292,7 +4292,6 @@
     <Content Include="Plantillas\Plantilla_Ubicacion.xlsx" />
     <Content Include="Plantillas\1.CARGA - MAESTROS.XLSX" />
     <Content Include="Plantillas\2.CARGA - INVENTARIO.xlsx" />
-    <Content Include="Plantillas\Plantilla_Reportes.xlsx" />
     <Content Include="Content\matdash\fonts\tabler-icons\fonts\tabler-icons.eot" />
     <Content Include="Content\matdash\fonts\tabler-icons\fonts\tabler-icons.ttf" />
     <Content Include="Content\matdash\fonts\tabler-icons\fonts\tabler-icons.woff" />
@@ -4369,7 +4368,6 @@
     <Content Include="ConnectionStrings.config" />
     <Content Include="licencia.json" />
     <Content Include="Plantillas\Plantilla_Inventario.xlsx" />
-    <Content Include="Plantillas\Plantilla_Reporte_Nuevo.xlsx" />
     <Content Include="Plantillas\Plantilla_Reportes_Nuevo.xlsx" />
     <Content Include="Plantillas\Plantilla_Producto_Costos.xlsx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />

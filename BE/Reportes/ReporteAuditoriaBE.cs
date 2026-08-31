@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BE.Reportes
 {
@@ -14,14 +10,15 @@ namespace BE.Reportes
         public int Usuarios_Participantes { get; set; }
         public string Primera_Lectura { get; set; }
         public string Ultima_Lectura { get; set; }
+        public string TiempoTotalInventario { get; set; }
         public string Estado_Inventario { get; set; }
         public string Codigo_Inventario { get; set; }
         public int Conteo_Actual { get; set; }
 
         public List<TblReporteAuditoriaBE> TblReporteAuditoria { get; set; }
-        
+
         // agregado p 
-        public FooterAuditoriaBE Footer {  get; set; }
+        public FooterAuditoriaBE Footer { get; set; }
 
     }
 }

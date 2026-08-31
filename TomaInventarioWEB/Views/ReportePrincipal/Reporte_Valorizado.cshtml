@@ -480,9 +480,9 @@
                 codInventario: codInventario,
                 busqueda: $('#busquedaGeneral').val().trim(),
                 estado: parseInt($('#slcEstado').val()),
-                moneda: $('#slcMoneda').val() || ""
+                moneda: $('#slcMoneda').val()
             };
-            console.log(obj);
+            //console.log(obj);
             try {
                 const response = await fetch("ObtenerReporteValorizado", {
                     method: 'POST',
@@ -492,7 +492,7 @@
                 if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
                 const result = await response.json();
-                console.log(result);
+                //console.log(result);
 
                 if (result.HUBO_ERROR || result.error) {
                     Swal.fire({
@@ -670,7 +670,7 @@
         }
 
         function CambiarIconoNeto(valorNeto) {
-            console.log(valorNeto);
+            //console.log(valorNeto);
             const $contenedor = $("#iconoImpactoNeto");
             const $icono = $("#iconoImpactoNetoTipo");
             const $valor = $("#txtImpactoEconomicoNeto");
@@ -778,7 +778,8 @@
                 almacen: inventarioSeleccionado.almacen,
                 codInventario: inventarioSeleccionado.codigo,
                 busqueda: $('#busquedaGeneral').val().trim(),
-                estado: parseInt($('#slcEstado').val())
+                estado: parseInt($('#slcEstado').val()),
+                moneda: $('#slcMoneda').val()
             };
             //console.log(obj);
 

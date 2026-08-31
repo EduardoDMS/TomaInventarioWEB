@@ -57,7 +57,6 @@ namespace TomaInventarioWEB.Controllers
 
             return View();
         }
-
         public ActionResult FillCbxInventario()
         {
             CombosBE objCombo = new CombosBE();
@@ -69,7 +68,6 @@ namespace TomaInventarioWEB.Controllers
             //ViewBag.ListInventarios = listInventarios;
             return Json(listInventarios);
         }
-
         public ActionResult FillCbxAlmacenInv()
         {
             List<CombosBE> listAlmacenes = new List<CombosBE>();
@@ -77,7 +75,6 @@ namespace TomaInventarioWEB.Controllers
             //ViewBag.ListInventarios = listInventarios;
             return Json(listAlmacenes);
         }
-
         public ActionResult FillCbxUbicacionInv(int id_almacen)
         {
             List<CombosBE> list = new List<CombosBE>();
@@ -90,7 +87,6 @@ namespace TomaInventarioWEB.Controllers
                 MaxJsonLength = int.MaxValue
             };
         }
-
         public ActionResult FillCbxProductoInv(string dsc_prod)
         {
             List<CombosBE> list = new List<CombosBE>();
@@ -100,6 +96,7 @@ namespace TomaInventarioWEB.Controllers
         }
 
 
+        // INICIO CONTROLADOR A MODIFICAR PARA EL GESTIONAR INVENTARIO
 
         [HttpPost]
         public JsonResult ListarInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, int start, int length, int draw, string searchValue)
@@ -111,10 +108,25 @@ namespace TomaInventarioWEB.Controllers
             int sortColumnIndexfix = (Int32.Parse(sortColumnIndex)) + 1;
             string order = sortColumnIndexfix.ToString() + ' ' + sortDirection;
 
-            //var search = Request.Form["search[value]"].FirstOrDefault();
+            //var search = Request.Form["search[value]"].FirstOrDefault(); P_ORDER
 
 
             var response = new InventarioBL().ListarInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3, start.ToString(), length.ToString(), order, searchValue);
+
+            if (response.HUBO_ERROR || response.Entity == null)
+            {
+                return Json(new
+                {
+                    draw = draw,
+                    recordsFiltered = 0,
+                    recordsTotal = 0,
+                    data = new List<TblInventarioBE>(),
+                    Listfooter = new List<decimal> { 0, 0, 0, 0, 0, 0, 0 },
+                    error = response.MENSAJE_ERROR // opcional, para debug en consola del navegador
+                });
+            }
+
+
             List<TblInventarioBE> lista = new List<TblInventarioBE>();
             lista = (List<TblInventarioBE>)response.Entity;
             // var pagedData = lista.Skip(0).Take(10).ToList();
@@ -130,6 +142,8 @@ namespace TomaInventarioWEB.Controllers
             //var json = Json(new { data = List });
             //return json;
         }
+
+        // FIN DEL CONTROLADOR A MODIFICAR PARA GESTIONAR INVENTARIO
 
         [HttpPost]
         public JsonResult GetInventario(string idEmpresa, int Almacen, string CodInventario, string CodEstado, string flg_filtroFecha, string fch_inicio, string fch_fin)
@@ -167,18 +181,21 @@ namespace TomaInventarioWEB.Controllers
             var response = new InventarioBL().CerrarIventario(codInventario, conteo);
             return Json(response);
         }
+        
         [HttpPost]
         public JsonResult ConteoDiferencial(string codInventario, int conteo)
         {
             var response = new InventarioBL().ConteoDiferencial(codInventario, conteo);
             return Json(response);
         }
+        
         [HttpPost]
         public JsonResult ConteoReinicio(string codInventario, int conteo)
         {
             var response = new InventarioBL().ConteoReinicio(codInventario, conteo);
             return Json(response);
         }
+        
         [HttpPost]
         public JsonResult ListarUsuariosAsociados(string dscAlmacen)
         {
@@ -277,7 +294,6 @@ namespace TomaInventarioWEB.Controllers
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(dt);
             return Json(json);
         }
-
         public JsonResult ReportesInventario_WEB(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario, int draw,
             string start, string length, string searchValue)
         {
@@ -308,7 +324,6 @@ namespace TomaInventarioWEB.Controllers
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(dt);
             return Json(json);
         }
-
         public ActionResult ExportarExcel(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario, string inventario, string codigo)
         {
             var response = new InventarioBL().ReportesInventario(tipoReporte, Cod_inventario, DatoFiltro, NConteo, Usuario);
@@ -445,7 +460,6 @@ namespace TomaInventarioWEB.Controllers
                 FileDownloadName = "Reporte de Verificación.xlsx"
             };
         }
-
         public DataTable FiltrarDatatable(int tipoReporte, string DatoFiltro, DataTable dt)
         {
             DataTable dt_Ori = new DataTable();
@@ -519,12 +533,14 @@ namespace TomaInventarioWEB.Controllers
 
             return dt_New;
         }
+        
         [HttpPost]
         public ActionResult ValidarBloque1(string Cod_inventario, int Id_Almacen)
         {
             var response = new InventarioBL().ValidarDatosInventario(Cod_inventario, Id_Almacen);
             return Json(response);
         }
+        
         // YA NO ENVIA string xmlData
         public ActionResult InsertInv_InvDetalle(Guid importacionId, string CodInv, int Id_Almacen)
         {
@@ -566,7 +582,6 @@ namespace TomaInventarioWEB.Controllers
 
             return list;
         }
-
         public ActionResult CargarAlmacenesAPIExterna(string COD_ALM)
         {
             UTIL.APIExterna api = new UTIL.APIExterna();
@@ -646,9 +661,6 @@ namespace TomaInventarioWEB.Controllers
                 return response;
             }
         }
-
-
-
         private List<List<CLISTA_DETALLEAPI>> SplitListIntoChunks(List<CLISTA_DETALLEAPI> lista, int chunkSize)
         {
             return lista.Select((x, i) => new { Index = i, Value = x })
@@ -656,8 +668,6 @@ namespace TomaInventarioWEB.Controllers
                 .Select(x => x.Select(v => v.Value).ToList())
                 .ToList();
         }
-
-
         public static List<CLISTA_DETALLEAPI> Convert_XML_List(string xmlResponse)
         {
             try
@@ -682,7 +692,6 @@ namespace TomaInventarioWEB.Controllers
                 return new List<CLISTA_DETALLEAPI>(); // Retorna lista vacía en caso de error
             }
         }
-
         private string ConvertListToXml(List<CLISTA_DETALLEAPI> lista)
         {
             XDocument xmlDocument = new XDocument(
@@ -705,8 +714,6 @@ namespace TomaInventarioWEB.Controllers
 
             return xmlDocument.ToString();
         }
-
-
         //[HttpPost]
         //public JsonResult ExportConteoTotalizado(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3)
         //{

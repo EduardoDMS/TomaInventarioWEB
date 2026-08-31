@@ -45,6 +45,14 @@ namespace BE
         public string Dsc_Producto { get; set; }
         public string Lote_Producto { get; set; }
         public string Serie_Producto { get; set; }
+
+        // Nuevos parametros 
+        public string Ubicacion_inicial { get; set; }
+        public string Lote_inicial { get; set; }
+        public string Ubicacion_contada { get; set; }
+        public string Lote_Contado { get; set; }        
+        // fin de nuevos parametros
+
         //public int Stock_inicial { get; set; }
 
         public decimal Stock_inicial { get; set; }

@@ -55,7 +55,6 @@ namespace DAO
             }
             return response;
         }
-
         public Response cbxInventario()
         {
             Response response = new Response();
@@ -102,7 +101,6 @@ namespace DAO
             }
             return response;
         }
-
         public Response cbxInventariosPorAlmacen(string idAlmacen)
         {
             Response response = new Response();
@@ -153,7 +151,6 @@ namespace DAO
 
             return response;
         }
-
         public Response cbxUbicacion(int id_almacen)
         {
             Response response = new Response();
@@ -203,7 +200,6 @@ namespace DAO
             }
             return response;
         }
-
         public Response cbxProducto(string dsc_prod)
         {
             Response response = new Response();
@@ -253,7 +249,6 @@ namespace DAO
             }
             return response;
         }
-
         //public Response cbxInventariosCerrados()
         //{
         //    Response response = new Response();
@@ -352,7 +347,6 @@ namespace DAO
 
             return response;
         }
-
         public Response cbxUM()
         {
             Response response = new Response();
@@ -401,7 +395,6 @@ namespace DAO
             }
             return response;
         }
-
         public Response cbxMon()
         {
             Response response = new Response();
@@ -450,8 +443,6 @@ namespace DAO
             }
             return response;
         }
-
-
     }
 
 

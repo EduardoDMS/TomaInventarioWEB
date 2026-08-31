@@ -107,7 +107,20 @@ function CargarDatosInventario(Cod_Inventario) {
         }
     });
 }
+/*// TOGGLE MOSTRAR/OCULTAR COLUMNAS DE LOTE //*/
+$('#chkOcultar').on("change", function () {
+    aplicarVisibilidadLotes();
+});
 
+function aplicarVisibilidadLotes() {
+    if (typeof Inventario_tabla === 'undefined' || !Inventario_tabla) return;
+
+    var mostrar = !document.getElementById('chkOcultar').checked;
+    // checked = "Ocultar Lotes" activo -> mostrar = false
+
+    Inventario_tabla.column('col_lote_inicial:name').visible(mostrar);
+    Inventario_tabla.column('col_lote_contado:name').visible(mostrar);
+}
 //function ListarInventarios(Cod_Inventario) {
 //    return new Promise((resolve, reject) => {
 //        $.ajax({
@@ -122,7 +135,7 @@ function CargarDatosInventario(Cod_Inventario) {
 //                traerTodo:true
 //            },
 //            success: function (response) {
-//                resolve(response.data);
+//   case             resolve(response.data);
 //            },
 //            error: function (err) {
 //                reject(err);
@@ -146,6 +159,7 @@ function CargarTablaInventario(Cod_Inventario) {
     }
 
     Inventario_tabla = $('#tbl_Inventario').DataTable({
+       
         /*"data": Jsondata,*/
         "serverSide": true,
         /*"processing": true,*/
@@ -231,26 +245,49 @@ function CargarTablaInventario(Cod_Inventario) {
             $('#Head_Cont1').removeClass('text-primary');
             $('#Head_Cont2').removeClass('text-primary');
             $('#Head_Cont3').removeClass('text-primary');
+            //switch (ConteoActual) {
+            //    case 1: cabecera = cabecera + 'Head_Cont1'; row.querySelector(':nth-child(6)').classList.add('fw-bold', 'text-primary'); break;
+            //    case 2: cabecera = cabecera + 'Head_Cont2'; row.querySelector(':nth-child(7)').classList.add('fw-bold', 'text-primary'); break;
+            //    case 3: cabecera = cabecera + 'Head_Cont3'; row.querySelector(':nth-child(8)').classList.add('fw-bold', 'text-primary'); break;
+            //}
             switch (ConteoActual) {
-                case 1: cabecera = cabecera + 'Head_Cont1'; row.querySelector(':nth-child(6)').classList.add('fw-bold', 'text-primary'); break;
-                case 2: cabecera = cabecera + 'Head_Cont2'; row.querySelector(':nth-child(7)').classList.add('fw-bold', 'text-primary'); break;
-                case 3: cabecera = cabecera + 'Head_Cont3'; row.querySelector(':nth-child(8)').classList.add('fw-bold', 'text-primary'); break;
+                case 1: cabecera = '#Head_Cont1';
+                    const cont1 = row.querySelector(':nth-child(8)');
+                    if (cont1) { cont1.classList.add('fw-bold', 'text-primary'); }
+                    break;
+
+                case 2: cabecera = '#Head_Cont2';
+                    const cont2 = row.querySelector(':nth-child(9)');
+                    if (cont2) { cont2.classList.add('fw-bold', 'text-primary'); }
+                    break;
+
+                case 3:
+                    cabecera = '#Head_Cont3';
+                    const cont3 = row.querySelector(':nth-child(10)');
+                    if (cont3) { cont3.classList.add('fw-bold', 'text-primary'); }
+                    break;
             }
+            $(cabecera).addClass('text-primary');
             $(cabecera).addClass('text-primary');
 
 
-            //$(data).addClass('Font-W_700');
+            //$(data).addClass('Font-W_700'); P_ORDER createdRow
 
             //$(tdActual).addClass('Font-W_700'); 
 
         },
         "columns": [
-            { "data": "Cod_Producto", "title": "Cod. Producto" },
+            { "data": "Cod_Producto", "title": "Codigo" },
             { "data": "Dsc_Producto", "title": "Producto" },
-            { "data": "Cod_ubicacion", "title": "Cod. Ubicación" },
-            { "data": "Lote_Producto", "title": "Lote" },
+            //{ "data": "Cod_ubicacion", "title": "Cod. Ubicación" },
+            //{ "data": "Lote_Producto", "title": "Lote" },
+            //nuevo
+            { "data": "Ubicacion_inicial", "title": "Ubic. Inicial" },
+            { "data": "Lote_inicial", "title": "Lote Inicial", "name": "col_lote_inicial" },
+            { "data": "Ubicacion_contada", "title": "Ubic. Contada" },
+            { "data": "Lote_Contado", "title": "Lote Contado", "name":"col_lote_contado" },
             //{ "data": "Serie_Producto", "title": "SERIE" },
-            { "data": "Stock_inicial", "title": "Cantidad Inicial" },
+            { "data": "Stock_inicial", "title": "Stock Inicial" },
             { "data": "Conteo_1", "title": "Conteo 1", "class": "Col_Cont1" },
             { "data": "Conteo_2", "title": "Conteo 2", "class": "Col_Cont2" },
             { "data": "Conteo_3", "title": "Conteo 3", "class": "Col_Cont3" },
@@ -297,10 +334,15 @@ function CargarTablaInventario(Cod_Inventario) {
         "responsive": false,
         /*deferRender: true,*/
         "language": españolTbl,
-    });
 
+        "initComplete": function () {
+            aplicarVisibilidadLotes();
+        }
+    });
     //RecargarTabla();
+    
 }
+
 function CargarFooter(TStockInicial, TConteo1, TConteo2, TConteo3, TStockFinal, TStockDiferencial) {
     $('#FCantI').text(TStockInicial);
     $('#FCont1').text(TConteo1);
@@ -409,7 +451,7 @@ function ConteoDiferencial() {
         }
     });
 }
-
+// btnExportConteo 
 function ConteoReinicio() {
     let _url = 'ConteoReinicio'
     var obj = new Object();
@@ -535,15 +577,28 @@ function cerrarModalConteo() {
 
 
 
-/*// HABILITAR Y DESHABILITAR OPCIONES DE CONTEO REPORTE //*/
+/*// HABILITAR Y DESHABILITAR OPCIONES DE CONTEO REPORTE //*/ 
 let modalExportConteo;
 const btnExportConteo = document.getElementById("btnExportExcel");
 
-btnExportConteo.addEventListener("click", function () {
-    abrirModalExportConteo();
-    $('#1RadioExcel').prop('checked', true);
-    actualizarRadiosConteo(ConteoActual);
-});
+//btnExportConteo.addEventListener("click", function () {
+//    abrirModalExportConteo();
+//    $('#1RadioExcel').prop('checked', true);
+//    actualizarRadiosConteo(ConteoActual);
+//});
+
+
+if (btnExportConteo) {
+    btnExportConteo.addEventListener("click", function () {
+        abrirModalExportConteo();
+        $('#1RadioExcel').prop('checked', true);
+        actualizarRadiosConteo(ConteoActual);
+    });
+}
+
+
+
+//ConteoActual
 
 function actualizarRadiosConteo(conteoActual) {
     for (let i = 1; i <= 3; i++) {

@@ -58,7 +58,6 @@ namespace DAO
         //    }
         //    return response;
         //}
-
         public Response ValidarAcceso(string user, string pass, bool forzarSesion)
         {
             Response response = new Response();
@@ -101,8 +100,6 @@ namespace DAO
             }
             return response;
         }
-
-
         public Response ObtenerUsuarioLog(string user, string pass)
         {
             Response response = new Response();
@@ -151,8 +148,6 @@ namespace DAO
             }
             return response;
         }
-
-
         //deprecado
         //public Response LogoutUsuario(int idUsuario)
         //{
@@ -216,8 +211,6 @@ namespace DAO
         //    }
         //    return token;
         //}
-
-
         public EstadoSesionBE ObtenerEstadoSesion(int idUsuario)
         {
             EstadoSesionBE estado = null;
@@ -246,7 +239,6 @@ namespace DAO
 
             return estado;
         }
-
         public void CerrarSesion(int idUsuario)
         {
             SqlConnection cn = null;

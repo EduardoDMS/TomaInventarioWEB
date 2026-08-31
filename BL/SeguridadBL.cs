@@ -14,12 +14,10 @@ namespace BL
         {
             return new SeguridadDAO().ValidarAcceso(user, pass, forzarSesion);
         }
-
         public Response ObtenerUsuarioLog(string user, string pass)
         {
             return new SeguridadDAO().ObtenerUsuarioLog(user, pass);
         }
-
         //deprecado
         //public Response LogoutUsuario(int idUsuario)
         //{
@@ -34,7 +32,6 @@ namespace BL
         {
             return new SeguridadDAO().ObtenerEstadoSesion(idUsuario);
         }
-
         public void CerrarSesion(int idUsuario)
         {//que void bro 
             new SeguridadDAO().CerrarSesion(idUsuario);

@@ -11,7 +11,6 @@ namespace BL
     public class MantenimientosBL
     {
         private readonly LicenciaService _licencia;
-
         public MantenimientosBL()
         {
             _licencia = new LicenciaService(new LicenciaDbProvider());

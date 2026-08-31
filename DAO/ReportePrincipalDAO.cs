@@ -840,15 +840,6 @@ namespace DAO
             return response;
         }
 
-
-
-
-
-
-
-
-
-
         // EN DESUSO
 
         //public Response ObtenerReporteInventarioCerrado(

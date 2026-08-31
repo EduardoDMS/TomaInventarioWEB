@@ -66,8 +66,16 @@ namespace DAO
                                 entity.Id_producto = (reader["ID_PRODUCTO"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_PRODUCTO"].ToString());
                                 entity.Cod_Producto = (reader["COD_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["COD_PRODUCTO"].ToString();
                                 entity.Dsc_Producto = (reader["DSC_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["DSC_PRODUCTO"].ToString();
-                                entity.Lote_Producto = (reader["LOTE_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["LOTE_PRODUCTO"].ToString();
-                                entity.Serie_Producto = (reader["SERIE_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["SERIE_PRODUCTO"].ToString();
+
+                                //  NUEVOS PARAMETROS A RECIBIR DESDE EL BACKEND
+                                entity.Ubicacion_inicial = (reader["UBICACION_INICIAL"] == DBNull.Value) ? String.Empty : reader["UBICACION_INICIAL"].ToString();
+                                entity.Lote_inicial = (reader["LOTE_INICIAL"] == DBNull.Value) ? String.Empty : reader["LOTE_INICIAL"].ToString();
+                                entity.Ubicacion_contada = (reader["UBICACION_CONTADA"] == DBNull.Value) ? String.Empty : reader["UBICACION_CONTADA"].ToString();
+                                entity.Lote_Contado = (reader["LOTE_CONTADO"] == DBNull.Value) ? String.Empty : reader["LOTE_CONTADO"].ToString();
+                                // FIN DE LOS NUEVOS PARAMETROS A REVCIBIR
+                                
+                                //entity.Lote_Producto = (reader["LOTE_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["LOTE_PRODUCTO"].ToString();
+                                //entity.Serie_Producto = (reader["SERIE_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["SERIE_PRODUCTO"].ToString();
 
 
                                 entity.Stock_inicial = (reader["STOCK_INICIAL"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INICIAL"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
@@ -86,7 +94,7 @@ namespace DAO
                                 entity.Id_ubicacion = (reader["ID_UBICACION"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_UBICACION"].ToString());
                                 entity.Fch_inicio = (reader["FCH_INICIO"] == DBNull.Value) ? String.Empty : reader["FCH_INICIO"].ToString();
                                 entity.Fch_fin = (reader["FCH_FIN"] == DBNull.Value) ? String.Empty : reader["FCH_FIN"].ToString();
-                                entity.Cod_ubicacion = (reader["COD_UBICACION"] == DBNull.Value) ? String.Empty : reader["COD_UBICACION"].ToString();
+                               // entity.Cod_ubicacion = (reader["COD_UBICACION"] == DBNull.Value) ? String.Empty : reader["COD_UBICACION"].ToString();
                                 entity.Dsc_ubicacion = (reader["DSC_UBICACION"] == DBNull.Value) ? String.Empty : reader["DSC_UBICACION"].ToString();
 
                                 entity.FLG_ESNUEVO = (reader["FLG_ESNUEVO"] == DBNull.Value) ? String.Empty : reader["FLG_ESNUEVO"].ToString();
@@ -178,6 +186,9 @@ namespace DAO
             return response;
 
         }
+
+
+        // fin p 
         public Response CerrarIventario(string codInventario, int conteo)
         {
             Response response = new Response();
@@ -298,7 +309,6 @@ namespace DAO
             }
             return response;
         }
-
         public List<UsuarioBE> ListarUsuariosAsociados(string dscAlmacen)
         {
             List<UsuarioBE> Lista_result = new List<UsuarioBE>();
@@ -350,7 +360,6 @@ namespace DAO
             return Lista_result;
 
         }
-
         public Response ExportInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3)
         {
             DataSet ds = new DataSet();
@@ -459,7 +468,6 @@ namespace DAO
 
             return response;
         }
-
         public Response DrawnBarChart2(string CodInventario)
         {
             Response response = new Response();
@@ -501,7 +509,6 @@ namespace DAO
 
             return response;
         }
-
         public Response ReportesInventario_WEB(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario,
             string start, string length, string order, string search)
         {
@@ -663,7 +670,6 @@ namespace DAO
 
             return response;
         }
-
         public int ContarInventarios()
         {
             SqlCommand cmd = null;
@@ -694,8 +700,6 @@ namespace DAO
                 }
             }
         }
-
-
         // YA NO ENVIA string xmlData
         public Response InsertInv_InvDetalle(Guid importacionId, string UserReg, string CodInv, int Id_almacen)
         {
@@ -748,8 +752,6 @@ namespace DAO
             return response;
 
         }
-
-
         // AHORA SE ENVIA USERREG
         public Response ImportarDetalles(XmlDocument xml_import, int IdAlmacen, string UserReg, Guid importacionId)
         {
@@ -827,7 +829,6 @@ namespace DAO
             //return Lista_result;
             return response;
         }
-
         // MODIFICAR STOCK DE LA TABLA TEMPORAL DE LA DB
         public Response ModificarProductoStock(Guid importacionId, string codUbicacion, string codProducto, string lote, double stock)
         {
@@ -879,8 +880,6 @@ namespace DAO
             return response;
 
         }
-
-
         public Response GetAPI_StockALM()
         {
             //string Stringresult;
@@ -922,7 +921,6 @@ namespace DAO
             return response;
 
         }
-
         public int? CLI_SP_CREAR_INVENTARIO(string COD_ALMACEN, out bool huboError, out string mensaje)
         {
             int? idInventario = null;
@@ -970,7 +968,6 @@ namespace DAO
 
             return idInventario;
         }
-
         public void ImportarDetInventario_Movil(XmlDocument xml_import, string UserReg, int intIdInventario)
         {
             using (SqlConnection connection = new SqlConnection(Connection.AppStringConection()))
@@ -993,7 +990,6 @@ namespace DAO
             }
 
         }
-
         public void Insert_ASF_DETALLE_INVENTARIO(string UserReg)
         {
             SqlConnection conexion = null;

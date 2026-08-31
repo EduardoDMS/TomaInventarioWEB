@@ -62,7 +62,6 @@ namespace DAO
             return response;
 
         }
-
         public Response GetEmpresa()
         {
             Response response = new Response();
@@ -114,7 +113,6 @@ namespace DAO
             return response;
 
         }
-
         public Response SaveEmpresa(EmpresaBE empresa)
         {
             Response response = new Response();
@@ -174,7 +172,6 @@ namespace DAO
             return response;
 
         }
-
         public Response SaveCorreo(CorreoBE correo)
         {
             Response response = new Response();
@@ -222,7 +219,5 @@ namespace DAO
             return response;
 
         }
-
-
     }
 }

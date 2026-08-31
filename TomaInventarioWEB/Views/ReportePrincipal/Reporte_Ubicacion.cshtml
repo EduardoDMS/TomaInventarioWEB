@@ -554,7 +554,7 @@
 
                 // UMBRAL PARA FILTROS AL SERVIDOR
                 let totalUbicaciones = result.Entity.Ubicaciones_Totales;
-                modoFiltrado = totalUbicaciones > 0 ? "SERVIDOR" : "LOCAL";
+                modoFiltrado = totalUbicaciones >= 0 ? "SERVIDOR" : "LOCAL";
                 //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                 // CARGAR KPIS ubicacion

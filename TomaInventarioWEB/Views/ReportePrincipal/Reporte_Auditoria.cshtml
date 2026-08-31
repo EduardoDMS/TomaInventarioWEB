@@ -211,6 +211,22 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col">
+                        <div class="card overflow-hidden">
+                            <div class="d-flex flex-row">
+                                <div class="p-3 bg-info-subtle d-flex align-items-center">
+                                    <h3 class="text-info box mb-0">
+                                        <i class="ti ti-hourglass-empty"></i>
+                                    </h3>
+                                </div>
+                                <div class="p-3">
+                                    <h3 id="txtDuracionConteo" class="text-info mb-0 fs-6"></h3>
+                                    <span>Duración del inventario</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -531,7 +547,7 @@
 
                 // UMBRAL PARA FILTROS AL SERVIDOR
                 let totalProductos = result.Entity.Productos_Inventariados;
-                modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
+                modoFiltrado = totalProductos >= 0 ? "SERVIDOR" : "LOCAL";
                 //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                 // CARGAR KPIS ubicacion
@@ -558,6 +574,7 @@
             $('#txtUsuariosParticipantes').text(kpis.Usuarios_Participantes || '0');
             $('#txtPrimeraLectura').text(kpis.Primera_Lectura || '-');
             $('#txtUltimaLectura').text(kpis.Ultima_Lectura || '-');
+            $('#txtDuracionConteo').text(kpis.TiempoTotalInventario || '-');
         }
 
         function CargarTabla(datos, footerData) {
@@ -597,7 +614,7 @@
                     render: function (data, type, row) {
                         if (!row.Conteos) return "";
                         const conteo = row.Conteos.find(x => x.Nro_Conteo === n);
-                        if (!conteo) return "";
+                        if (!conteo) return "-";
                         return `
                         <div class="text-start">
                             <div><strong>Stock:</strong> ${conteo.Stock_Contado ?? 0}</div>

@@ -80,9 +80,24 @@ tabla = $('#dtTabla').DataTable({
     "paging": true,
     "pageLength": 10,
     "searching": false,
-    "lengthChange": true
-    //,
-    //"language": españolTbl
+    "lengthChange": true,
+    "responsive": true,
+    "language": {
+        "emptyTable": "No hay información disponible",
+        "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+        "lengthMenu": "Mostrar _MENU_ registros",
+        "loadingRecords": "Cargando...",
+        "processing": "Procesando...",
+        "search": "Buscar:",
+        "zeroRecords": "No se encontraron registros",
+        "paginate": {
+            "first": "Primero",
+            "last": "Último",
+            "next": "Siguiente",
+            "previous": "Anterior"
+        }
+    }
 });
 
 $('#btn_filtrar').on('click', function () {

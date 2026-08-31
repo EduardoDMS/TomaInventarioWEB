@@ -110,7 +110,7 @@ namespace BL
             return inventarioDAO.ModificarProductoStock(importacionId, codUbicacion, codProducto, lote, stock);
         }
 
-        public List<DetInventarioImportBE> ImportarDetalles(string xml, int IdAlmacen, string UserReg, Guid importacionId)
+        public Response ImportarDetalles(string xml, int IdAlmacen, string UserReg, Guid importacionId)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);

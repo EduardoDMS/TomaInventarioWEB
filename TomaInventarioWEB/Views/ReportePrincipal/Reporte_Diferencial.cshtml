@@ -439,7 +439,7 @@
                     if (modoFiltrado === "SERVIDOR") {
                         CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
                     } else {
-                        tblReporteInventario.column(5).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                        tblReporteInventario.column(6).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
                     }
                 });
 
@@ -448,7 +448,7 @@
                     if (modoFiltrado==="SERVIDOR") {
                         CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
                     } else {
-                        tblReporteInventario.column(6).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                        tblReporteInventario.column(7).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
                     }
                 });
             }
@@ -552,7 +552,7 @@
 
                     // UMBRAL PARA FILTROS AL SERVIDOR
                     let totalProductos = result.Entity.ProductosInventariados;
-                    modoFiltrado = totalProductos > 0 ? "SERVIDOR" : "LOCAL";
+                    modoFiltrado = totalProductos >= 0 ? "SERVIDOR" : "LOCAL";
                     //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
 
                     // CARGAR KPIS INVENTARIO

@@ -751,14 +751,17 @@ namespace DAO
 
 
         // AHORA SE ENVIA USERREG
-        public List<DetInventarioImportBE> ImportarDetalles(XmlDocument xml_import, int IdAlmacen, string UserReg, Guid importacionId)
+        public Response ImportarDetalles(XmlDocument xml_import, int IdAlmacen, string UserReg, Guid importacionId)
         {
             Response response = new Response();
 
             SqlConnection conexion = null;
             SqlCommand comando = null;
             SqlDataReader reader = null;
+
             List<DetInventarioImportBE> Lista_result = new List<DetInventarioImportBE>();
+            List<ResultadoErroresImportacion> ListaErrores = new List<ResultadoErroresImportacion>();
+
             try
             {
                 using (conexion = new SqlConnection(Connection.AppStringConection()))
@@ -791,10 +794,23 @@ namespace DAO
                                 Importobj.Desc_Error = (reader["Desc_Error"] == DBNull.Value) ? String.Empty : reader["Desc_Error"].ToString();
                                 Lista_result.Add(Importobj);
                             }
+                            if (reader.NextResult())
+                            {
+                                while (reader.Read())
+                                {
+                                    ResultadoErroresImportacion filaError = new ResultadoErroresImportacion();
+
+                                    filaError.TipoError = (reader["TipoError"] == DBNull.Value) ? String.Empty : reader["TipoError"].ToString();
+                                    filaError.CantidadError = (reader["Cantidad"] == DBNull.Value) ? 0 : Int32.Parse(reader["Cantidad"].ToString());
+
+                                    ListaErrores.Add(filaError);
+                                }
+                            }
                         }
                     }
                 }
-                //response.Entity = Lista_result;
+                response.Entity = Lista_result;
+                response.resultadoErroresImportacion = ListaErrores;
             }
             catch (Exception e)
             {
@@ -808,8 +824,8 @@ namespace DAO
                 if (reader != null) reader.Dispose();
             }
 
-            return Lista_result;
-
+            //return Lista_result;
+            return response;
         }
 
         // MODIFICAR STOCK DE LA TABLA TEMPORAL DE LA DB

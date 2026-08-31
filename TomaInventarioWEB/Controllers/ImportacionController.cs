@@ -214,7 +214,7 @@ namespace TomaInventarioWEB.Controllers
             //SE CREA IMPORTACIONID Y SE ENVIA
             Guid importacionId = Guid.NewGuid();
 
-            Response response = new BE.Response();
+            Response response = new Response();
             List<DetInventarioImportBE> ListaResult = new List<DetInventarioImportBE>();
 
             if (archivo == null || archivo.ContentLength <= 0)
@@ -261,12 +261,10 @@ namespace TomaInventarioWEB.Controllers
 
                     var dataAccess = new InventarioBL();
 
-                    ListaResult = dataAccess.ImportarDetalles(
-                         xmlData,
-                         IdAlmacen,
-                         Session["UserName"].ToString(),
-                         importacionId
-                    );
+
+                    response = dataAccess.ImportarDetalles(xmlData, IdAlmacen, Session["UserName"].ToString(), importacionId);
+
+                    ListaResult = (List<DetInventarioImportBE>)response.Entity;
 
                     //0: error, 1: correcto
                     // TODO ENVIAR AL RESPONSE Y IMPRIMIR EN FRONT
@@ -278,7 +276,8 @@ namespace TomaInventarioWEB.Controllers
                         ListaIncorrectos = ListaResult.Where(x => x.Flg_Pass == 0).ToList(),
                         Errores = ListaResult.Count(x => x.Flg_Pass == 0),
                         Correctos = ListaResult.Count(x => x.Flg_Pass == 1),
-                        TotalImportacion = ListaResult.Count()
+                        TotalImportacion = ListaResult.Count(),
+                        ResultadoErroresImportacion = response.resultadoErroresImportacion
                     };
 
                     response.Entity = resultado;

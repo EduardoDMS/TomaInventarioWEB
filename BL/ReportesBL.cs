@@ -18,12 +18,10 @@ namespace BL
         {
             return new ReportesDAO().TablaDetalle_WEB(cod_Inventario, NConteo, start, length, order, search);
         }
-
         public Response TablaDetalle(string cod_Inventario, int NConteo)
         {
             return new ReportesDAO().TablaDetalle(cod_Inventario, NConteo);
         }
-
         public Response TablaLecturas(string cod_Inventario, int NConteo)
         {
             return new ReportesDAO().TablaLecturas(cod_Inventario, NConteo);

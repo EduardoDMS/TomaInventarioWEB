@@ -18,7 +18,6 @@ namespace BL
         {
             return new ConfigDAO().GetEmpresa();
         }
-
         public Response SaveEmpresa(EmpresaBE empresa)
         {
             return new ConfigDAO().SaveEmpresa(empresa);

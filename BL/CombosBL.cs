@@ -25,7 +25,6 @@ namespace BL
         {
             return new CombosDAO().cbxUM();
         }
-
         public Response cbxMon()
         {
             return new CombosDAO().cbxMon();
@@ -34,7 +33,6 @@ namespace BL
         {
             return new CombosDAO().cbxInventariosCerrados();
         }
-
         public Response cbxInventariosPorAlmacen(string idAlmacen)
         {
             return new CombosDAO().cbxInventariosPorAlmacen(idAlmacen);

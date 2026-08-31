@@ -16,16 +16,18 @@ namespace BL
             _licencia = new LicenciaService(new LicenciaDbProvider());//newbdProvider
         }
 
+        // modificacion nueva
+
         public Response ListarInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, string start, string legnth, string order, string search)
         {
             return new InventarioDAO().ListarInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3, start, legnth, order, search);
         }
-
         public Response GetInventario(string idEmpresa, int Almacen, string CodInventario, string CodEstado, string flg_filtroFecha, string fch_inicio, string fch_fin)
         {
             return new InventarioDAO().GetInventario(idEmpresa, Almacen, CodInventario, CodEstado, flg_filtroFecha, fch_inicio, fch_fin);
         }
 
+        //fin modificacion nueva
         public Response CerrarIventario(string codInventario, int conteo)
         {
             return new InventarioDAO().CerrarIventario(codInventario, conteo);

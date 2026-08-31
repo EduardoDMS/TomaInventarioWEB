@@ -61,7 +61,6 @@ namespace DAO
             }
             return response;
         }
-
         public Response TablaDetalle_WEB(string cod_Inventario, int NConteo, string start, string length, string order, string search)
         {
             Response response = new Response();
@@ -121,7 +120,6 @@ namespace DAO
             }
             return response;
         }
-
         public Response TablaDetalle(string cod_Inventario, int NConteo)
         {
             Response response = new Response();
@@ -170,7 +168,6 @@ namespace DAO
             }
             return response;
         }
-
         public Response TablaLecturas(string cod_Inventario, int NConteo)
         {
             Response response = new Response();
@@ -220,7 +217,5 @@ namespace DAO
             }
             return response;
         }
-
-
     }
 }

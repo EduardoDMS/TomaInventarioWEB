@@ -2,6 +2,7 @@
 using BL;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -181,21 +182,21 @@ namespace TomaInventarioWEB.Controllers
             var response = new InventarioBL().CerrarIventario(codInventario, conteo);
             return Json(response);
         }
-        
+
         [HttpPost]
         public JsonResult ConteoDiferencial(string codInventario, int conteo)
         {
             var response = new InventarioBL().ConteoDiferencial(codInventario, conteo);
             return Json(response);
         }
-        
+
         [HttpPost]
         public JsonResult ConteoReinicio(string codInventario, int conteo)
         {
             var response = new InventarioBL().ConteoReinicio(codInventario, conteo);
             return Json(response);
         }
-        
+
         [HttpPost]
         public JsonResult ListarUsuariosAsociados(string dscAlmacen)
         {
@@ -205,87 +206,182 @@ namespace TomaInventarioWEB.Controllers
             return json;
         }
 
-        // REPORTE DE CONTEOS DESDE GESTION INVENTARIO
-        public ActionResult ExportInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, string inventario, string codigo)
+        // NUEVO REPARTIR DIFERENCIAS
+        [HttpPost]
+        public JsonResult GenerarParticipaciones(int idInventarioCerrado, int idInventarioNuevo, int minutosLimite = 2)
         {
-            var response = new InventarioBL().ExportInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3);
-            bool CTotalizado = false;
-            if (NRO_CONTEO_1 == 1 && NRO_CONTEO_2 == 2 && NRO_CONTEO_3 == 3) { CTotalizado = true; }
-            DataTable dt = (DataTable)response.Entity;
-
-            // Crear una nueva instancia de MemoryStream
-            MemoryStream ms = new MemoryStream();
-            string plantilla = Server.MapPath(@"~\Plantillas\Plantilla_Reportes.xlsx");
-            using (FileStream fs = System.IO.File.OpenRead(plantilla))
-            using (ExcelPackage excelPackage = new ExcelPackage(fs))
-            {
-                ExcelWorkbook excelWorkBook = excelPackage.Workbook;
-                ExcelWorksheet excelWorksheet = excelWorkBook.Worksheets[1];
-
-                // Agregar título en la celda D3
-                string titulo = "";
-
-                DataRow FilaVacia = dt.NewRow();
-                dt.Rows.Add(FilaVacia);
-                string DatoFiltro = "";
-                if (NRO_CONTEO_1 == 1) { DatoFiltro = "1"; }
-                if (NRO_CONTEO_2 == 2) { DatoFiltro = "2"; }
-                if (NRO_CONTEO_3 == 3) { DatoFiltro = "3"; }
-                if (CTotalizado) { DatoFiltro = "Totalizado"; }
-
-                titulo = "" + inventario + " - Conteo " + DatoFiltro;
-
-                excelWorksheet.Cells["D3"].Value = titulo;
-                excelWorksheet.Cells["E8"].Value = inventario;
-                excelWorksheet.Cells["G8"].Value = codigo;
-
-
-                // Escribir las cabeceras en el archivo Excel
-                for (int i = 0; i < dt.Columns.Count; i++)
-                {
-                    excelWorksheet.Cells[11, i + 1].Value = dt.Columns[i].ColumnName;
-                }
-
-                // Escribir los datos en el archivo Excel
-                if (dt.Rows.Count > 0)
-                {
-                    excelWorksheet.Cells["A12"].LoadFromDataTable(dt, false);
-                }
-
-                // Auto-ajustar columnas
-                excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
-
-                string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
-                if (System.IO.File.Exists(rutaImagen))
-                {
-                    //System.Drawing.Image imagen = System.Drawing.Image.FromFile(Server.MapPath(@"~\Assets\IMG\LogoExcel.png"));
-                    //// Agregar imagen en la celda A1
-                    //var picture = excelWorksheet.Drawings.AddPicture("Imagen", imagen);
-                    //picture.SetPosition(0, 0); // Posición de la celda A1
-                    //picture.SetSize(260, 111); // Tamaño de la imagen (en píxeles)
-
-                    using (System.Drawing.Image imagen = System.Drawing.Image.FromFile(rutaImagen))
-                    {
-                        // Agregar imagen en la celda A1
-                        var picture = excelWorksheet.Drawings.AddPicture("Imagen", imagen);
-                        picture.SetPosition(0, 0); // Posición de la celda A1
-                        picture.SetSize(260, 111); // Tamaño de la imagen (en píxeles)
-                    } // La imagen se libera automáticamente al salir del bloque using
-
-                }
-
-                // Guardar el archivo Excel en el MemoryStream
-                excelPackage.SaveAs(ms);
-            }
-            // Establecer la posición del MemoryStream al principio
-            ms.Position = 0;
-            // Devolver el archivo Excel como un FileStreamResult
-            return new FileStreamResult(ms, "application/xlsx")
-            {
-                FileDownloadName = "Reporte Conteo.xlsx"
-            };
-
+            var response = new InventarioBL().GenerarParticipaciones(idInventarioCerrado, idInventarioNuevo, minutosLimite);
+            return Json(response);
         }
+
+        // REPORTE DE CONTEOS DESDE GESTION INVENTARIO
+        [HttpPost]
+        public ActionResult ExportInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, string searchValue, string almacen, string codigoInventario, string conteoActual, string estadoInventario)
+        {
+            try
+            {
+                var response = new InventarioBL().ListarInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3, "0", "", "COD_PRODUCTO ASC", searchValue);
+
+                if (response == null ||
+                   response.HUBO_ERROR ||
+                   response.Entity == null)
+                {
+                    throw new Exception(
+                        response?.MENSAJE_ERROR ??
+                        "Error al obtener los datos del reporte"
+                    );
+                }
+
+                List<TblInventarioBE> lista = new List<TblInventarioBE>();
+                List<decimal> Listfooter = new List<decimal>();
+
+
+                lista = (List<TblInventarioBE>)response.Entity;
+                Listfooter = (List<decimal>)response.footerTable;
+
+                MemoryStream ms = new MemoryStream();
+                string plantilla = Server.MapPath(@"~\Plantillas\Plantilla_Reportes_Nuevo.xlsx");
+
+                using (FileStream fs = System.IO.File.OpenRead(plantilla))
+                using (ExcelPackage excelPackage = new ExcelPackage(fs))
+                {
+                    ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets[1];
+
+
+                    // LOGO - FILA 1
+                    string rutaImagen = Server.MapPath(@"~\Assets\IMG\LogoExcel.png");
+                    if (System.IO.File.Exists(rutaImagen))
+                    {
+                        using (System.Drawing.Image imagen = System.Drawing.Image.FromFile(rutaImagen))
+                        {
+                            var picture = excelWorksheet.Drawings.AddPicture("Imagen", imagen);
+                            picture.SetSize(240, 100);
+                            picture.SetPosition(1, 5, 1, 5);
+                        }
+                    }
+
+                    // TITULO - FILA 2
+                    excelWorksheet.Cells["D2"].Value = "AVANCE DE INVENTARIO";
+
+                    // INFORMACIÓN DEL INVENTARIO - FILA 4
+                    excelWorksheet.Cells["E4"].Value = almacen;
+                    excelWorksheet.Cells["E5"].Value = codigoInventario;
+                    excelWorksheet.Cells["E6"].Value = estadoInventario;
+                    excelWorksheet.Cells["E7"].Value = conteoActual;
+
+
+                    // CABECERA DE TABLA - FILA 12
+                    string[] headers = { "CÓDIGO", "PRODUCTO", "UBICACIÓN INICIAL", "LOTE INICIAL", "UBICACION CONTADA", "LOTE CONTADO", "STOCK INICIAL", "CONTEO 1", "CONTEO 2", "CONTEO 3", "STOCK FINAL", "DIFERENCIA" };
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        var cell = excelWorksheet.Cells[9, i + 2];
+                        cell.Value = headers[i];
+                        cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        cell.Style.Fill.BackgroundColor.SetColor(
+                            System.Drawing.ColorTranslator.FromHtml("#305496")
+                        );
+                    }
+
+                    excelWorksheet.Cells["B9:M9"].AutoFilter = true;
+
+                    // CONTENIDO DE TABLA - FILA 13
+                    int filaInicio = 10;
+                    foreach (var item in lista)
+                    {
+                        excelWorksheet.Cells[filaInicio, 2].Value = item.Cod_Producto;
+                        excelWorksheet.Cells[filaInicio, 3].Value = item.Dsc_Producto;
+                        excelWorksheet.Cells[filaInicio, 4].Value = item.Ubicacion_inicial;
+                        excelWorksheet.Cells[filaInicio, 5].Value = item.Lote_inicial;
+                        excelWorksheet.Cells[filaInicio, 6].Value = item.Ubicacion_contada;
+                        excelWorksheet.Cells[filaInicio, 7].Value = item.Lote_Contado;
+                        excelWorksheet.Cells[filaInicio, 8].Value = item.Stock_inicial;
+                        excelWorksheet.Cells[filaInicio, 9].Value = item.Conteo_1;
+                        excelWorksheet.Cells[filaInicio, 10].Value = item.Conteo_2;
+                        excelWorksheet.Cells[filaInicio, 11].Value = item.Conteo_3;
+                        excelWorksheet.Cells[filaInicio, 12].Value = item.Stock_Final;
+                        excelWorksheet.Cells[filaInicio, 13].Value = item.Stock_Diferencial;
+
+                        filaInicio++;
+                    }
+
+                    // FOOTER TOTALES
+                    int filaTotal = 10 + lista.Count + 1;
+                    excelWorksheet.Cells[filaTotal, 2].Value = "Totales:";
+                    excelWorksheet.Cells[filaTotal, 2].Style.Font.Bold = true;
+
+                    excelWorksheet.Cells[filaTotal, 8].Value = Listfooter[1]; // Stock Inicial
+                    excelWorksheet.Cells[filaTotal, 9].Value = Listfooter[2]; // Conteo 1
+                    excelWorksheet.Cells[filaTotal, 10].Value = Listfooter[3]; // Conteo 2
+                    excelWorksheet.Cells[filaTotal, 11].Value = Listfooter[4]; // Conteo 3
+                    excelWorksheet.Cells[filaTotal, 12].Value = Listfooter[5]; // Stock Final
+                    excelWorksheet.Cells[filaTotal, 13].Value = Listfooter[6]; // Diferencia
+
+                    // Formato para totales
+                    excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, 9].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, 10].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, 11].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, 12].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, 13].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, 13].Style.Font.Color.SetColor(
+                        Listfooter[6] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
+                    );
+
+                    // Auto-ajustar columnas
+                    excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
+                    for (int i = 1; i <= excelWorksheet.Dimension.End.Column; i++)
+                    {
+                        excelWorksheet.Column(i).Width += 2;
+                    }
+
+                    excelPackage.SaveAs(ms);
+                }
+                // Establecer la posición del MemoryStream al principio
+                ms.Position = 0;
+                // Devolver el archivo Excel como un FileStreamResult
+                return new FileStreamResult(
+                        ms,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                {
+                    FileDownloadName =
+                            $"Avance_Inventario_{codigoInventario}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+                };
+            }
+            catch (Exception ex)
+            {
+                // Manejo del error
+                return new HttpStatusCodeResult(
+                    500,
+                    ex.ToString()
+                );
+            }
+        }
+
+        //[HttpPost]
+        //public ActionResult ExportInventario(
+        //     string COD_INVENTARIO,
+        //     int NRO_CONTEO_1,
+        //     int NRO_CONTEO_2,
+        //     int NRO_CONTEO_3,
+        //     string searchValue,
+        //     string almacen,
+        //     string codigoInventario,
+        //     string conteoActual,
+        //     string estadoInventario)
+        //{
+        //    var response = new InventarioBL().ListarInventario(
+        //        COD_INVENTARIO,
+        //        NRO_CONTEO_1,
+        //        NRO_CONTEO_2,
+        //        NRO_CONTEO_3,
+        //        "0",
+        //        "",
+        //        "COD_PRODUCTO ASC",
+        //        searchValue);
+
+        //    return Content("BL OK");
+        //}
         public JsonResult DrawnBarChart(string CodInventario, int tipoGrafico)
         {
             InventarioBL response = new InventarioBL();
@@ -533,14 +629,14 @@ namespace TomaInventarioWEB.Controllers
 
             return dt_New;
         }
-        
+
         [HttpPost]
         public ActionResult ValidarBloque1(string Cod_inventario, int Id_Almacen)
         {
             var response = new InventarioBL().ValidarDatosInventario(Cod_inventario, Id_Almacen);
             return Json(response);
         }
-        
+
         // YA NO ENVIA string xmlData
         public ActionResult InsertInv_InvDetalle(Guid importacionId, string CodInv, int Id_Almacen)
         {

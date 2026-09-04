@@ -5,7 +5,7 @@
 }
 <link href="~/Content/matdash/libs/apexcharts/dist/apexcharts.css" rel="stylesheet" />
 
-<div class="card" id="GestorPrincipal" timer=" @ViewBag.reloadTable">
+<div class="card" id="GestorPrincipal" timer="@ViewBag.reloadTable">
     <!-- Titulo -->
     <div class="card-header card__cabecera">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 card-cabecera__mobile">
@@ -82,7 +82,6 @@
 
     <script nonce="@nonce">
 
-        //console.log(document.querySelectorAll("#reportes").length);
         const selectorInventario = document.getElementById("cbxInventarioP");
         const contenidoTabs = document.getElementById("cntTabs");
         const contenidoGestion = document.getElementById("cntGestion");
@@ -103,8 +102,87 @@
         });
 
 
+        // Descargar reporte en excel
+        async function ExportInventario() {
+            const obj = {
+                COD_INVENTARIO: Codigo_inventario,
+                NRO_CONTEO_1: 0,
+                NRO_CONTEO_2: 0,
+                NRO_CONTEO_3: 0,
+                almacen: Codigo_almacen,
+                codigoInventario: Codigo_inventario,
+                conteoActual: ConteoActual,
+                estadoInventario: EstadoInventario.toUpperCase(),
+                searchValue: $('input[type="search"][aria-controls="tbl_Inventario"]').val()
+            };
+            //console.log(obj);
+
+            Swal.fire({
+                title: 'Generando Excel...',
+                html: 'Por favor espere',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+
+                const response = await fetch(
+                    '@Url.Action("ExportInventario", "Inventario")',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+
+                    console.error("ERROR DEL SERVIDOR:");
+                    console.error(errorText);
+
+                    throw new Error(errorText || 'No se pudo generar el archivo Excel.');
+                }
+
+                // Obtener archivo
+                const blob = await response.blob();
+
+                // Crear URL temporal
+                const url = window.URL.createObjectURL(blob);
+
+                // Crear enlace de descarga
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Avance_Inventario_${obj.codigoInventario}.xlsx`;
+
+                document.body.appendChild(a);
+                a.click();
+
+                // Limpiar
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+                Swal.close();
+
+            } catch (error) {
+
+                console.error(error);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Ocurrió un error al generar el Excel.'
+                });
+            }
+        }
+
         /*// REPORTE DE CONTEOS //*/
-        function ExportInventario(SlcConteo) {
+        @*function ExportInventario(SlcConteo) {
 
             var _url = '@Url.Content("~/")Inventario/ExportInventario/';
             var obj = new Object();
@@ -113,8 +191,10 @@
             if (SlcConteo === 1 || SlcConteo === 4) { obj.NRO_CONTEO_1 = 1; } else { obj.NRO_CONTEO_1 = 0; }
             if (SlcConteo === 2 || SlcConteo === 4) { obj.NRO_CONTEO_2 = 2; } else { obj.NRO_CONTEO_2 = 0; }
             if (SlcConteo === 3 || SlcConteo === 4) { obj.NRO_CONTEO_3 = 3; } else { obj.NRO_CONTEO_3 = 0; }
-            obj.inventario = Codigo_almacen;
-            obj.codigo = Codigo_inventario;
+            obj.almacen = Codigo_almacen;
+            obj.codigoInventario = Codigo_inventario;
+            obj.conteoActual = ConteoActual;
+            obj.estadoInventario = EstadoInventario.toUpperCase();
 
             var _xhr = new XMLHttpRequest();
             _xhr.open('GET', _url + '?COD_INVENTARIO=' + obj.COD_INVENTARIO + '&NRO_CONTEO_1=' + obj.NRO_CONTEO_1
@@ -144,15 +224,6 @@
             }
             // Enviar la solicitud
             _xhr.send();
-        }
-
-        //$('#cbxInventarioP').select2({
-        //    theme: 'bootstrap-5',
-        //    width: '100%',
-        //    dropdownPosition: 'below',
-        //    dropdownAutoWidth: true,
-        //    allowClear: false,
-        //});
-
+        }*@
     </script>
 }

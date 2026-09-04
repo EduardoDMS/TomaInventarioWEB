@@ -355,3 +355,12 @@ tr.row-nuevo > td {
         padding:1.5rem 5rem;
     }
 }
+
+/* Gestion de inventario */
+.cabecera-conteo-actual {
+    font-size: 1.1rem !important;
+    font-weight: 700;
+}
+.fuente-conteo-actual {
+    font-size: 1.05rem !important;
+}

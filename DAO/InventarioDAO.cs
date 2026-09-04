@@ -73,7 +73,7 @@ namespace DAO
                                 entity.Ubicacion_contada = (reader["UBICACION_CONTADA"] == DBNull.Value) ? String.Empty : reader["UBICACION_CONTADA"].ToString();
                                 entity.Lote_Contado = (reader["LOTE_CONTADO"] == DBNull.Value) ? String.Empty : reader["LOTE_CONTADO"].ToString();
                                 // FIN DE LOS NUEVOS PARAMETROS A REVCIBIR
-                                
+
                                 //entity.Lote_Producto = (reader["LOTE_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["LOTE_PRODUCTO"].ToString();
                                 //entity.Serie_Producto = (reader["SERIE_PRODUCTO"] == DBNull.Value) ? String.Empty : reader["SERIE_PRODUCTO"].ToString();
 
@@ -94,7 +94,7 @@ namespace DAO
                                 entity.Id_ubicacion = (reader["ID_UBICACION"] == DBNull.Value) ? 0 : Int32.Parse(reader["ID_UBICACION"].ToString());
                                 entity.Fch_inicio = (reader["FCH_INICIO"] == DBNull.Value) ? String.Empty : reader["FCH_INICIO"].ToString();
                                 entity.Fch_fin = (reader["FCH_FIN"] == DBNull.Value) ? String.Empty : reader["FCH_FIN"].ToString();
-                               // entity.Cod_ubicacion = (reader["COD_UBICACION"] == DBNull.Value) ? String.Empty : reader["COD_UBICACION"].ToString();
+                                // entity.Cod_ubicacion = (reader["COD_UBICACION"] == DBNull.Value) ? String.Empty : reader["COD_UBICACION"].ToString();
                                 entity.Dsc_ubicacion = (reader["DSC_UBICACION"] == DBNull.Value) ? String.Empty : reader["DSC_UBICACION"].ToString();
 
                                 entity.FLG_ESNUEVO = (reader["FLG_ESNUEVO"] == DBNull.Value) ? String.Empty : reader["FLG_ESNUEVO"].ToString();
@@ -187,8 +187,6 @@ namespace DAO
 
         }
 
-
-        // fin p 
         public Response CerrarIventario(string codInventario, int conteo)
         {
             Response response = new Response();
@@ -229,6 +227,7 @@ namespace DAO
             }
             return response;
         }
+
         public Response ConteoDiferencial(string codInventario, int conteo)
         {
             Response response = new Response();
@@ -269,6 +268,7 @@ namespace DAO
             }
             return response;
         }
+
         public Response ConteoReinicio(string codInventario, int conteo)
         {
             Response response = new Response();
@@ -309,6 +309,7 @@ namespace DAO
             }
             return response;
         }
+
         public List<UsuarioBE> ListarUsuariosAsociados(string dscAlmacen)
         {
             List<UsuarioBE> Lista_result = new List<UsuarioBE>();
@@ -360,6 +361,7 @@ namespace DAO
             return Lista_result;
 
         }
+
         public Response ExportInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3)
         {
             DataSet ds = new DataSet();
@@ -410,8 +412,6 @@ namespace DAO
                     }
 
                 }
-
-
             }
             catch (Exception e)
             {
@@ -426,8 +426,8 @@ namespace DAO
             }
 
             return response;
-
         }
+
         public Response DrawnBarChart(string CodInventario, int tipoGrafico)
         {
             Response response = new Response();
@@ -468,6 +468,7 @@ namespace DAO
 
             return response;
         }
+
         public Response DrawnBarChart2(string CodInventario)
         {
             Response response = new Response();
@@ -509,6 +510,7 @@ namespace DAO
 
             return response;
         }
+
         public Response ReportesInventario_WEB(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario,
             string start, string length, string order, string search)
         {
@@ -583,6 +585,7 @@ namespace DAO
 
             return response;
         }
+
         public Response ReportesInventario(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario)
         {
             Response response = new Response();
@@ -626,6 +629,7 @@ namespace DAO
 
             return response;
         }
+
         public Response ValidarDatosInventario(string Cod_Inv, int id_almacen)
         {
             Response response = new Response();
@@ -670,6 +674,7 @@ namespace DAO
 
             return response;
         }
+
         public int ContarInventarios()
         {
             SqlCommand cmd = null;
@@ -880,6 +885,41 @@ namespace DAO
             return response;
 
         }
+
+        // NUEVO REPARTIR DIFERENCIAS
+        public Response GenerarParticipaciones(int idInventarioCerrado, int idInventarioNuevo, int minutosLimite = 2)
+        {
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            try
+            {
+                using (cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("USP_ANDROID_GENERAR_PARTICIPACIONES", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add("@ID_INVENTARIO_CERRADO", SqlDbType.Int).Value = idInventarioCerrado;
+                        cmd.Parameters.Add("@ID_INVENTARIO_NUEVO", SqlDbType.Int).Value = idInventarioNuevo;
+                        cmd.Parameters.Add("@MINUTOS_LIMITE", SqlDbType.Int).Value = minutosLimite;
+                        cn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                response.HUBO_ERROR = false;
+            }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (cn != null) { cn.Close(); cn.Dispose(); }
+            }
+            return response;
+        }
+
         public Response GetAPI_StockALM()
         {
             //string Stringresult;
@@ -921,6 +961,7 @@ namespace DAO
             return response;
 
         }
+
         public int? CLI_SP_CREAR_INVENTARIO(string COD_ALMACEN, out bool huboError, out string mensaje)
         {
             int? idInventario = null;
@@ -968,6 +1009,7 @@ namespace DAO
 
             return idInventario;
         }
+
         public void ImportarDetInventario_Movil(XmlDocument xml_import, string UserReg, int intIdInventario)
         {
             using (SqlConnection connection = new SqlConnection(Connection.AppStringConection()))
@@ -990,6 +1032,7 @@ namespace DAO
             }
 
         }
+
         public void Insert_ASF_DETALLE_INVENTARIO(string UserReg)
         {
             SqlConnection conexion = null;

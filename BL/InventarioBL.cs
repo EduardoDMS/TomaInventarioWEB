@@ -28,6 +28,13 @@ namespace BL
         }
 
         //fin modificacion nueva
+
+        // NUEVO REPARTIR DIFERENCIAS
+        public Response GenerarParticipaciones(int idInventarioCerrado, int idInventarioNuevo, int minutosLimite = 2)
+        {
+            return new InventarioDAO().GenerarParticipaciones(idInventarioCerrado, idInventarioNuevo, minutosLimite);
+        }
+
         public Response CerrarIventario(string codInventario, int conteo)
         {
             return new InventarioDAO().CerrarIventario(codInventario, conteo);

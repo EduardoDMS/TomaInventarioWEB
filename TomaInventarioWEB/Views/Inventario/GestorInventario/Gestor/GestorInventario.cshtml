@@ -13,36 +13,40 @@
         <button id="FinalizarConteo" class="btn btn-primary">Finalizar conteo actual</button>
     </div>
 </div>
-<div class="form-check form-switch d-flex justify-content-center gap-2">
-    <!-- INICIO NUEVO -->
-    <input class="form-check-input" type="checkbox" role="switch" id="chkOcultar" checked>
-    <label class="form-check-label" for="chkOcultar">Ocultar Lotes</label>
 
-    <input class="form-check-input ms-4" type="checkbox" role="switch" id="chkReload" checked>
-    <label class="form-check-label" for="chkReload">Sincronización automática</label>
-    <!-- FIN NUEVO -->
-    <i class="ti ti-info-circle text-primary"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       data-bs-html="true"
-       data-bs-title="Actualiza la tabla periódicamente. ⚠️ <strong>No recomendado</strong> para inventarios grandes, puede afectar el rendimiento.">
-    </i>
+<div class="d-flex justify-content-center gap-3">
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="chkOcultar" checked>
+        <label class="form-check-label" for="chkOcultar">Ocultar Lotes</label>
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="chkReload" checked>
+        <label class="form-check-label" for="chkReload">Sincronización automática</label>
+        <i class="ti ti-info-circle text-primary"
+           data-bs-toggle="tooltip"
+           data-bs-placement="top"
+           data-bs-html="true"
+           data-bs-title="Actualiza la tabla periódicamente. ⚠️ <strong>No recomendado</strong> para inventarios grandes, puede afectar el rendimiento.">
+        </i>
+    </div>
 </div>
+
 <hr class="my-3">
+
 <div class="table-responsive">
-    <table id="tbl_Inventario" class="table w-100">
+    <table id="tbl_Inventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
         <thead class="table-light">
             <tr>
-                <th>Codigo</th>
-                <th class="col_Prod">Producto</th>
-                <th>Ubic. Inicial</th>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Ubicación Inicial</th>
                 <th>Lote Inicial</th>
-                <th>Ubic. Contada</th>
+                <th>Ubicación Contada</th>
                 <th>Lote Contado</th>
                 <th>Stock Inicial</th>
-                <th id="Head_Cont1">Conteo 1</th>
-                <th id="Head_Cont2">Conteo 2</th>
-                <th id="Head_Cont3">Conteo 3</th>
+                <th>Conteo 1</th>
+                <th>Conteo 2</th>
+                <th>Conteo 3</th>
                 <th>Total</th>
                 <th>Diferencia</th>
             </tr>
@@ -53,7 +57,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="6" style="text-align:right">Total:</th>
+                <th colspan="6" class="fw-bolder">TOTALES</th>
                 <th id="FCantI">0</th>
                 <th id="FCont1">0</th>
                 <th id="FCont2">0</th>
@@ -65,158 +69,9 @@
     </table>
 </div>
 
-<!--<div class="table-responsive">
-    <table id="tbl_Inventario" class="table w-100">
-        <thead class="table-light">
-            <tr>
-                <th></th>-->
-@*cod_Prod*@
-<!--<th class="col_Prod"></th>-->  @*Prod*@
-<!--<th></th>-->                   @*Cod_ubicacion*@
-<!--<th></th>-->                   @*Lote*@
-<!--<th></th>-->                   @*Cantidad_inicial*@
-<!--<th id="Head_Cont1"></th>-->   @*Cont 1*@
-<!--<th id="Head_Cont2"></th>-->   @*Cont 2*@
-<!--<th id="Head_Cont3"></th>-->   @*Cont 3*@
-<!--<th></th>-->                   @*Total*@
-<!--<th></th>-->                   @*Dif*@
-<!--</tr>
-        </thead>
-        <tbody>
-            <tr>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>Total:</th>
-                <th id="FCantI">0</th>
-                <th id="FCont1">0</th>
-                <th id="FCont2">0</th>
-                <th id="FCont3">0</th>
-                <th id="FTotal">0</th>
-                <th id="FDif">0</th>
-            </tr>
-        </tfoot>
-    </table>
-</div>-->
-<!--<div class="row" id="rowConteos">
-    <div class="col Flex-Wrap">-->
-@*<button class="btn btn-secondary " id="btnConteo1" onclick="ShowModalConteo(1);">*@
-<!--<button class="btn btn-secondary " id="btnConteo1" >
-    <span id="iconConteo1">
-        <i class="fa-solid fa-minus fa-xl"></i>
-    </span>   Conteo 1
-</button>-->
-@*<button class="btn btn-secondary " id="btnConteo2" onclick="ShowModalConteo(2);">*@
-<!--<button class="btn btn-secondary " id="btnConteo2">
-    <span id="iconConteo2">
-        <i class="fa-solid fa-minus fa-xl"></i>
-    </span>   Conteo 2
-</button>-->
-@*<button class="btn btn-secondary" disabled id="btnConteo3" onclick="ShowModalConteo(3);">*@
-<!--<button class="btn btn-secondary" disabled id="btnConteo3">
-                <span id="iconConteo3">
-                    <i class="fa-solid fa-minus fa-xl"></i>
-                </span>   Conteo 3
-            </button>
-            <button class="btn btn-secondary DisplayNone" disabled id="btnConteo4">
-                <span id="iconConteo4">
-                    <i class="fa-solid fa-minus fa-xl"></i>
-                </span>   Conteo 4
-            </button>
-    </div>
-    <div class="col Gestor-ColConteo" >
-        <span>Total de productos Inventariados:  </span>
-        <span id="tblConteoData">000/000</span>
-    </div>
-
-    <div class="col Flex-Wrap" >
-        <button class="btn btn-danger" id="btnCerrarInventario">
-            <span id="">
-                <i class="fa-regular fa-circle-xmark fa-xl"></i>
-            </span>   Cerrar Inventario
-        </button>
-        <button class="btn btn-primary" id="btnUsuarios">
-            <span id="">
-                <i class="fa-solid fa-users fa-xl"></i>
-            </span>   Usuarios Asociados
-        </button>
-        <button class="btn btn-success" id="btnExportExcel">
-            <span id="">
-                <i class="fa-solid fa-file-excel fa-xl"></i>
-            </span>   Exportar
-        </button>
-    </div>
-</div>-->
-@*<br />
-    <div class="row">
-        <div>
-            <div id="" class="input-wrapper">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="chkReload" checked >
-                    <label class="form-check-label" for="chkReload">Activar Carga Automatica (No se recomienda activarlo cuando la carga del inventario es muy grande)</label>
-                </div>
-
-            </div>
-        </div>
-
-        <table id="tbl_Inventario" class="display responsive nowrap Width100" >
-            <thead>
-                <tr>
-                    <th></th>                   cod_Prod
-                    <th class="col_Prod"></th>  Prod
-                    IQFARMA
-
-                    FIN IQFARMA
-
-                    <th></th>                   Cod_ubicacion
-                    <th></th>                   Lote
-                    <th></th>                   Cantidad_inicial
-                    <th id="Head_Cont1"></th>   Cont 1
-                    <th id="Head_Cont2"></th>   Cont 2
-                    <th id="Head_Cont3"></th>   Cont 3
-                    <th></th>                   Total
-                    <th></th>                   Dif
-                </tr>
-            <thead>
-            <tbody>
-                <tr>
-
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    IQFARMA
-
-                    FIN IQFARMA
-
-                    <th></th>
-                    <th></th>
-                    <th>Total:</th>
-                    <th id="FCantI">0</th>
-                    <th id="FCont1">0</th>
-                    <th id="FCont2">0</th>
-                    <th id="FCont3">0</th>
-                    <th id="FTotal">0</th>
-                    <th id="FDif">0</th>
-                </tr>
-                <tr>
-
-                        <th colspan="5" style="text-align:right">Total:</th>
-                        <th></th>
-                    </tr>
-            </tfoot>
-        </table>
-    </div>*@
 
 
-
-@* Modal Finalizar Conteo  *@
+<!-- Modal Finalizar Conteo -->
 <div class="modal fade" id="ModalConteo" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -266,7 +121,7 @@
     </div>
 </div>
 
-@* Modal Usuarios  *@
+<!-- Modal Usuarios -->
 <div class="modal fade" id="ModalUsuarios" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content custom_modal_content">
@@ -292,7 +147,7 @@
     </div>
 </div>
 
-@* Modal Export  *@
+<!-- Modal Export -->
 <div class="modal fade" id="ModalExport" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered ">
         <div class="modal-content">

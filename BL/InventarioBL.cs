@@ -16,7 +16,6 @@ namespace BL
             _licencia = new LicenciaService(new LicenciaDbProvider());//newbdProvider
         }
 
-        // modificacion nueva
 
         public Response ListarInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, string start, string legnth, string order, string search)
         {
@@ -27,7 +26,6 @@ namespace BL
             return new InventarioDAO().GetInventario(idEmpresa, Almacen, CodInventario, CodEstado, flg_filtroFecha, fch_inicio, fch_fin);
         }
 
-        //fin modificacion nueva
 
         // NUEVO REPARTIR DIFERENCIAS
         public Response GenerarParticipaciones(int idInventarioCerrado, int idInventarioNuevo, int minutosLimite = 2)
@@ -126,6 +124,9 @@ namespace BL
             return new InventarioDAO().ImportarDetalles(xmlDoc, IdAlmacen, UserReg, importacionId);
         }
 
+
+
+        // DESUSO
         public Response GetAPI_StockALM()
         {
             return new InventarioDAO().GetAPI_StockALM();

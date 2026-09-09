@@ -314,7 +314,8 @@ function CargarTablaInventario(Cod_Inventario) {
         "pageLength": 10,
         "searching": true,
         "lengthChange": true,
-        "responsive": false,
+        /*"responsive": true,*/
+        "autoWidth": false,
         /*deferRender: true,*/
         "language": españolTbl,
         "initComplete": function () {
@@ -455,6 +456,7 @@ function ConteoReinicio() {
                 Swal.fire("Error  al finalizar el conteo", response.MENSAJE_ERROR, "error");
             }
             else {
+                GenerarParticipaciones();
                 Swal.fire(`Conteo ${ConteoActual} finalizado`, "Puede continuar con el siguiente conteo de todos los productos", "success");
 
                 cerrarModalConteo();

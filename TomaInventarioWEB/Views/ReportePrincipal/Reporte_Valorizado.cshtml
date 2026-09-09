@@ -624,7 +624,8 @@
                     { targets: '_all', render: function (data) { return data == null || data === "" ? "-" : data; } }
                 ],
                 pageLength: 25,
-                searching: false, // la busqueda ya la resuelve el server
+                searching: false,
+                "autoWidth": false,
                 dom: 'lrtip',
                 language: españolTbl,
                 drawCallback: function () {

@@ -50,7 +50,7 @@ namespace BE
         public string Ubicacion_inicial { get; set; }
         public string Lote_inicial { get; set; }
         public string Ubicacion_contada { get; set; }
-        public string Lote_Contado { get; set; }        
+        public string Lote_Contado { get; set; }
         // fin de nuevos parametros
 
         //public int Stock_inicial { get; set; }
@@ -109,6 +109,9 @@ namespace BE
         public int CantidadError { get; set; }
     }
 
+
+
+    // DESUSO
     public class CLISTA_DETALLEAPI
     {
         public string COD_ALMACEN { get; set; }

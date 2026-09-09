@@ -511,200 +511,6 @@ namespace DAO
             return response;
         }
 
-        public Response ReportesInventario_WEB(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario,
-            string start, string length, string order, string search)
-        {
-            Response response = new Response();
-            List<decimal> Lista_Footer = new List<decimal>();
-            SqlConnection conexion = null;
-            SqlCommand comando = null;
-            SqlDataReader reader = null;
-            DataTable inventarioDataTable = new DataTable();
-            try
-            {
-                using (conexion = new SqlConnection(Connection.AppStringConection()))
-                {
-                    using (comando = new SqlCommand("ASF_SP_INVENTARIO_GET_REPORTE_2", conexion))
-                    {
-                        comando.CommandType = CommandType.StoredProcedure;
-                        comando.Parameters.Clear();
-
-                        comando.Parameters.Add("@TIPO_REPORTE", SqlDbType.Int).Value = tipoReporte;
-                        comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar).Value = Cod_inventario;
-                        comando.Parameters.Add("@DATO_FILTRO", SqlDbType.VarChar).Value = DatoFiltro;
-                        comando.Parameters.Add("@NROCONTEO", SqlDbType.VarChar).Value = NConteo;
-                        comando.Parameters.Add("@USUARIO", SqlDbType.VarChar).Value = Usuario;
-
-                        comando.Parameters.Add("@P_IDSTART", SqlDbType.VarChar).Value = start;
-                        comando.Parameters.Add("@P_LENGTH", SqlDbType.VarChar).Value = length;
-                        comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar).Value = order;
-                        comando.Parameters.Add("@P_Search", SqlDbType.VarChar).Value = search;
-                        conexion.Open();
-
-                        using (reader = comando.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                response.count = (reader["filas_total"] == DBNull.Value) ? 0 : Int32.Parse(reader["filas_total"].ToString());
-                                if (tipoReporte == 0)
-                                {
-                                    Lista_Footer.Add((reader["Cant_Inicial"] == DBNull.Value) ? 0 : decimal.Parse(reader["Cant_Inicial"].ToString()));
-                                    Lista_Footer.Add((reader["Inventariado"] == DBNull.Value) ? 0 : decimal.Parse(reader["Inventariado"].ToString()));
-                                    Lista_Footer.Add((reader["Diferencial"] == DBNull.Value) ? 0 : decimal.Parse(reader["Diferencial"].ToString()));
-                                }
-                                if (tipoReporte == 1)
-                                { Lista_Footer.Add((reader["STOCK_INVENTARIADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INVENTARIADO"].ToString())); }
-                                if (tipoReporte == 2)
-                                { Lista_Footer.Add((reader["STOCK_INVENTARIADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INVENTARIADO"].ToString())); }
-
-                                if (tipoReporte == 3)
-                                { Lista_Footer.Add((reader["STOCK_INVENTARIADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INVENTARIADO"].ToString())); }
-                            }
-                            reader.NextResult();
-
-                            inventarioDataTable.Load(reader);
-
-                        }
-                        response.Entity = inventarioDataTable;
-                        response.footerTable = Lista_Footer;
-
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                response.MENSAJE_ERROR = e.Message.ToString();
-                response.HUBO_ERROR = true;
-            }
-            finally
-            {
-                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
-                if (reader != null) reader.Dispose();
-            }
-
-            return response;
-        }
-
-        public Response ReportesInventario(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario)
-        {
-            Response response = new Response();
-            SqlConnection conexion = null;
-            SqlCommand comando = null;
-            SqlDataReader reader = null;
-            DataTable inventarioDataTable = new DataTable();
-            try
-            {
-                using (conexion = new SqlConnection(Connection.AppStringConection()))
-                {
-                    using (comando = new SqlCommand("ASF_SP_INVENTARIO_GET_REPORTE", conexion))
-                    {
-                        comando.CommandType = CommandType.StoredProcedure;
-                        comando.Parameters.Clear();
-
-                        comando.Parameters.Add("@TIPO_REPORTE", SqlDbType.Int).Value = tipoReporte;
-                        comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar).Value = Cod_inventario;
-                        comando.Parameters.Add("@DATO_FILTRO", SqlDbType.VarChar).Value = DatoFiltro;
-                        comando.Parameters.Add("@NROCONTEO", SqlDbType.VarChar).Value = NConteo;
-                        comando.Parameters.Add("@USUARIO", SqlDbType.VarChar).Value = Usuario;
-                        conexion.Open();
-
-                        using (reader = comando.ExecuteReader())
-                        { inventarioDataTable.Load(reader); }
-                        response.Entity = inventarioDataTable;
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                response.MENSAJE_ERROR = e.Message.ToString();
-                response.HUBO_ERROR = true;
-            }
-            finally
-            {
-                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
-                if (reader != null) reader.Dispose();
-            }
-
-            return response;
-        }
-
-        public Response ValidarDatosInventario(string Cod_Inv, int id_almacen)
-        {
-            Response response = new Response();
-            SqlConnection conexion = null;
-            SqlCommand comando = null;
-            SqlDataReader reader = null;
-            //DataTable inventarioDataTable = new DataTable();
-            try
-            {
-                using (conexion = new SqlConnection(Connection.AppStringConection()))
-                {
-                    using (comando = new SqlCommand("WEB_ValidarDatosInv_2024", conexion))
-                    {
-                        comando.CommandType = CommandType.StoredProcedure;
-                        comando.Parameters.Clear();
-
-                        comando.Parameters.Add("@Cod_Inv", SqlDbType.VarChar, 20).Value = Cod_Inv;
-                        comando.Parameters.Add("@id_almacen", SqlDbType.Int).Value = id_almacen;
-                        comando.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                        comando.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
-                        conexion.Open();
-
-                        comando.ExecuteReader();
-
-                        response.MENSAJE_ERROR = (string)comando.Parameters["@msg"].Value ?? "";
-                        response.HUBO_ERROR = (bool)comando.Parameters["@Hubo_error"].Value;
-
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                response.MENSAJE_ERROR = e.Message.ToString();
-                response.HUBO_ERROR = true;
-            }
-            finally
-            {
-                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
-                if (reader != null) reader.Dispose();
-            }
-
-            return response;
-        }
-
-        public int ContarInventarios()
-        {
-            SqlCommand cmd = null;
-            SqlConnection con = null;
-
-            try
-            {
-                using (con = new SqlConnection(Connection.AppStringConection()))
-                {
-                    using (cmd = new SqlCommand("sp_ContarInventariosPreparados_2026", con))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        con.Open();
-
-                        object resultado = cmd.ExecuteScalar();
-
-                        return resultado != null ? Convert.ToInt32(resultado) : 0;
-                    }
-                }
-            }
-            catch (Exception) { throw; }
-            finally
-            {
-                if (con != null)
-                {
-                    con.Close();
-                    con.Dispose();
-                }
-            }
-        }
         // YA NO ENVIA string xmlData
         public Response InsertInv_InvDetalle(Guid importacionId, string UserReg, string CodInv, int Id_almacen)
         {
@@ -920,6 +726,206 @@ namespace DAO
             return response;
         }
 
+        public int ContarInventarios()
+        {
+            SqlCommand cmd = null;
+            SqlConnection con = null;
+
+            try
+            {
+                using (con = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("sp_ContarInventariosPreparados_2026", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        con.Open();
+
+                        object resultado = cmd.ExecuteScalar();
+
+                        return resultado != null ? Convert.ToInt32(resultado) : 0;
+                    }
+                }
+            }
+            catch (Exception) { throw; }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                    con.Dispose();
+                }
+            }
+        }
+
+
+
+        // EN DUDA
+        public Response ReportesInventario_WEB(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario,
+            string start, string length, string order, string search)
+        {
+            Response response = new Response();
+            List<decimal> Lista_Footer = new List<decimal>();
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+            DataTable inventarioDataTable = new DataTable();
+            try
+            {
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (comando = new SqlCommand("ASF_SP_INVENTARIO_GET_REPORTE_2", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.Clear();
+
+                        comando.Parameters.Add("@TIPO_REPORTE", SqlDbType.Int).Value = tipoReporte;
+                        comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar).Value = Cod_inventario;
+                        comando.Parameters.Add("@DATO_FILTRO", SqlDbType.VarChar).Value = DatoFiltro;
+                        comando.Parameters.Add("@NROCONTEO", SqlDbType.VarChar).Value = NConteo;
+                        comando.Parameters.Add("@USUARIO", SqlDbType.VarChar).Value = Usuario;
+
+                        comando.Parameters.Add("@P_IDSTART", SqlDbType.VarChar).Value = start;
+                        comando.Parameters.Add("@P_LENGTH", SqlDbType.VarChar).Value = length;
+                        comando.Parameters.Add("@P_ORDER", SqlDbType.VarChar).Value = order;
+                        comando.Parameters.Add("@P_Search", SqlDbType.VarChar).Value = search;
+                        conexion.Open();
+
+                        using (reader = comando.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                response.count = (reader["filas_total"] == DBNull.Value) ? 0 : Int32.Parse(reader["filas_total"].ToString());
+                                if (tipoReporte == 0)
+                                {
+                                    Lista_Footer.Add((reader["Cant_Inicial"] == DBNull.Value) ? 0 : decimal.Parse(reader["Cant_Inicial"].ToString()));
+                                    Lista_Footer.Add((reader["Inventariado"] == DBNull.Value) ? 0 : decimal.Parse(reader["Inventariado"].ToString()));
+                                    Lista_Footer.Add((reader["Diferencial"] == DBNull.Value) ? 0 : decimal.Parse(reader["Diferencial"].ToString()));
+                                }
+                                if (tipoReporte == 1)
+                                { Lista_Footer.Add((reader["STOCK_INVENTARIADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INVENTARIADO"].ToString())); }
+                                if (tipoReporte == 2)
+                                { Lista_Footer.Add((reader["STOCK_INVENTARIADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INVENTARIADO"].ToString())); }
+
+                                if (tipoReporte == 3)
+                                { Lista_Footer.Add((reader["STOCK_INVENTARIADO"] == DBNull.Value) ? 0 : decimal.Parse(reader["STOCK_INVENTARIADO"].ToString())); }
+                            }
+                            reader.NextResult();
+
+                            inventarioDataTable.Load(reader);
+
+                        }
+                        response.Entity = inventarioDataTable;
+                        response.footerTable = Lista_Footer;
+
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+                if (reader != null) reader.Dispose();
+            }
+
+            return response;
+        }
+
+        public Response ReportesInventario(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario)
+        {
+            Response response = new Response();
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+            DataTable inventarioDataTable = new DataTable();
+            try
+            {
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (comando = new SqlCommand("ASF_SP_INVENTARIO_GET_REPORTE", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.Clear();
+
+                        comando.Parameters.Add("@TIPO_REPORTE", SqlDbType.Int).Value = tipoReporte;
+                        comando.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar).Value = Cod_inventario;
+                        comando.Parameters.Add("@DATO_FILTRO", SqlDbType.VarChar).Value = DatoFiltro;
+                        comando.Parameters.Add("@NROCONTEO", SqlDbType.VarChar).Value = NConteo;
+                        comando.Parameters.Add("@USUARIO", SqlDbType.VarChar).Value = Usuario;
+                        conexion.Open();
+
+                        using (reader = comando.ExecuteReader())
+                        { inventarioDataTable.Load(reader); }
+                        response.Entity = inventarioDataTable;
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+                if (reader != null) reader.Dispose();
+            }
+
+            return response;
+        }
+
+        public Response ValidarDatosInventario(string Cod_Inv, int id_almacen)
+        {
+            Response response = new Response();
+            SqlConnection conexion = null;
+            SqlCommand comando = null;
+            SqlDataReader reader = null;
+            //DataTable inventarioDataTable = new DataTable();
+            try
+            {
+                using (conexion = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (comando = new SqlCommand("WEB_ValidarDatosInv_2024", conexion))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.Clear();
+
+                        comando.Parameters.Add("@Cod_Inv", SqlDbType.VarChar, 20).Value = Cod_Inv;
+                        comando.Parameters.Add("@id_almacen", SqlDbType.Int).Value = id_almacen;
+                        comando.Parameters.Add("@Hubo_error", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                        comando.Parameters.Add("@msg", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
+                        conexion.Open();
+
+                        comando.ExecuteReader();
+
+                        response.MENSAJE_ERROR = (string)comando.Parameters["@msg"].Value ?? "";
+                        response.HUBO_ERROR = (bool)comando.Parameters["@Hubo_error"].Value;
+
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.MENSAJE_ERROR = e.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (conexion != null) { conexion.Close(); conexion.Dispose(); }
+                if (reader != null) reader.Dispose();
+            }
+
+            return response;
+        }
+
+
+        // DESUSO
         public Response GetAPI_StockALM()
         {
             //string Stringresult;

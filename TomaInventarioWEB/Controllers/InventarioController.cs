@@ -33,9 +33,7 @@ namespace TomaInventarioWEB.Controllers
             return View("GestorInventario/GestionInventario");
         }
 
-        // GET: Inventario
         [GenerateNonce]
-
         public ActionResult InventarioPrincipal()
         {
             Session["NavIndex"] = "1";
@@ -96,9 +94,6 @@ namespace TomaInventarioWEB.Controllers
             return Json(list);
         }
 
-
-        // INICIO CONTROLADOR A MODIFICAR PARA EL GESTIONAR INVENTARIO
-
         [HttpPost]
         public JsonResult ListarInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3, int start, int length, int draw, string searchValue)
         {
@@ -143,8 +138,6 @@ namespace TomaInventarioWEB.Controllers
             //var json = Json(new { data = List });
             //return json;
         }
-
-        // FIN DEL CONTROLADOR A MODIFICAR PARA GESTIONAR INVENTARIO
 
         [HttpPost]
         public JsonResult GetInventario(string idEmpresa, int Almacen, string CodInventario, string CodEstado, string flg_filtroFecha, string fch_inicio, string fch_fin)
@@ -358,30 +351,6 @@ namespace TomaInventarioWEB.Controllers
             }
         }
 
-        //[HttpPost]
-        //public ActionResult ExportInventario(
-        //     string COD_INVENTARIO,
-        //     int NRO_CONTEO_1,
-        //     int NRO_CONTEO_2,
-        //     int NRO_CONTEO_3,
-        //     string searchValue,
-        //     string almacen,
-        //     string codigoInventario,
-        //     string conteoActual,
-        //     string estadoInventario)
-        //{
-        //    var response = new InventarioBL().ListarInventario(
-        //        COD_INVENTARIO,
-        //        NRO_CONTEO_1,
-        //        NRO_CONTEO_2,
-        //        NRO_CONTEO_3,
-        //        "0",
-        //        "",
-        //        "COD_PRODUCTO ASC",
-        //        searchValue);
-
-        //    return Content("BL OK");
-        //}
         public JsonResult DrawnBarChart(string CodInventario, int tipoGrafico)
         {
             InventarioBL response = new InventarioBL();
@@ -390,6 +359,37 @@ namespace TomaInventarioWEB.Controllers
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(dt);
             return Json(json);
         }
+
+        // YA NO ENVIA string xmlData
+        public ActionResult InsertInv_InvDetalle(Guid importacionId, string CodInv, int Id_Almacen)
+        {
+            //System.Diagnostics.Debug.WriteLine("Entró al método");
+            var response = new InventarioBL().InsertInv_InvDetalle(importacionId, Session["UserName"].ToString(), CodInv, Id_Almacen);
+            return Json(response);
+            //return Json(new
+            //{
+            //    xml = xmlData?.Length,
+            //    cod = CodInv,
+            //    almacen = Id_Almacen
+            //});
+        }
+
+        // MODIFICAR STOCK DE LA TABLA TEMPORAL DE LA DB <--
+        [HttpPost]
+        public JsonResult ModificarStockProducto(Guid importacionId, string codUbicacion, string codProducto, string lote, double stock)
+        {
+            InventarioBL inventarioBL = new InventarioBL();
+
+            Response response = inventarioBL.ModificarProductoStock(importacionId, codUbicacion, codProducto, lote, stock);
+
+            return Json(response);
+        }
+
+
+
+
+
+        // DESUSO
         public JsonResult ReportesInventario_WEB(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario, int draw,
             string start, string length, string searchValue)
         {
@@ -411,7 +411,6 @@ namespace TomaInventarioWEB.Controllers
             return Json(new { draw = draw, recordsFiltered = totalData, recordsTotal = totalData, data = jsondata, Listfooter = Listfooter });
 
         }
-
         public JsonResult ReportesInventario(int tipoReporte, string Cod_inventario, string DatoFiltro, string NConteo, string Usuario)
         {
             InventarioBL response = new InventarioBL();
@@ -629,39 +628,12 @@ namespace TomaInventarioWEB.Controllers
 
             return dt_New;
         }
-
         [HttpPost]
         public ActionResult ValidarBloque1(string Cod_inventario, int Id_Almacen)
         {
             var response = new InventarioBL().ValidarDatosInventario(Cod_inventario, Id_Almacen);
             return Json(response);
         }
-
-        // YA NO ENVIA string xmlData
-        public ActionResult InsertInv_InvDetalle(Guid importacionId, string CodInv, int Id_Almacen)
-        {
-            //System.Diagnostics.Debug.WriteLine("Entró al método");
-            var response = new InventarioBL().InsertInv_InvDetalle(importacionId, Session["UserName"].ToString(), CodInv, Id_Almacen);
-            return Json(response);
-            //return Json(new
-            //{
-            //    xml = xmlData?.Length,
-            //    cod = CodInv,
-            //    almacen = Id_Almacen
-            //});
-        }
-
-        // MODIFICAR STOCK DE LA TABLA TEMPORAL DE LA DB <--
-        [HttpPost]
-        public JsonResult ModificarStockProducto(Guid importacionId, string codUbicacion, string codProducto, string lote, double stock) //AGREGAR, ELIMINAR
-        {
-            InventarioBL inventarioBL = new InventarioBL();
-
-            Response response = inventarioBL.ModificarProductoStock(importacionId, codUbicacion, codProducto, lote, stock);
-
-            return Json(response);
-        }
-
         private List<Dictionary<string, object>> ConvertDataTableToList(DataTable dt)
         {
             var list = new List<Dictionary<string, object>>();
@@ -810,10 +782,5 @@ namespace TomaInventarioWEB.Controllers
 
             return xmlDocument.ToString();
         }
-        //[HttpPost]
-        //public JsonResult ExportConteoTotalizado(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3)
-        //{
-
-        //}
     }
 }

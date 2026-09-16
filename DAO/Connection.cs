@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UTIL;
 
 namespace DAO
 {
@@ -16,8 +11,9 @@ namespace DAO
             String DecryptConnection = ConfigurationManager.ConnectionStrings["cnxAlmacen"].ConnectionString;
             try
             {
-                String decryptedStr = Seguridad.DecryptAes(DecryptConnection);
-                return decryptedStr;
+                //String decryptedStr = Seguridad.DecryptAes(DecryptConnection);
+                //return decryptedStr;
+                return DecryptConnection;
             }
             catch (Exception ex)
             {

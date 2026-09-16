@@ -56,6 +56,20 @@ namespace TomaInventarioWEB.Controllers
 
             return View();
         }
+
+        [GenerateNonce]
+        public ActionResult HistorialInventario()
+        {
+            // Cargar combo de almacenes 
+            CombosBE objComboAlmacen = new CombosBE();
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+            listaAlmacenes = (List<CombosBE>)new CombosBL().cbxAlmacenes().Entity;
+            listaAlmacenes.Insert(0, objComboAlmacen);
+
+            ViewBag.ListaAlmacenes = listaAlmacenes;
+
+            return View("HistorialInventario/Historial_Inventarios");
+        }
         public ActionResult FillCbxInventario()
         {
             CombosBE objCombo = new CombosBE();
@@ -384,6 +398,10 @@ namespace TomaInventarioWEB.Controllers
 
             return Json(response);
         }
+
+
+
+
 
 
 

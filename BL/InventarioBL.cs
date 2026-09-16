@@ -33,6 +33,11 @@ namespace BL
             return new InventarioDAO().GenerarParticipaciones(idInventarioCerrado, idInventarioNuevo, minutosLimite);
         }
 
+        public Response HistorialInventario(string cod_almacen, string cod_inventario, int mes)
+        {
+            return new InventarioDAO().HistorialDelInventario(cod_almacen, cod_inventario, mes);
+        }
+
         public Response CerrarIventario(string codInventario, int conteo)
         {
             return new InventarioDAO().CerrarIventario(codInventario, conteo);
@@ -63,6 +68,11 @@ namespace BL
         public Response ExportInventario(string COD_INVENTARIO, int NRO_CONTEO_1, int NRO_CONTEO_2, int NRO_CONTEO_3)
         {
             return new InventarioDAO().ExportInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3);
+        }
+
+        public Response ExportInventarioBaseHistorial(string cod_inv)
+        {
+            return new InventarioDAO().ExportInventarioBaseHistorial(cod_inv);
         }
 
         public Response DrawnBarChart(string CodInventario, int tipoGrafico)

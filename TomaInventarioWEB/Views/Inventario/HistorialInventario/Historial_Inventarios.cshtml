@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
 }
-
+<link href="~/Content/matdash/libs/apexcharts/dist/apexcharts.css" rel="stylesheet" />
 
 <!-- Sección Seleccionar Almacen e inventario -->
 <div class="card text-bg-primary text-white mb-3">
@@ -43,7 +43,7 @@
 
 
 <!-- Productos con Diferencias -->
-<div id="seccionReporte" class="row">
+<div id="seccionHistorial" class="row d-none">
     <!--d-none">-->
     <div class="col-12">
         <div class="card">
@@ -52,58 +52,12 @@
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-semibold mb-0">Gráfico del almacen</h6>
                 </div>
-                @*<div class="row mb-5">
-                    <div class="col d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text_bg_almacen">
-                            <i class="ti ti-building-warehouse fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtAlmacen" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Almacen</p>
-                        </div>
-                    </div>
-
-                    <div class="col d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-primary">
-                            <i class="ti ti-barcode fs-6 "></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtCodigoInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Código de inventario</p>
-                        </div>
-                    </div>
-
-                    <div class="col d-flex flex-row gap-6 align-items-center">
-                        <div id="estadoIcono" class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning">
-                            <i class="ti ti-lock-open fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtEstadoInventario" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Estado de inventario</p>
-                        </div>
-                    </div>
-
-                    <div class="col d-flex flex-row gap-6 align-items-center">
-                        <div class="round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-info">
-                            <i class="ti ti-history fs-6"></i>
-                        </div>
-                        <div class="align-self-center">
-                            <h4 id="txtConteoActual" class="card-title mb-1"></h4>
-                            <p class="card-subtitle">Conteo actual</p>
-                        </div>
-                    </div>
-
-                    <div class="col text-end">
-                        <button type="button" class="btn btn-success" id="btnExportarExcel">
-                            <i class="ti ti-file-download me-1"></i> Exportar a Excel
-                        </button>
-                    </div>
-                </div>*@
+                <div id="chart-line-basic" class="mb-3 mx-2"></div>
 
 
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-semibold mb-0">Mis inventarios realizados</h6>
-                </div>              
+                </div>
 
                 <!-- Filtros -->
                 <!-- Busqueda(Producto, Ubicacion, Lote), Estado(todos, coincide, diferencia, nuevos), tipo de diferencia(todos, sobrante, faltante) -->
@@ -147,7 +101,7 @@
                                         <option value="11">Noviembre</option>
                                         <option value="12">Diciembre</option>
                                     </select>
-                                </div>                               
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -160,10 +114,10 @@
                         <thead class="table-light">
                             <tr>
                                 <th class="text-center">Código de inventario</th>
-                                <th class="text-center">Ultimo Nro. Conteo</th>
+                                <th class="text-center">Total de conteos</th>
                                 <th class="text-center">Estado</th>
-                                <th class="text-center">Fch. Inicio</th>
-                                <th class="text-center">Fch. Fin</th>
+                                <th class="text-center">Fecha Inicio</th>
+                                <th class="text-center">Fecha Fin</th>
                                 <th class="text-center">Duración inventario</th>
                                 <th class="text-center">Faltantes</th>
                                 <th class="text-center">Sobrantes</th>
@@ -172,14 +126,14 @@
                         </thead>
                         <tbody></tbody>
                         @*<tfoot class="table-light">
-                            <tr>
-                                <td colspan="2" class="fw-bolder">TOTALES</td>
-                                <td class="text-end fw-bold" id="footerStockInicial">0</td>
-                                <td class="text-end fw-bold" id="footerStockFinal">0</td>
-                                <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
-                                <td colspan="2"></td>
-                            </tr>
-                        </tfoot>*@
+                                <tr>
+                                    <td colspan="2" class="fw-bolder">TOTALES</td>
+                                    <td class="text-end fw-bold" id="footerStockInicial">0</td>
+                                    <td class="text-end fw-bold" id="footerStockFinal">0</td>
+                                    <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>*@
                     </table>
                 </div>
             </div>
@@ -188,6 +142,7 @@
 </div>
 
 @section scripts {
+    <script src="~/Content/matdash/libs/apexcharts/dist/apexcharts.min.js"></script>
     <script nonce="@nonce">
             let modoFiltrado;
         let TblInventaroHistorial;
@@ -202,25 +157,25 @@
                 inicializarEventos();
             });
 
-        function inicializarComponentes() {
-            $('#cbxAlmacenes').select2({
-                width: '100%',
-                placeholder: 'Seleccione un almacen',
-                allowClear: false,
-                language: {
-                    noResults: function () { return "No se encontraron resultados"; },
-                    searching: function () { return "Buscando..."; }
-                }
-            });
+            function inicializarComponentes() {
+                $('#cbxAlmacenes').select2({
+                    width: '100%',
+                    placeholder: 'Seleccione un almacen',
+                    allowClear: false,
+                    language: {
+                        noResults: function () { return "No se encontraron resultados"; },
+                        searching: function () { return "Buscando..."; }
+                    }
+                });
 
-            // ✅ Handler real: se dispara al elegir almacén y carga la tabla
-            $('#cbxAlmacenes').on('change', function () {
-                codAlmacenSeleccionado = $(this).val();
-                if (codAlmacenSeleccionado) {
-                    CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
-                }
-            });
-        }
+                $('#cbxAlmacenes').on('change', function () {
+                    codAlmacenSeleccionado = $(this).val();
+                    if (codAlmacenSeleccionado) {
+                        /*CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);*/
+                        cargarDatosInventario();
+                    }
+                });
+            }
 
             function inicializarEventos() {
 
@@ -256,7 +211,7 @@
                     CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
                 });
 
-                // Filtro estado
+                // Filtro mes
                 $('#slcMes').on('change', function () {
                     //if (modoFiltrado === "SERVIDOR") {
                     //    CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
@@ -265,9 +220,6 @@
                     //}
                     CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
                 });
-                //$('#btnExcel').on('click', function () {
-                //    ExportarExcel('INV_150926_1553');
-                //});
 
                 $('#TblInventaroHistorial tbody').on(
                     'click',
@@ -283,81 +235,181 @@
                 );
             }
 
-
-            // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
-        //    async function LoadcbxInventario(idAlmacen) {
-        //    $("#cbxInventariosPorAlmacen").empty();
-        //    //console.log(idAlmacen);
-
-        //        const obj = {
-        //            idAlmacen: idAlmacen
-        //        }
-
-        //        try {
-        //            const response = await fetch("FillCbxInventariosPorAlmacen", {
-        //                method: 'POST',
-        //                headers: {
-        //                    "Content-Type": "application/json"
-        //                },
-        //                body: JSON.stringify(obj)
-        //            });
-        //            //console.log(response.url);
-
-        //            if (!response.ok) {
-        //                throw new Error(`Error HTTP: ${response.status}`);
-        //            }
-
-        //            const result = await response.json();
-        //            console.log(result);
-
-        //            if (!result.success) {
-        //                console.error(result.mensaje);
-        //                return;
-        //            }
-
-        //            const data = result.data;
-
-        //            let opcion = "";
-
-        //            if (data.length === 0) {
-        //                opcion += "<option value='-1' disabled selected> --No se encuentran inventarios asociados al almacen --</option>";
-        //            } else {
-        //                data.forEach(item => {
-        //                    opcion += `<option value="${item.vchValue}">${item.vchdesc}</option>`;
-        //                    /*opcion += `<option value="${item.vchValue}">${item.vchValue}</option>`;*/
-        //                });
-        //            }
-
-        //            $("#cbxInventariosPorAlmacen").html(opcion).trigger("change.select2");
-
-        //            $("#cbxInventariosPorAlmacen").select2({
-        //                width: "100%",
-        //                language: "es",
-        //                placeholder: "--Seleccione un inventario--"
-        //            });
-        //        }
-        //        catch (error) {
-        //            console.error("Error:", error);
-        //        }
-        //}
-
             function cargarDatosInventario() {
-                //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo); columnDefs
-                $('#seccionResumen').removeClass('d-none');
-
-                //console.log(inventarioSeleccionado.codigo);
+                CargarHistorialInventarioGrafico(codAlmacenSeleccionado);
                 CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
 
-                $('#seccionReporte').removeClass('d-none');
+                $('#seccionHistorial').removeClass('d-none');
+            }
+
+            let chart_line_basic = null;
+
+            async function CargarHistorialInventarioGrafico(codAlmacen) {
+                const obj = {
+                    cod_almacen: codAlmacen,
+                };
+                //console.log(obj);
+                try {
+                    const response = await fetch("HistorialInventarioGrafico", {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(obj)
+                    });
+
+                    if (!response.ok) { throw new Error(`Error HTTP: ${response.status}`); }
+
+                    const result = await response.json();
+                    console.log(result);
+
+                    if (result.HUBO_ERROR) { // no lo estabas chequeando tampoco
+                        console.error(result.MENSAJE_ERROR);
+                        return;
+                    }
+
+                    const inventarios = result.Entity;
+                    CargarGraficoHistorial(inventarios);
+                }
+                catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+
+            function CargarGraficoHistorial(inventarios) {
+                console.log(inventarios);
+                const categorias = inventarios.map(x => x.CodigoInventario);
+
+                const diferencias = inventarios.map(x => x.Diferencias);
+
+                var options_line = {
+
+                    series: [
+                        {
+                            name: "Productos con diferencias",
+                            data: diferencias
+                        }
+                    ],
+
+                    chart: {
+                        height: 350,
+                        type: "line",
+                        fontFamily: "inherit",
+
+                        zoom: {
+                            enabled: false
+                        },
+
+                        offsetX: -10,
+
+                        toolbar: {
+                            show: false
+                        }
+                    },
+
+                    dataLabels: {
+                        enabled: false
+                    },
+
+                    colors: ["var(--bs-primary)"],
+
+                    stroke: {
+                        curve: "straight"
+                    },
+
+                    grid: {
+                        row: {
+                            colors: ["transparent"],
+                            opacity: 0.5
+                        },
+
+                        padding: {
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            left: 0
+                        },
+
+                        borderColor: "transparent"
+                    },
+
+                    xaxis: {
+
+                        categories: categorias,
+
+                        labels: {
+                            style: {
+                                colors: "#a1aab2"
+                            }
+                        }
+                    },
+
+                    yaxis: {
+
+                        title: {
+                            text: "Productos con diferencias"
+                        },
+
+                        labels: {
+                            style: {
+                                colors: "#a1aab2"
+                            }
+                        }
+                    },
+
+                    tooltip: {
+
+                        theme: "dark",
+
+                        custom: function ({ dataPointIndex }) {
+
+                            const inventario = inventarios[dataPointIndex];
+
+                            return `
+                        <div class="px-3 py-2">
+
+                            <div class="fw-semibold mb-2">
+                                ${inventario.CodigoInventario}
+                            </div>
+
+                            <div>
+                                <strong>Diferencias:</strong>
+                                ${inventario.Diferencias}
+                            </div>
+
+                            <div>
+                                <strong class="text-success">Sobrantes:</strong>
+                                ${inventario.Sobrantes}
+                            </div>
+
+                            <div>
+                                <strong class="text-danger">Faltantes:</strong>
+                                ${inventario.Faltantes}
+                            </div>
+
+                        </div>
+                    `;
+                        }
+                    }
+                };
+
+                if (chart_line_basic) {
+                    chart_line_basic.destroy();
+                }
+
+                chart_line_basic = new ApexCharts(
+                    document.querySelector("#chart-line-basic"),
+                    options_line
+                );
+
+                chart_line_basic.render();
             }
 
             async function CargarHistorialDeInventariosXalmacen(codAlmacen) {
                 const obj = {
-                    cod_almacen: codAlmacen,                 // nombre exacto del parámetro C#
+                    cod_almacen: codAlmacen,
                     cod_inventario: $('#busquedaGeneral').val().trim() || null,
                     mes: parseInt($('#slcMes').val(), 10) || 0
                 };
-                console.log(obj);
+                //console.log(obj);
                 try {
                     const response = await fetch("HistorialInventario", {
                         method: 'POST',
@@ -369,7 +421,7 @@
 
                     const result = await response.json();
 
-                    if (result.HUBO_ERROR) { // no lo estabas chequeando tampoco
+                    if (result.HUBO_ERROR) {
                         console.error(result.MENSAJE_ERROR);
                         return;
                     }
@@ -441,10 +493,10 @@
                                 if (!data) {
                                     return "-";
                                 }
-                                return `<button type="button" 
+                                return `<button type="button"
                                                 class="btn btn-success btn-sm btnExcelHistorial"
                                                 data-cod-inventario="${data}">
-                                            <i class="ti ti-file-download me-1"></i> 
+                                            <i class="ti ti-file-download me-1"></i>
                                             Excel
                                         </button>`
                                 ;
@@ -470,50 +522,8 @@
 
             }
 
-            @*function CargarFooterTabla(datosFooter) {
-                if (datosFooter && datosFooter.length >= 3) {
-                    $('#footerStockInicial').text(datosFooter[0]);
-                    $('#footerStockFinal').text(datosFooter[1]);
-
-                    let diferencial = datosFooter[2];
-                    let clase = diferencial < 0 ? 'text-danger fw-bold':'text-success fw-bold';
-                    $('#footerStockDiferencial').html('<span class="' + clase + '">' + diferencial + '</span>');
-                }
-            }
-
-            function CambiarIconoEstado(estado) {
-            //console.log(estado);
-            if (estado === "ABIERTO") {
-                $("#estadoIcono")
-                    .removeClass()
-                    .addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-warning");
-
-                $("#estadoIcono i")
-                    .removeClass()
-                    .addClass("ti ti-lock-open fs-6");
-            }
-            else {
-                $("#estadoIcono")
-                    .removeClass()
-                    .addClass("round-40 rounded-circle text-white d-flex align-items-center justify-content-center text-bg-success");
-
-                $("#estadoIcono i")
-                    .removeClass()
-                    .addClass("ti ti-lock fs-6");
-            }
-        }
-                *@
             // Descargar reporte en excel
             async function ExportarExcel(cod_inv) {
-
-                //if (!inventarioSeleccionado.codigo) {
-                //    Swal.fire({
-                //        icon: 'warning',
-                //        title: 'Atención',
-                //        text: 'Debe seleccionar un inventario primero'
-                //    });
-                //    return;
-                //}
 
                 const obj = {
                     cod_inv: cod_inv

@@ -191,6 +191,13 @@ namespace TomaInventarioWEB.Controllers
         }
 
         [HttpPost]
+        public JsonResult HistorialInventarioGrafico(string cod_almacen)
+        {
+            var response = new InventarioBL().HistorialInventarioGrafico(cod_almacen);
+            return Json(response);
+        }
+
+        [HttpPost]
         public JsonResult CerrarIventario(string codInventario, int conteo)
         {
             var response = new InventarioBL().CerrarIventario(codInventario, conteo);
@@ -456,7 +463,7 @@ namespace TomaInventarioWEB.Controllers
 
                 ms.Position = 0;
 
-                return new FileStreamResult( ms,
+                return new FileStreamResult(ms,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
                 {

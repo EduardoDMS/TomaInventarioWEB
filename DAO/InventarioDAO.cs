@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Runtime.Remoting.Messaging;
 using System.Xml;
 
 namespace DAO
@@ -442,7 +441,7 @@ namespace DAO
 
             try
             {
-                using(cn = new SqlConnection(Connection.AppStringConection()))
+                using (cn = new SqlConnection(Connection.AppStringConection()))
                 {
                     using (cmd = new SqlCommand("ASF_SP_HISTORIAL_INVENTARIO_EXCEL_BASE_2026", cn))
                     {
@@ -466,8 +465,8 @@ namespace DAO
                     }
                 }
                 response.Entity = Lista_result;
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 response.MENSAJE_ERROR = ex.Message.ToString();
                 response.HUBO_ERROR = true;
@@ -820,7 +819,7 @@ namespace DAO
             SqlDataReader dr = null;
             try
             {
-                using(cn = new SqlConnection(Connection.AppStringConection()))
+                using (cn = new SqlConnection(Connection.AppStringConection()))
                 {
                     using (cmd = new SqlCommand("ASF_SP_HISTORIAL_INVENTARIO_2026", cn))
                     {
@@ -853,7 +852,7 @@ namespace DAO
                 }
                 response.Entity = Lista_result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 response.MENSAJE_ERROR = ex.Message.ToString();
                 response.HUBO_ERROR = true;
@@ -868,7 +867,57 @@ namespace DAO
             return response;
         }
 
+        public Response HistorialInventariosGrafico(string cod_almacen)
+        {
+            List<TblInventarioHistorialGrafico> Lista_result = new List<TblInventarioHistorialGrafico>();
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+            try
+            {
+                using (cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("ASF_SP_HISTORIAL_INVENTARIO_GRAFICO_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 180;
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.Add("@COD_ALMACEN", SqlDbType.VarChar, 20).Value = cod_almacen;
 
+                        cn.Open();
+
+                        using (dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                TblInventarioHistorialGrafico tbl = new TblInventarioHistorialGrafico();
+                                tbl.CodigoInventario = (dr["CodigoDeInventario"] == DBNull.Value) ? String.Empty : dr["CodigoDeInventario"].ToString();
+                                tbl.FechaInicio = (dr["FechaInicio"] == DBNull.Value) ? String.Empty : dr["FechaInicio"].ToString();
+                                tbl.Diferencias = (dr["Diferencia"] == DBNull.Value) ? 0 : decimal.Parse(dr["Diferencia"].ToString());
+                                tbl.Sobrantes = (dr["Sobrantes"] == DBNull.Value) ? 0 : decimal.Parse(dr["Sobrantes"].ToString());
+                                tbl.Faltantes = (dr["Faltantes"] == DBNull.Value) ? 0 : decimal.Parse(dr["Faltantes"].ToString());
+                                Lista_result.Add(tbl);
+                            }
+                        }
+                    }
+                }
+                response.Entity = Lista_result;
+            }
+            catch (Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (cn != null) { cn.Close(); cn.Dispose(); }
+                if (cmd != null) cmd.Dispose();
+                if (dr != null) dr.Dispose();
+            }
+
+            return response;
+        }
 
 
         // EN DUDA

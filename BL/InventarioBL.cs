@@ -38,6 +38,11 @@ namespace BL
             return new InventarioDAO().HistorialDelInventario(cod_almacen, cod_inventario, mes);
         }
 
+        public Response HistorialInventarioGrafico(string cod_almacen)
+        {
+            return new InventarioDAO().HistorialInventariosGrafico(cod_almacen);
+        }
+
         public Response CerrarIventario(string codInventario, int conteo)
         {
             return new InventarioDAO().CerrarIventario(codInventario, conteo);

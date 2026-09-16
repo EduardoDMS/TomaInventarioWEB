@@ -131,7 +131,14 @@ namespace BE
         public decimal STOCK_INICIAL { get; set; }
     }
 
-
+    public class TblInventarioHistorialGrafico
+    {
+        public string CodigoInventario { get; set; }
+        public string FechaInicio { get; set; }
+        public decimal Diferencias { get; set; }
+        public decimal Sobrantes { get; set; }
+        public decimal Faltantes { get; set; }
+    }
 
     // DESUSO
     public class CLISTA_DETALLEAPI

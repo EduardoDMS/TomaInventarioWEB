@@ -184,6 +184,13 @@ namespace TomaInventarioWEB.Controllers
         }
 
         [HttpPost]
+        public JsonResult HistorialInventario(string cod_almacen, string cod_inventario, int mes)
+        {
+            var response = new InventarioBL().HistorialInventario(cod_almacen, cod_inventario, mes);
+            return Json(response);
+        }
+
+        [HttpPost]
         public JsonResult CerrarIventario(string codInventario, int conteo)
         {
             var response = new InventarioBL().CerrarIventario(codInventario, conteo);
@@ -228,6 +235,7 @@ namespace TomaInventarioWEB.Controllers
             try
             {
                 var response = new InventarioBL().ListarInventario(COD_INVENTARIO, NRO_CONTEO_1, NRO_CONTEO_2, NRO_CONTEO_3, "0", "", "COD_PRODUCTO ASC", searchValue);
+
 
                 if (response == null ||
                    response.HUBO_ERROR ||
@@ -358,10 +366,112 @@ namespace TomaInventarioWEB.Controllers
             catch (Exception ex)
             {
                 // Manejo del error
-                return new HttpStatusCodeResult(
-                    500,
-                    ex.ToString()
-                );
+                //return new HttpStatusCodeResult(
+                //    500,
+                //    ex.ToString()
+                //);
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Response.StatusCode = 500;
+                Response.StatusDescription = "Error Interno";
+                return Content(ex.Message);
+            }
+        }
+
+
+
+        // nuevo controller
+
+        [HttpPost]
+        public ActionResult ExportarElHistorialDelInventarioPlantillaInicio(string cod_inv)
+        {
+            try
+            {
+                var response = new InventarioBL().ExportInventarioBaseHistorial(cod_inv);
+
+                if (response == null ||
+                    response.HUBO_ERROR ||
+                    response.Entity == null)
+                {
+                    throw new Exception(
+                        response?.MENSAJE_ERROR ??
+                        "Error al obtener los datos del inventario"
+                    );
+                }
+
+                List<InventarioHistorialRp> inventario = new List<InventarioHistorialRp>();
+                inventario = (List<InventarioHistorialRp>)response.Entity;
+                //DataTable tabla = (DataTable)response.Entity;
+                MemoryStream ms = new MemoryStream();
+
+                string plantilla = Server.MapPath(@"~\Plantillas\Plantilla_Inventario.xlsx");
+
+                using (FileStream fs = System.IO.File.OpenRead(plantilla))
+                using (ExcelPackage excelPackage = new ExcelPackage(fs))
+                {
+                    ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets[1];
+
+                    // CABECERAS
+                    //string[] headers =
+                    //{
+                    //    "COD_UBICACION",
+                    //    "COD_PRODUCTO",
+                    //    "LOTE_PRODUCTO",
+                    //    "STOCK_ACTUAL"
+                    //};
+
+                    //for (int i = 0; i < headers.Length; i++)
+                    //{
+                    //    var cell = excelWorksheet.Cells[9, i + 2];
+                    //    cell.Value = headers[i];
+                    //    cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+
+                    //    cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
+                    //}
+
+                    // DATOS
+                    int filaInicio = 2;
+
+                    foreach (var item in inventario)
+                    {
+                        excelWorksheet.Cells[filaInicio, 1].Value = item.COD_UBICACION;
+                        excelWorksheet.Cells[filaInicio, 2].Value = item.COD_PRODUCTO;
+                        excelWorksheet.Cells[filaInicio, 3].Value = item.LOTE_PRODUCTO;
+                        excelWorksheet.Cells[filaInicio, 4].Value = item.STOCK_INICIAL;
+                        filaInicio++;
+                    }
+
+                    // AUTOFIT
+                    if (excelWorksheet.Dimension != null)
+                    {
+                        excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
+                        for (int i = 1;
+                             i <= excelWorksheet.Dimension.End.Column;
+                             i++)
+                        {
+                            excelWorksheet.Column(i).Width += 2;
+                        }
+                    }
+                    excelPackage.SaveAs(ms);
+                }
+
+                ms.Position = 0;
+
+                return new FileStreamResult( ms,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+                {
+                    FileDownloadName =
+                        $"Inventario_Original_{cod_inv}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+                };
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+
+                Response.StatusCode = 500;
+                Response.StatusDescription = "Error Interno";
+
+                return Content(ex.Message);
             }
         }
 

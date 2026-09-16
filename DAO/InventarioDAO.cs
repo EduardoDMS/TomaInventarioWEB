@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.Remoting.Messaging;
 using System.Xml;
 
 namespace DAO
@@ -428,6 +429,58 @@ namespace DAO
             return response;
         }
 
+        public Response ExportInventarioBaseHistorial(string cod_inv)
+        {
+
+            List<InventarioHistorialRp> Lista_result = new List<InventarioHistorialRp>();
+
+            DataSet ds = new DataSet();
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+
+            try
+            {
+                using(cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("ASF_SP_HISTORIAL_INVENTARIO_EXCEL_BASE_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Clear();
+
+                        cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 50).Value = cod_inv;
+
+                        cn.Open();
+                        dr = cmd.ExecuteReader();
+
+                        while (dr.Read())
+                        {
+                            InventarioHistorialRp filaTabla = new InventarioHistorialRp();
+                            filaTabla.COD_UBICACION = (dr["COD_UBICACION"] == DBNull.Value) ? String.Empty : dr["COD_UBICACION"].ToString();
+                            filaTabla.COD_PRODUCTO = (dr["COD_PRODUCTO"] == DBNull.Value) ? String.Empty : dr["COD_PRODUCTO"].ToString();
+                            filaTabla.LOTE_PRODUCTO = (dr["LOTE_PRODUCTO"] == DBNull.Value) ? String.Empty : dr["LOTE_PRODUCTO"].ToString();
+                            filaTabla.STOCK_INICIAL = (dr["STOCK_INICIAL"] == DBNull.Value) ? 0 : decimal.Parse(dr["STOCK_INICIAL"].ToString());
+                            Lista_result.Add(filaTabla);
+                        }
+                    }
+                }
+                response.Entity = Lista_result;
+            } 
+            catch(Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (cn != null) { cn.Close(); cn.Dispose(); }
+                if (cmd != null) cmd.Dispose();
+                if (dr != null) dr.Dispose();
+            }
+            return response;
+        }
+
         public Response DrawnBarChart(string CodInventario, int tipoGrafico)
         {
             Response response = new Response();
@@ -756,6 +809,65 @@ namespace DAO
                 }
             }
         }
+
+        //Nuevo Historial de Inventario 
+        public Response HistorialDelInventario(string cod_almacen, string cod_inventario, int mes)
+        {
+            List<TblInventaroHistorial> Lista_result = new List<TblInventaroHistorial>();
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+            try
+            {
+                using(cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("ASF_SP_HISTORIAL_INVENTARIO_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 180;
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.Add("@COD_ALMACEN", SqlDbType.VarChar, 20).Value = cod_almacen;
+                        cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 50).Value = cod_inventario;
+                        cmd.Parameters.Add("@MES", SqlDbType.Int).Value = mes;
+
+                        cn.Open();
+
+                        using (dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                TblInventaroHistorial tbl = new TblInventaroHistorial();
+                                tbl.CodigoDeInventario = (dr["CodigoDeInventario"] == DBNull.Value) ? String.Empty : dr["CodigoDeInventario"].ToString();
+                                tbl.UltimoNumeroConteo = (dr["UltimoNumeroConteo"] == DBNull.Value) ? 0 : Int32.Parse(dr["UltimoNumeroConteo"].ToString());
+                                tbl.EstadoDeInventario = (dr["Estado"] == DBNull.Value) ? String.Empty : dr["Estado"].ToString();
+                                tbl.FechaInicio = (dr["FechaInicio"] == DBNull.Value) ? String.Empty : dr["FechaInicio"].ToString();
+                                tbl.FechaCierreFinal = (dr["FechaCierreFinal"] == DBNull.Value) ? String.Empty : dr["FechaCierreFinal"].ToString();
+                                tbl.DuracionInventario = (dr["DuracionInventario"] == DBNull.Value) ? String.Empty : dr["DuracionInventario"].ToString();
+                                tbl.Faltantes = (dr["Faltantes"] == DBNull.Value) ? 0 : Int32.Parse(dr["Faltantes"].ToString());
+                                tbl.Sobrantes = (dr["Sobrantes"] == DBNull.Value) ? 0 : Int32.Parse(dr["Sobrantes"].ToString());
+                                Lista_result.Add(tbl);
+                            }
+                        }
+                    }
+                }
+                response.Entity = Lista_result;
+            }
+            catch(Exception ex)
+            {
+                response.MENSAJE_ERROR = ex.Message.ToString();
+                response.HUBO_ERROR = true;
+            }
+            finally
+            {
+                if (cn != null) { cn.Close(); cn.Dispose(); }
+                if (cmd != null) cmd.Dispose();
+                if (dr != null) dr.Dispose();
+            }
+
+            return response;
+        }
+
 
 
 

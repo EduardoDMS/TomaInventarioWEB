@@ -110,6 +110,28 @@ namespace BE
     }
 
 
+    public class TblInventaroHistorial
+    {
+        public string CodigoDeInventario { get; set; }
+        public int UltimoNumeroConteo { get; set; }
+        public string EstadoDeInventario { get; set; } //Estado
+        public string FechaInicio { get; set; }
+        public string FechaCierreFinal { get; set; }
+        public string DuracionInventario { get; set; }
+        public int Faltantes { get; set; }
+        public int Sobrantes { get; set; }
+    }
+
+
+    public class InventarioHistorialRp
+    {
+        public string COD_UBICACION { get; set; }
+        public string COD_PRODUCTO { get; set; }
+        public string LOTE_PRODUCTO { get; set; }
+        public decimal STOCK_INICIAL { get; set; }
+    }
+
+
 
     // DESUSO
     public class CLISTA_DETALLEAPI

@@ -10,6 +10,7 @@
     <div class="card-body p-3">
         <div class="d-flex align-items-center justify-content-center">
             <h2 class="fs-8 fw-bolder text-white mb-0">Historial de Inventarios</h2>
+            @*<button id="btnExcel">Descargar excel</button>*@
         </div>
     </div>
 </div>
@@ -155,14 +156,14 @@
                 <!-- Tabla -->
                 <!-- Código, Producto, Ubicación, Lote, Stock Inicial, Stock Final, Diferencia, Estado -->
                 <div class="table-responsive">
-                    <table id="tblReporteInventario" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
+                    <table id="TblInventaroHistorial" class="table table-hover table-bordered  text-nowrap align-middle dataTable">
                         <thead class="table-light">
                             <tr>
                                 <th class="text-center">Código de inventario</th>
-                                <th class="text-center">Cantidad de conteos</th>
+                                <th class="text-center">Ultimo Nro. Conteo</th>
                                 <th class="text-center">Estado</th>
-                                <th class="text-center">Fecha inicio</th>
-                                <th class="text-center">Fecha fin</th>
+                                <th class="text-center">Fch. Inicio</th>
+                                <th class="text-center">Fch. Fin</th>
                                 <th class="text-center">Duración inventario</th>
                                 <th class="text-center">Faltantes</th>
                                 <th class="text-center">Sobrantes</th>
@@ -189,7 +190,8 @@
 @section scripts {
     <script nonce="@nonce">
             let modoFiltrado;
-            let tblReporteInventario;
+        let TblInventaroHistorial;
+        let codAlmacenSeleccionado = '';
             let inventarioSeleccionado = {
                 almacen:'',
                 codigo: '',
@@ -200,77 +202,41 @@
                 inicializarEventos();
             });
 
-            function inicializarComponentes() {
-                // ALMACEN
-                $('#cbxAlmacenes').select2({
-                    /*theme: 'bootstrap-5',*/
-                    width: '100%',
-                    placeholder: 'Seleccione un almacen',
-                    allowClear: false,
-                    /*dropdownParent: $('#cbxAlmacenes').parent(),*/ // O el contenedor específico
-                    language: {
-                        noResults: function () {
-                            return "No se encontraron resultados";
-                        },
-                        searching: function () {
-                            return "Buscando...";
-                        }
-                    }
-                });
-                $('#cbxAlmacenes').on('change', function () {
-                    let selectedValue = $(this).val();
-                    let selectedText = $('#cbxAlmacenes option:selected').text();
+        function inicializarComponentes() {
+            $('#cbxAlmacenes').select2({
+                width: '100%',
+                placeholder: 'Seleccione un almacen',
+                allowClear: false,
+                language: {
+                    noResults: function () { return "No se encontraron resultados"; },
+                    searching: function () { return "Buscando..."; }
+                }
+            });
 
-                    if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
-                        //console.log(selectedText);
-                        // console.log(typeof selectedValue);
-
-                        $('#txtAlmacen').text(selectedText || '-');
-                        LoadcbxInventario(selectedValue);
-                        inventarioSeleccionado.almacen = selectedText;
-
-                        //cargarDatosInventario();
-                    }
-                });
-            }
+            // ✅ Handler real: se dispara al elegir almacén y carga la tabla
+            $('#cbxAlmacenes').on('change', function () {
+                codAlmacenSeleccionado = $(this).val();
+                if (codAlmacenSeleccionado) {
+                    CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
+                }
+            });
+        }
 
             function inicializarEventos() {
-                $('#btnCargarInventario').click(function () {
-                    let selectedValue = $('#cbxInventariosCerrados').val();
-                    let selectedText = $('#cbxInventariosCerrados option:selected').text();
-
-                    if (!selectedValue || selectedValue === '-1' || selectedValue === '') {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Atención',
-                            text: 'Debe seleccionar un inventario válido'
-                        });
-                        return;
-                    }
-
-                    inventarioSeleccionado.codigo = selectedValue;
-
-                    cargarDatosInventario();
-                });
-
-                $('#btnExportarExcel').click(function () {
-                    ExportarExcelDiferencial();
-                });
-
 
                 // Busqueda general
                 let timeoutBusqueda = null;
 
                 $('#busquedaGeneral').on('input', function () {
                     if (modoFiltrado === "LOCAL") {
-                        tblReporteInventario.search(this.value, false, false).draw();
+                        TblInventaroHistorial.search(this.value, false, false).draw();
                         return;
                     }
 
                     clearTimeout(timeoutBusqueda);
 
                     timeoutBusqueda = setTimeout(() => {
-                        CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                        CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
                     }, 400);
                 })
 
@@ -280,223 +246,220 @@
 
                     clearTimeout(timeoutBusqueda);
 
-                    CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                    CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
                 });
 
                 // Limpiar busqueda
                 $('#btnLimpiarBusqueda').on('click', function () {
                     $('#busquedaGeneral').val('');
-                    tblReporteInventario.search('').draw();
-                    CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                    TblInventaroHistorial.search('').draw();
+                    CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
                 });
 
                 // Filtro estado
-                $('#slcEstado').on('change', function () {
-                    if (modoFiltrado === "SERVIDOR") {
-                        CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-                    } else {
-                        tblReporteInventario.column(6).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
-                    }
+                $('#slcMes').on('change', function () {
+                    //if (modoFiltrado === "SERVIDOR") {
+                    //    CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
+                    //} else {
+                    //    TblInventaroHistorial.column(6).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                    //}
+                    CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
                 });
+                //$('#btnExcel').on('click', function () {
+                //    ExportarExcel('INV_150926_1553');
+                //});
 
-                // Filtro diferencia
-                $('#slcTipoDiferencia').on('change', function () {
-                    if (modoFiltrado==="SERVIDOR") {
-                        CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
-                    } else {
-                        tblReporteInventario.column(7).search($(this).val() === "Todos" ? "" : $(this).val()).draw();
+                $('#TblInventaroHistorial tbody').on(
+                    'click',
+                    '.btnExcelHistorial',
+                    function () {
+
+                        const codInventario = $(this).data('cod-inventario');
+
+                        console.log("Excel del inventario:", codInventario);
+
+                        ExportarExcel(codInventario);
                     }
-                });
+                );
             }
 
 
             // NUEVO METODO CARGAR INVENTARIOS POR ALMACEN
-            async function LoadcbxInventario(idAlmacen) {
-            $("#cbxInventariosPorAlmacen").empty();
-            //console.log(idAlmacen);
+        //    async function LoadcbxInventario(idAlmacen) {
+        //    $("#cbxInventariosPorAlmacen").empty();
+        //    //console.log(idAlmacen);
 
-                const obj = {
-                    idAlmacen: idAlmacen
-                }
+        //        const obj = {
+        //            idAlmacen: idAlmacen
+        //        }
 
-                try {
-                    const response = await fetch("FillCbxInventariosPorAlmacen", {
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(obj)
-                    });
-                    //console.log(response.url);
+        //        try {
+        //            const response = await fetch("FillCbxInventariosPorAlmacen", {
+        //                method: 'POST',
+        //                headers: {
+        //                    "Content-Type": "application/json"
+        //                },
+        //                body: JSON.stringify(obj)
+        //            });
+        //            //console.log(response.url);
 
-                    if (!response.ok) {
-                        throw new Error(`Error HTTP: ${response.status}`);
-                    }
+        //            if (!response.ok) {
+        //                throw new Error(`Error HTTP: ${response.status}`);
+        //            }
 
-                    const result = await response.json();
-                    console.log(result);
+        //            const result = await response.json();
+        //            console.log(result);
 
-                    if (!result.success) {
-                        console.error(result.mensaje);
-                        return;
-                    }
+        //            if (!result.success) {
+        //                console.error(result.mensaje);
+        //                return;
+        //            }
 
-                    const data = result.data;
+        //            const data = result.data;
 
-                    let opcion = "";
+        //            let opcion = "";
 
-                    if (data.length === 0) {
-                        opcion += "<option value='-1' disabled selected> --No se encuentran inventarios asociados al almacen --</option>";
-                    } else {
-                        data.forEach(item => {
-                            opcion += `<option value="${item.vchValue}">${item.vchdesc}</option>`;
-                            /*opcion += `<option value="${item.vchValue}">${item.vchValue}</option>`;*/
-                        });
-                    }
+        //            if (data.length === 0) {
+        //                opcion += "<option value='-1' disabled selected> --No se encuentran inventarios asociados al almacen --</option>";
+        //            } else {
+        //                data.forEach(item => {
+        //                    opcion += `<option value="${item.vchValue}">${item.vchdesc}</option>`;
+        //                    /*opcion += `<option value="${item.vchValue}">${item.vchValue}</option>`;*/
+        //                });
+        //            }
 
-                    $("#cbxInventariosPorAlmacen").html(opcion).trigger("change.select2");
+        //            $("#cbxInventariosPorAlmacen").html(opcion).trigger("change.select2");
 
-                    $("#cbxInventariosPorAlmacen").select2({
-                        width: "100%",
-                        language: "es",
-                        placeholder: "--Seleccione un inventario--"
-                    });
-                }
-                catch (error) {
-                    console.error("Error:", error);
-                }
-        }
+        //            $("#cbxInventariosPorAlmacen").select2({
+        //                width: "100%",
+        //                language: "es",
+        //                placeholder: "--Seleccione un inventario--"
+        //            });
+        //        }
+        //        catch (error) {
+        //            console.error("Error:", error);
+        //        }
+        //}
 
             function cargarDatosInventario() {
-                //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo);
+                //$('#txtResumenCodInventario').text(inventarioSeleccionado.codigo); columnDefs
                 $('#seccionResumen').removeClass('d-none');
 
                 //console.log(inventarioSeleccionado.codigo);
-                CargarReporteInventarioDiferencial(inventarioSeleccionado.codigo);
+                CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
 
                 $('#seccionReporte').removeClass('d-none');
             }
 
-
-            // NUEVO METODO CARGAR REPORTE DIFERENCIAL
-            async function CargarReporteInventarioDiferencial(codInventario) {
-
+            async function CargarHistorialDeInventariosXalmacen(codAlmacen) {
                 const obj = {
-                    codInventario: codInventario,
-                    estado: $('#slcEstado').val(),
-                    tipoDiferencia: $('#slcTipoDiferencia').val(),
-                    busqueda: $('#busquedaGeneral').val().trim()
+                    cod_almacen: codAlmacen,                 // nombre exacto del parámetro C#
+                    cod_inventario: $('#busquedaGeneral').val().trim() || null,
+                    mes: parseInt($('#slcMes').val(), 10) || 0
                 };
-
-                //console.log(obj);
-
+                console.log(obj);
                 try {
-                    const response = await fetch("ObtenerReporteDiferencial", {
+                    const response = await fetch("HistorialInventario", {
                         method: 'POST',
-                        headers: {
-                            "Content-Type":"application/json"
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(obj)
                     });
 
-                    if (!response.ok) {
-                        throw new Error(`Error HTTP: ${response.status}`);
-                    }
+                    if (!response.ok) { throw new Error(`Error HTTP: ${response.status}`); }
 
                     const result = await response.json();
-                    //console.log(result);
 
-                    // UMBRAL PARA FILTROS AL SERVIDOR
-                    let totalProductos = result.Entity.ProductosInventariados;
-                    modoFiltrado = totalProductos >= 0 ? "SERVIDOR" : "LOCAL";
-                    //console.log(`¿Filtro a usar? = ${modoFiltrado}`);
+                    if (result.HUBO_ERROR) { // no lo estabas chequeando tampoco
+                        console.error(result.MENSAJE_ERROR);
+                        return;
+                    }
 
-                    // CARGAR KPIS INVENTARIO
-                    CargarKPIs(result.Entity);
-
-                    // CARGAR TABLA
-                    CargarTabla(result.Entity.TblReporteDiferencial);
-
-                    // CARGAR FOOTER
-                    CargarFooterTabla(result.footerTable);
+                    CargarTabla(result.Entity);
                 }
-                catch(error) {
+                catch (error) {
                     console.error("Error:", error);
                 }
             }
 
-            function CargarKPIs(kpis) {
-                $('#txtProductosTotales').text(kpis.ProductosInventariados || '0');
-                $('#txtProductosConDiferencia').text(kpis.ProductosConDiferencia || '0');
-                $('#txtProductosSinDiferencia').text(kpis.ProductosSinDiferencia || '0');
-                $('#txtProductosSobrantes').text(kpis.TotalDeSobrantes || '0');
-                $('#txtProductosFaltantes').text(kpis.TotalDeFaltantes || '0');
-                //$('#txtDiferenciaNeta').text(kpis.DiferenciaNetaInventario || '0');
-                $('#txtEstadoInventario').text(kpis.EstadoInventario || '-');
-                CambiarIconoEstado(kpis.EstadoInventario);
-                //$('#txtCodigoInventario').text(kpis.ProductosInventariados || '-');
-                //$('#txtAlmacen').text(kpis.ProductosInventariados || '-');
-                $('#txtConteoActual').text(kpis.ConteoActual || '-');
-                //$('#txtUltimoConteoFinalizado').text(kpis.UltimoConteoFinalizado || '-');
-            }
-
             function CargarTabla(datos) {
 
-                if ($.fn.DataTable.isDataTable('#tblReporteInventario')) {
-                    $('#tblReporteInventario').DataTable().destroy();
+                if ($.fn.DataTable.isDataTable('#TblInventaroHistorial')) {
+                    $('#TblInventaroHistorial').DataTable().destroy();
                 }
-
-                $('#tblReporteInventario tbody').empty();
-
-                tblReporteInventario = $('#tblReporteInventario').DataTable({
+                $('#TblInventaroHistorial tbody').empty();
+                //TblInventaroHistorial
+                //tblReporteInventario
+                TblInventaroHistorial = $('#TblInventaroHistorial').DataTable({
 
                     data: datos,
 
                     columns: [
                         {
-                            data: "CodProducto",
+                            data: "CodigoDeInventario",
                             /*className: "text-center"*/
                         },
 
                         {
-                            data: "DscProducto",
+                            data: "UltimoNumeroConteo",
                             /*className: "text-center"*/
                         },
 
                         {
-                            data: "StockInicial",
+                            data: "EstadoDeInventario",
                             className: "text-center"
                         },
 
                         {
-                            data: "StockFinal",
+                            data: "FechaInicio",
                             className: "text-center"
                         },
 
                         {
-                            data: "StockDiferencial",
+                            data: "FechaCierreFinal",
                             className: "text-center"
                         },
 
                         {
-                            data: "Estado",
+                            data: "DuracionInventario",
                             className: "text-center"
                         },
 
                         {
-                            data: "TipoDiferencia",
+                            data: "Faltantes",
                             className: "text-center"
-                        }
-                    ],
-
-                    columnDefs: [
+                        },
                         {
-                            targets: '_all',
-                            render: function (data) {
-                                return data == null || data === "" ? "-" : data;
+                            data: "Sobrantes",
+                            className: "text-center"
+                        },
+                        {
+                            data: "CodigoDeInventario",
+                            className: "text-center",
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row) {
+                                if (!data) {
+                                    return "-";
+                                }
+                                return `<button type="button" 
+                                                class="btn btn-success btn-sm btnExcelHistorial"
+                                                data-cod-inventario="${data}">
+                                            <i class="ti ti-file-download me-1"></i> 
+                                            Excel
+                                        </button>`
+                                ;
                             }
                         }
                     ],
+                    //columnDefs: [
+                    //    {
+                    //        targets: '_all',
+                    //        render: function (data) {
+                    //            return data == null || data === "" ? "-" : data;
+                    //        }
+                    //    }
+                    //],
+                    columnDefs: [],
 
                     pageLength: 25,
                     searching: true,
@@ -507,7 +470,7 @@
 
             }
 
-            function CargarFooterTabla(datosFooter) {
+            @*function CargarFooterTabla(datosFooter) {
                 if (datosFooter && datosFooter.length >= 3) {
                     $('#footerStockInicial').text(datosFooter[0]);
                     $('#footerStockFinal').text(datosFooter[1]);
@@ -539,25 +502,21 @@
                     .addClass("ti ti-lock fs-6");
             }
         }
-
+                *@
             // Descargar reporte en excel
-            async function ExportarExcelDiferencial() {
+            async function ExportarExcel(cod_inv) {
 
-                if (!inventarioSeleccionado.codigo) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Atención',
-                        text: 'Debe seleccionar un inventario primero'
-                    });
-                    return;
-                }
+                //if (!inventarioSeleccionado.codigo) {
+                //    Swal.fire({
+                //        icon: 'warning',
+                //        title: 'Atención',
+                //        text: 'Debe seleccionar un inventario primero'
+                //    });
+                //    return;
+                //}
 
                 const obj = {
-                    almacen: inventarioSeleccionado.almacen,
-                    codInventario: inventarioSeleccionado.codigo,
-                    estado: $('#slcEstado').val(),
-                    tipoDiferencia: $('#slcTipoDiferencia').val(),
-                    busqueda: $('#busquedaGeneral').val().trim()
+                    cod_inv: cod_inv
                 };
 
                 Swal.fire({
@@ -573,7 +532,7 @@
                 try {
 
                     const response = await fetch(
-                        '@Url.Action("ExportarExcelDiferencial", "ReportePrincipal")',
+                        '@Url.Action("ExportarElHistorialDelInventarioPlantillaInicio", "Inventario")',
                         {
                             method: 'POST',
                             headers: {
@@ -596,7 +555,7 @@
                     // Crear enlace de descarga
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Reporte_Diferencial_${obj.codInventario}.xlsx`;
+                    a.download = `Inventario_Original_${obj.cod_inv}.xlsx`;
 
                     document.body.appendChild(a);
                     a.click();

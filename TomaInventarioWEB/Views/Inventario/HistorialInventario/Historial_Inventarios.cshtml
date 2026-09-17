@@ -54,11 +54,6 @@
                 </div>
                 <div id="chart-line-basic" class="mb-3 mx-2"></div>
 
-
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h6 class="fw-semibold mb-0">Mis inventarios realizados</h6>
-                </div>
-
                 <!-- Filtros -->
                 <!-- Busqueda(Producto, Ubicacion, Lote), Estado(todos, coincide, diferencia, nuevos), tipo de diferencia(todos, sobrante, faltante) -->
                 <div class="accordion mb-4" id="accordionFiltros">
@@ -107,6 +102,9 @@
                     </div>
                 </div>
 
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-semibold mb-0">Mis inventarios realizados</h6>
+                </div>
                 <!-- Tabla -->
                 <!-- Código, Producto, Ubicación, Lote, Stock Inicial, Stock Final, Diferencia, Estado -->
                 <div class="table-responsive">
@@ -126,14 +124,14 @@
                         </thead>
                         <tbody></tbody>
                         @*<tfoot class="table-light">
-                                <tr>
-                                    <td colspan="2" class="fw-bolder">TOTALES</td>
-                                    <td class="text-end fw-bold" id="footerStockInicial">0</td>
-                                    <td class="text-end fw-bold" id="footerStockFinal">0</td>
-                                    <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
-                                    <td colspan="2"></td>
-                                </tr>
-                            </tfoot>*@
+                    <tr>
+                        <td colspan="2" class="fw-bolder">TOTALES</td>
+                        <td class="text-end fw-bold" id="footerStockInicial">0</td>
+                        <td class="text-end fw-bold" id="footerStockFinal">0</td>
+                        <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>*@
                     </table>
                 </div>
             </div>
@@ -228,16 +226,21 @@
 
                         const codInventario = $(this).data('cod-inventario');
 
-                        console.log("Excel del inventario:", codInventario);
+                        //console.log("Excel del inventario:", codInventario);
 
                         ExportarExcel(codInventario);
                     }
                 );
             }
 
-            function cargarDatosInventario() {
+        function cargarDatosInventario() {
+                $('#busquedaGeneral').val('');
+                $('#slcMes').val('0');
+
                 CargarHistorialInventarioGrafico(codAlmacenSeleccionado);
                 CargarHistorialDeInventariosXalmacen(codAlmacenSeleccionado);
+                
+                /*TblInventaroHistorial.search('').draw();*/
 
                 $('#seccionHistorial').removeClass('d-none');
             }
@@ -259,7 +262,7 @@
                     if (!response.ok) { throw new Error(`Error HTTP: ${response.status}`); }
 
                     const result = await response.json();
-                    console.log(result);
+                    //console.log(result);
 
                     if (result.HUBO_ERROR) { // no lo estabas chequeando tampoco
                         console.error(result.MENSAJE_ERROR);
@@ -275,7 +278,7 @@
             }
 
             function CargarGraficoHistorial(inventarios) {
-                console.log(inventarios);
+                //console.log(inventarios);
                 const categorias = inventarios.map(x => x.CodigoInventario);
 
                 const diferencias = inventarios.map(x => x.Diferencias);
@@ -448,12 +451,12 @@
                     columns: [
                         {
                             data: "CodigoDeInventario",
-                            /*className: "text-center"*/
+                            className: "text-center"
                         },
 
                         {
                             data: "UltimoNumeroConteo",
-                            /*className: "text-center"*/
+                            className: "text-center"
                         },
 
                         {

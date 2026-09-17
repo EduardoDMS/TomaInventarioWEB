@@ -560,6 +560,8 @@
                 let selectedValue = $('#cbxInventariosCerrados').val();
                 let selectedText = $('#cbxInventariosCerrados option:selected').text();
 
+                $('#seccionReporte').addClass('d-none');
+
                 if (!selectedValue || selectedValue === '-1' || selectedValue === '') {
                     Swal.fire({
                         icon: 'warning',

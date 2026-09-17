@@ -337,6 +337,8 @@
                 let selectedValue = $(this).val();
                 let selectedText = $('#cbxAlmacenes option:selected').text();
 
+                $('#seccionReporte').addClass('d-none');
+
                 if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
 
                     $('#txtAlmacen').text(selectedText || '-');

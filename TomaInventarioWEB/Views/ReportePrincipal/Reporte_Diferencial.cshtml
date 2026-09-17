@@ -189,7 +189,7 @@
                                 </div>
                                 <div class="p-3">
                                     <h3 id="txtProductosSobrantes" class="text-success mb-0 fs-6"></h3>
-                                    <span>Stock sobrante</span>
+                                    <span>Productos sobrantes</span>
                                 </div>
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                                 </div>
                                 <div class="p-3">
                                     <h3 id="txtProductosFaltantes" class="text-danger mb-0 fs-6"></h3>
-                                    <span>Stock faltante</span>
+                                    <span>Productos faltantes</span>
                                 </div>
                             </div>
                         </div>
@@ -333,6 +333,8 @@
                     let selectedValue = $(this).val();
                     let selectedText = $('#cbxAlmacenes option:selected').text();
 
+                    $('#seccionReporte').addClass('d-none');
+
                     if (selectedValue && selectedValue !== '-1' && selectedValue !== '') {
                         //console.log(selectedText);
                         // console.log(typeof selectedValue);
@@ -377,6 +379,7 @@
                     }
                 });
             }
+
 
             function inicializarEventos() {
                 $('#btnCargarInventario').click(function () {

@@ -16,7 +16,8 @@ namespace BE
     public class UbicacionDiferenciaDto
     {
         public string Codigo { get; set; }
-        public string Ubicacion { get; set; }
+        public decimal StockInicial { get; set; }
+        public decimal StockFinal { get; set; }
         public decimal Diferencia { get; set; }
     }
 
@@ -24,6 +25,24 @@ namespace BE
     {
         public string CodUsuario { get; set; }
         public string NombreCompleto { get; set; }
-        public int CantLecturas { get; set; }
+        public int ProductosLecturados { get; set; }
+    }
+
+    // NUEVO AÑADIDO
+    public class ProductoFueraUbicacionDto
+    {
+        public string CodProducto { get; set; }
+        public string DscProducto { get; set; }
+
+        public string UbicacionInicial { get; set; }
+        public string UbicacionContada { get; set; }
+
+        //public decimal Cantidad { get; set; }
+    }
+
+    public class FueraUbicacionResultDao
+    {
+        public int Total { get; set; }
+        public List<ProductoFueraUbicacionDto> Productos { get; set; } = new List<ProductoFueraUbicacionDto>();
     }
 }

@@ -39,13 +39,13 @@ namespace BL
         public string ResumenEjecutivo { get; set; }
     }
 
-    public class ReporteEjecutivoService
+    public class ReporteEjecutivoBL
     {
-        private readonly ReporteEjecutivoDao _dao;
+        private readonly ReporteEjecutivoDAO _dao;
 
-        public ReporteEjecutivoService()
+        public ReporteEjecutivoBL()
         {
-            _dao = new ReporteEjecutivoDao();
+            _dao = new ReporteEjecutivoDAO();
         }
 
         public ReporteEjecutivoViewModel ObtenerReporte(string codInventario)

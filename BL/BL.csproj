@@ -58,8 +58,7 @@
     <Compile Include="Licencias\LicenciaService.cs" />
     <Compile Include="MantenimientosBL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReporteEjecutivoDao.cs" />
-    <Compile Include="ReporteEjecutivoService.cs" />
+    <Compile Include="ReporteEjecutivoBL.cs" />
     <Compile Include="ReportePrincipalBL.cs" />
     <Compile Include="ReportesBL.cs" />
     <Compile Include="SeguridadBL.cs" />

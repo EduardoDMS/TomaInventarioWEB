@@ -51,7 +51,7 @@ namespace DAO.ReporteResumenEjecutivo
         // = new();
     }
 
-    public class ReporteEjecutivoDao
+    public class ReporteEjecutivoDAO
     {
         ////private readonly string _connectionString;
 

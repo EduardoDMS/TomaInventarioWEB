@@ -107,7 +107,6 @@ namespace TomaInventarioWEB.Controllers
             }
             catch (Exception ex)
             {
-                // Manejar errores
                 return new HttpStatusCodeResult(500); // Internal Server Error
             }
         }

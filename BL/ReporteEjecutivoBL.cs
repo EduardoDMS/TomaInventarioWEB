@@ -11,30 +11,46 @@ namespace BL
 {
     public class ReporteEjecutivoViewModel
     {
+
+        // NUEVO AÑADIDO
         public string CodInventario { get; set; }
         public string CodAlmacen { get; set; }
         public string DscAlmacen { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaCierreFinal { get; set; }
-        public int DuracionDias { get; set; }
-        public string Estado { get; set; }
+        // public int ConteosRealizados { get; set; }
+        public int DuracionHoras { get; set; }
         public int ConteosRealizados { get; set; }
+        public int UsuariosParticipantes { get; set; }
 
+        // KPI
         public int ProductosInventariados { get; set; }
         public int ProductosConDiferencia { get; set; }
-        public int UsuariosParticipantes { get; set; }
-        public int UbicacionesConDiferencias { get; set; }
+        public int ProductosFaltantes { get; set; }
+        public int ProductosSobrantes { get; set; }
+        public int ProductosFueraUbicacion { get; set; }
+
+        // stock
         public decimal SumaSobrantes { get; set; }
         public decimal SumaFaltantes { get; set; }
-        public decimal DiferenciaNeta { get; set; }
 
-        public decimal ExactitudPct => ProductosInventariados == 0
-            ? 0
-            : Math.Round((ProductosInventariados - ProductosConDiferencia) * 100m / ProductosInventariados, 2);
+        public decimal DiferenciaNeta { get; set; }
 
         public List<ProductoDiferenciaDto> Top10Productos { get; set; } = new List<ProductoDiferenciaDto>();
         public List<UbicacionDiferenciaDto> Top10Ubicaciones { get; set; } = new List<UbicacionDiferenciaDto>();
-        public List<UsuarioParticipacionDto> TopUsuarios { get; set; } = new List<UsuarioParticipacionDto>();
+        public List<ProductoFueraUbicacionDto> Top10ProductosFueraUbicacion { get; set; } = new List<ProductoFueraUbicacionDto>();
+        public List<UsuarioParticipacionDto> Usuarios { get; set; } = new List<UsuarioParticipacionDto>();
+
+        public decimal ExactitudPct =>
+        ProductosInventariados == 0
+            ? 0
+            : Math.Round(
+                (ProductosInventariados - ProductosConDiferencia)
+                * 100m
+                / ProductosInventariados,
+                2
+            );
+
 
         public string ResumenEjecutivo { get; set; }
     }
@@ -52,80 +68,108 @@ namespace BL
         {
             Response responseInfo = _dao.ObtenerInfo(codInventario);
 
-            if (responseInfo.HUBO_ERROR) { throw new Exception(responseInfo.MENSAJE_ERROR); }
+            if (responseInfo.HUBO_ERROR)
+                throw new Exception(responseInfo.MENSAJE_ERROR);
 
             InfoInventarioDao info = responseInfo.Entity as InfoInventarioDao;
 
             if (info == null)
-            {
-                throw new InvalidOperationException("No existe el inventario " + codInventario);
-            }
+                throw new InvalidOperationException(
+                    "No existe el inventario " + codInventario);
 
-            Response responseProductos = _dao.ObtenerProductosKpi(codInventario);
+            Response responseKpi = _dao.ObtenerProductosKpi(codInventario);
 
-            if (responseProductos.HUBO_ERROR)
-            { throw new Exception(responseProductos.MENSAJE_ERROR); }
+            if (responseKpi.HUBO_ERROR)
+                throw new Exception(responseKpi.MENSAJE_ERROR);
 
-            ProductosKpiDao productos = responseProductos.Entity as ProductosKpiDao;
+            ProductosKpiDao kpi = responseKpi.Entity as ProductosKpiDao;
+
+            Response responseDiferencias = _dao.ObtenerDiferencias(codInventario);
+
+            if (responseDiferencias.HUBO_ERROR)
+                throw new Exception(
+                    responseDiferencias.MENSAJE_ERROR);
+
+            DiferenciasResultDao diferencias = responseDiferencias.Entity as DiferenciasResultDao;
+
             Response responseUbicaciones = _dao.ObtenerUbicacionesConDiferencia(codInventario);
 
             if (responseUbicaciones.HUBO_ERROR)
-            {
-                throw new Exception(responseUbicaciones.MENSAJE_ERROR);
-            }
+                throw new Exception(
+                    responseUbicaciones.MENSAJE_ERROR);
 
             UbicacionesResultDao ubicaciones = responseUbicaciones.Entity as UbicacionesResultDao;
-            Response responseDiferencias = _dao.ObtenerDiferencias(codInventario);
 
-            if (responseDiferencias.HUBO_ERROR) { throw new Exception(responseDiferencias.MENSAJE_ERROR); }
+            Response responseFueraUbicacion = _dao.ObtenerFueraUbicacion(codInventario);
 
-            DiferenciasResultDao diferencias = responseDiferencias.Entity as DiferenciasResultDao;
+            if (responseFueraUbicacion.HUBO_ERROR)
+                throw new Exception(
+                    responseFueraUbicacion.MENSAJE_ERROR);
+
+            FueraUbicacionResultDao fueraUbicacion = responseFueraUbicacion.Entity as FueraUbicacionResultDao;
+
             Response responseUsuarios = _dao.ObtenerUsuarios(codInventario);
 
-            if (responseUsuarios.HUBO_ERROR) { throw new Exception(responseUsuarios.MENSAJE_ERROR); }
+            if (responseUsuarios.HUBO_ERROR)
+                throw new Exception(
+                    responseUsuarios.MENSAJE_ERROR);
 
             UsuariosResultDao usuarios = responseUsuarios.Entity as UsuariosResultDao;
+
             ReporteEjecutivoViewModel vm = new ReporteEjecutivoViewModel();
 
-            vm.CodInventario = codInventario; 
+            // Información general
+            vm.CodInventario = codInventario;
             vm.CodAlmacen = info.CodAlmacen;
             vm.DscAlmacen = info.DscAlmacen;
             vm.FechaInicio = info.FechaInicio;
             vm.FechaCierreFinal = info.FechaCierreFinal;
-            vm.DuracionDias = info.DuracionDias;
-            vm.Estado = info.Estado;
+            vm.DuracionHoras = info.DuracionHoras;
             vm.ConteosRealizados = info.ConteosRealizados;
-            vm.ProductosInventariados = productos.ProductosInventariados;
-            vm.ProductosConDiferencia = productos.ProductosConDiferencia;
-            vm.UbicacionesConDiferencias = ubicaciones.UbicacionesConDiferencias;
-            vm.Top10Ubicaciones = ubicaciones.Top10;
+            vm.ProductosInventariados = kpi.ProductosInventariados; 
+            vm.ProductosConDiferencia = kpi.ProductosConDiferencia; 
+            vm.ProductosFaltantes = kpi.ProductosFaltantes; 
+            vm.ProductosSobrantes = kpi.ProductosSobrantes; 
+
+            // Stock
             vm.SumaSobrantes = diferencias.SumaSobrantes;
             vm.SumaFaltantes = diferencias.SumaFaltantes;
             vm.DiferenciaNeta = diferencias.DiferenciaNeta;
             vm.Top10Productos = diferencias.Top10;
+            vm.Top10Ubicaciones = ubicaciones.Top10;
+            vm.ProductosFueraUbicacion = fueraUbicacion.Total;
+            vm.Top10ProductosFueraUbicacion = fueraUbicacion.Productos;
             vm.UsuariosParticipantes = usuarios.UsuariosParticipantes;
-            vm.TopUsuarios = usuarios.Top10;
+            vm.Usuarios = usuarios.Usuarios;
+
+            // Resumen
             vm.ResumenEjecutivo = ArmarResumenTexto(vm);
+
             return vm;
         }
 
         private string ArmarResumenTexto(ReporteEjecutivoViewModel vm)
         {
-            var top1Producto = vm.Top10Productos.FirstOrDefault();
-            var top3Ubicaciones = vm.Top10Ubicaciones.Take(3).Select(u => u.Codigo).ToList();
-
+            var topProducto = vm.Top10Productos.FirstOrDefault();
             var sb = new StringBuilder();
-            sb.Append($"Se inventariaron {vm.ProductosInventariados:N0} productos, alcanzando una exactitud global del {vm.ExactitudPct:0.00}%. ");
-            sb.Append($"De estos, {vm.ProductosConDiferencia:N0} presentaron diferencias. ");
-            sb.Append($"Se registraron {vm.SumaSobrantes:N0} unidades sobrantes y {Math.Abs(vm.SumaFaltantes):N0} unidades faltantes, ");
-            sb.Append($"resultando en una diferencia neta de {vm.DiferenciaNeta:N0} unidades. ");
-            sb.Append($"El conteo fue realizado por {vm.UsuariosParticipantes} usuarios. ");
 
-            if (top3Ubicaciones.Any())
-                sb.Append($"Las ubicaciones con mayor concentración de diferencias fueron {string.Join(", ", top3Ubicaciones)}. ");
+            sb.Append($"El inventario registró {vm.ProductosInventariados:N0} productos inventariados, ");
+            sb.Append($"con una exactitud global del {vm.ExactitudPct:0.00}%. ");
+            sb.Append($"Se identificaron {vm.ProductosFaltantes:N0} productos faltantes ");
+            sb.Append($"y {vm.ProductosSobrantes:N0} productos sobrantes. ");
+            sb.Append($"El stock presentó {Math.Abs(vm.SumaFaltantes):N0} unidades faltantes ");
+            sb.Append($"y {vm.SumaSobrantes:N0} unidades sobrantes. ");
+            sb.Append($"Se detectaron {vm.ProductosFueraUbicacion:N0} productos " + "fuera de su ubicación registrada. ");
+            sb.Append($"Participaron {vm.UsuariosParticipantes:N0} usuarios.");
 
-            if (top1Producto != null)
-                sb.Append($"El producto con la mayor diferencia individual fue \"{top1Producto.DscProducto}\" con {top1Producto.Diferencia:N0} unidades.");
+            if (topProducto != null)
+            {
+                sb.Append(
+                    $" El producto con mayor diferencia fue "
+                    + $"\"{topProducto.DscProducto}\" "
+                    + $"con {topProducto.Diferencia:+#,##0;-#,##0;0} unidades."
+                );
+            }
 
             return sb.ToString();
         }

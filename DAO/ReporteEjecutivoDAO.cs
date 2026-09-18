@@ -17,7 +17,7 @@ namespace DAO.ReporteResumenEjecutivo
         public string DscAlmacen { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaCierreFinal { get; set; }
-        public int DuracionDias { get; set; }
+        public int DuracionHoras { get; set; }
         public string Estado { get; set; }
         public int ConteosRealizados { get; set; }
     }
@@ -26,11 +26,13 @@ namespace DAO.ReporteResumenEjecutivo
     {
         public int ProductosInventariados { get; set; }
         public int ProductosConDiferencia { get; set; }
+        public int ProductosFaltantes { get; set; }
+        public int ProductosSobrantes { get; set; }
     }
 
     public class UbicacionesResultDao
     {
-        public int UbicacionesConDiferencias { get; set; }
+        //public int UbicacionesConDiferencias { get; set; }
         public List<UbicacionDiferenciaDto> Top10 { get; set; } = new List<UbicacionDiferenciaDto>();
         // = new();
     }
@@ -47,18 +49,12 @@ namespace DAO.ReporteResumenEjecutivo
     public class UsuariosResultDao
     {
         public int UsuariosParticipantes { get; set; }
-        public List<UsuarioParticipacionDto> Top10 { get; set; } = new List<UsuarioParticipacionDto>();
+        public List<UsuarioParticipacionDto> Usuarios { get; set; } = new List<UsuarioParticipacionDto>();
         // = new();
     }
 
     public class ReporteEjecutivoDAO
     {
-        ////private readonly string _connectionString;
-
-        //public ReporteEjecutivoDao(string connectionString)
-        //{
-        //    //_connectionString = connectionString;
-        //}
 
         public Response ObtenerInfo(string codInventario)
         {
@@ -99,7 +95,7 @@ namespace DAO.ReporteResumenEjecutivo
                                     info.FechaCierreFinal = null;
                                 }
 
-                                info.DuracionDias = dr["DuracionDias"] == DBNull.Value ? 0 : Convert.ToInt32(dr["DuracionDias"]);
+                                info.DuracionHoras = dr["DuracionHoras"] == DBNull.Value ? 0 : Convert.ToInt32(dr["DuracionHoras"]);
                                 info.Estado = dr["Estado"].ToString();
                                 info.ConteosRealizados = Convert.ToInt32(dr["ConteosRealizados"]);
 
@@ -133,7 +129,7 @@ namespace DAO.ReporteResumenEjecutivo
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("SP_WEB_reporteXubicaciones_2026", con))
+                    using (cmd = new SqlCommand("SP_WEB_ReporteEjecutivo_Ubicaciones_2026", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 120;
@@ -141,11 +137,6 @@ namespace DAO.ReporteResumenEjecutivo
                         cmd.Parameters.Clear();
 
                         cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
-                        cmd.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 200).Value = "";
-                        cmd.Parameters.Add("@P_ESTADO", SqlDbType.VarChar, 20).Value = DBNull.Value;
-                        cmd.Parameters.Add("@P_SOLO_DIFERENCIAS", SqlDbType.Bit).Value = 1;
-                        cmd.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = 0;
-                        cmd.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = "ABS(DIFERENCIA) DESC";
 
                         con.Open();
 
@@ -153,26 +144,17 @@ namespace DAO.ReporteResumenEjecutivo
                         {
                             UbicacionesResultDao resultado = new UbicacionesResultDao();
 
-                            // Primer resultado = KPI
-                            // Segundo resultado = detalle de ubicaciones
-                            if (reader.NextResult())
-                            {
                                 while (reader.Read())
                                 {
-                                    resultado.UbicacionesConDiferencias++;
-
-                                    if (resultado.Top10.Count < 10)
+                                    resultado.Top10.Add(new UbicacionDiferenciaDto
                                     {
-                                        resultado.Top10.Add(new UbicacionDiferenciaDto
-                                        {
-                                            Codigo = reader["CODIGO"].ToString(),
-                                            Ubicacion = reader["UBICACION"] == DBNull.Value ? null : reader["UBICACION"].ToString(),
-                                            Diferencia = Convert.ToDecimal(reader["DIFERENCIA"])
-                                        });
-                                    }
+                                        Codigo = reader["COD_UBICACION"].ToString(),
+                                        StockInicial = Convert.ToDecimal(reader["STOCK_INICIAL"]),
+                                        StockFinal = Convert.ToDecimal(reader["STOCK_FINAL"]),
+                                        Diferencia = Convert.ToDecimal(reader["DIFERENCIA"])
+                                    });
                                 }
-                            }
-
+                                //      response.Entity = resultado;
                             response.Entity = resultado;
                         }
                     }
@@ -199,9 +181,6 @@ namespace DAO.ReporteResumenEjecutivo
 
             return response;
         }
-
-
-
 
         public Response ObtenerProductosKpi(string codInventario)
         {
@@ -215,7 +194,7 @@ namespace DAO.ReporteResumenEjecutivo
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("SP_WEB_reporteXproducto_2026", con))
+                    using (cmd = new SqlCommand("SP_WEB_ReporteEjecutivo_KPI_2026", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 120;
@@ -223,25 +202,24 @@ namespace DAO.ReporteResumenEjecutivo
                         cmd.Parameters.Clear();
 
                         cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
-                        cmd.Parameters.Add("@BUSQUEDA", SqlDbType.VarChar, 200).Value = "";
-                        cmd.Parameters.Add("@P_OBSERVACION", SqlDbType.Int).Value = 0;
-                        cmd.Parameters.Add("@P_IDSTART", SqlDbType.Int).Value = 0;
-                        cmd.Parameters.Add("@P_ESTADO", SqlDbType.Int).Value = 0;
-                        cmd.Parameters.Add("@P_ORDER", SqlDbType.VarChar, 50).Value = DBNull.Value;
 
                         con.Open();
 
                         using (reader = cmd.ExecuteReader())
                         {
-                            ProductosKpiDao resultado = new ProductosKpiDao();
 
+                            ProductosKpiDao resultado = new ProductosKpiDao();
                             if (reader.Read())
                             {
-                                resultado.ProductosInventariados =
-                                    Convert.ToInt32(reader["PRODUCTOS_INVENTARIADOS"]);
+                                
 
-                                resultado.ProductosConDiferencia =
-                                    Convert.ToInt32(reader["PRODUCTOS_CON_DIFERENCIA"]);
+                                resultado.ProductosInventariados = Convert.ToInt32(reader["PRODUCTOS_INVENTARIADOS"]);
+
+                                resultado.ProductosConDiferencia = Convert.ToInt32(reader["PRODUCTOS_CON_DIFERENCIA"]);
+
+                                resultado.ProductosFaltantes = Convert.ToInt32(reader["PRODUCTOS_FALTANTES"]);
+
+                                resultado.ProductosSobrantes = Convert.ToInt32(reader["PRODUCTOS_SOBRANTES"]);
                             }
 
                             response.Entity = resultado;
@@ -256,22 +234,11 @@ namespace DAO.ReporteResumenEjecutivo
             }
             finally
             {
-                if (con != null)
-                {
-                    con.Close();
-                    con.Dispose();
-                }
-
-                if (reader != null)
-                {
-                    reader.Dispose();
-                }
+                if (con != null) { con.Close(); con.Dispose(); }
+                if (reader != null) { reader.Dispose(); }
             }
-
             return response;
         }
-
-
 
         public Response ObtenerDiferencias(string codInventario)
         {
@@ -302,9 +269,9 @@ namespace DAO.ReporteResumenEjecutivo
 
                             if (dr.Read())
                             {
-                                resultado.SumaSobrantes = Convert.ToDecimal(dr["SumaSobrantes"]);
-                                resultado.SumaFaltantes = Convert.ToDecimal(dr["SumaFaltantes"]);
-                                resultado.DiferenciaNeta = Convert.ToDecimal(dr["DiferenciaNeta"]);
+                                resultado.SumaSobrantes = dr["SumaSobrantes"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["SumaSobrantes"]);
+                                resultado.SumaFaltantes = dr["SumaFaltantes"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["SumaFaltantes"]);
+                                resultado.DiferenciaNeta = dr["DiferenciaNeta"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["DiferenciaNeta"]);
                             }
 
                             if (dr.NextResult())
@@ -315,8 +282,7 @@ namespace DAO.ReporteResumenEjecutivo
                                     {
                                         CodProducto = dr["COD_PRODUCTO"].ToString(),
                                         DscProducto = dr["DSC_PRODUCTO"].ToString(),
-                                        Diferencia = Convert.ToDecimal(dr["DIFERENCIA"])
-
+                                        Diferencia = Convert.ToDecimal( dr["DIFERENCIA"])
                                     });
                                 }
                             }
@@ -337,7 +303,6 @@ namespace DAO.ReporteResumenEjecutivo
             }
             return response;
         }
-
 
         public Response ObtenerUsuarios(string codInventario)
         {
@@ -372,11 +337,12 @@ namespace DAO.ReporteResumenEjecutivo
                             {
                                 while (reader.Read())
                                 {
-                                    resultado.Top10.Add(new UsuarioParticipacionDto
+                                    resultado.Usuarios.Add(new UsuarioParticipacionDto
                                     {
                                         CodUsuario = reader["COD_USUARIO"].ToString(),
                                         NombreCompleto = reader["NOMBRE_COMPLETO"].ToString(),
-                                        CantLecturas = Convert.ToInt32(reader["CANT_LECTURAS"])
+                                        ProductosLecturados = Convert.ToInt32(reader["PRODUCTOS_LECTURADOS"])
+                                        //CantLecturas = Convert.ToInt32(reader["CANT_LECTURAS"])
                                     });
                                 }
                             }
@@ -397,6 +363,60 @@ namespace DAO.ReporteResumenEjecutivo
             }
             return response;
         }
+
+        public Response ObtenerFueraUbicacion(string codInventario)
+        {
+            Response response = new Response();
+            SqlConnection cn = null;
+            SqlCommand cmd = null;
+            SqlDataReader dr = null;
+
+            try
+            {
+                using (cn = new SqlConnection(Connection.AppStringConection()))
+                {
+                    using (cmd = new SqlCommand("SP_WEB_ReporteEjecutivo_FueraUbicacion_2026", cn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
+
+                        cn.Open();
+
+                        using (dr = cmd.ExecuteReader())
+                        {
+                            FueraUbicacionResultDao resultado = new FueraUbicacionResultDao();
+
+                            while (dr.Read())
+                            {
+                                resultado.Productos.Add(
+                                    new ProductoFueraUbicacionDto
+                                    {
+                                        CodProducto = dr["COD_PRODUCTO"].ToString(),
+                                        DscProducto = dr["DSC_PRODUCTO"].ToString(),
+                                        UbicacionInicial = dr["UBICACION_INICIAL"] == DBNull.Value ? null : dr["UBICACION_INICIAL"].ToString(),
+                                        UbicacionContada = dr["UBICACION_CONTADA"] == DBNull.Value ? null : dr["UBICACION_CONTADA"].ToString()
+                                    });
+                            }
+                            resultado.Total = resultado.Productos.Count;
+
+                            resultado.Productos =
+                                resultado.Productos
+                                    .Take(10)
+                                    .ToList();
+
+                            response.Entity = resultado;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.HUBO_ERROR = true;
+                response.MENSAJE_ERROR = ex.Message;
+            }
+            return response;
+        }
+    
     }
 
 }

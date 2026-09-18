@@ -2,11 +2,18 @@ using BL;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System;   
-//AL SER UNA INTERFAZ SE DEBERA INVOCAR A TODOS SUS METODOS
+using System;
+using System.Linq;
+
+// AL SER UNA INTERFAZ SE DEBERA INVOCAR A TODOS SUS METODOS
 public class ReporteEjecutivoDocument : IDocument
 {
     private readonly ReporteEjecutivoViewModel _vm;
+
+    private static readonly string AzulOscuro = "#0D3B66";
+    private static readonly string Celeste = "#2E86AB";
+    private static readonly string CelesteClaro = "#EAF3FA";
+    private static readonly string GrisTexto = "#4A4A4A";
 
     public ReporteEjecutivoDocument(ReporteEjecutivoViewModel vm)
     {
@@ -24,31 +31,53 @@ public class ReporteEjecutivoDocument : IDocument
             page.Margin(30);
             page.DefaultTextStyle(x => x.FontFamily("Arial").FontSize(10));
 
-            page.Header().Column(col =>
-            {
-                col.Item().Text("REPORTE EJECUTIVO").FontSize(20).Bold();
-                col.Item().Text("Inventario Físico — Control de Stock").FontSize(11).FontColor(Colors.Grey.Darken1);
-            });
+            page.Header().Element(ComponentHeader);
 
             page.Content().PaddingVertical(10).Column(col =>
             {
                 col.Spacing(15);
                 col.Item().Element(ComponentInfoGeneral);
-                col.Item().Element(ComponentKpis);
-                col.Item().Element(ComponentResumenDiferencias);
+                col.Item().Element(ComponentKpisFila1);
+                col.Item().Element(ComponentKpisFila2);
                 col.Item().Element(ComponentTopProductos);
                 col.Item().Element(ComponentTopUbicaciones);
-                col.Item().Element(ComponentTopUsuarios);
+                col.Item().Element(ComponentTopFueraUbicacion);
+                col.Item().Element(ComponentUsuarios);
                 col.Item().Element(ComponentConclusiones);
             });
 
-            page.Footer().AlignCenter().Text(x =>
+            page.Footer().Column(col =>
             {
-                x.Span("Reporte Ejecutivo de Inventario | Página ");
-                x.CurrentPageNumber();
-                x.Span(" de ");
-                x.TotalPages();
+                col.Item().PaddingBottom(4).LineHorizontal(0.5f).LineColor(Color.FromHex(Celeste));
+                col.Item().AlignCenter().Text(x =>
+                {
+                    x.DefaultTextStyle(y => y.FontSize(8).FontColor(Color.FromHex(GrisTexto)));
+                    x.Span("Reporte Ejecutivo de Inventario | Página ");
+                    x.CurrentPageNumber();
+                    x.Span(" de ");
+                    x.TotalPages();
+                });
             });
+        });
+    }
+
+    // ZEUS: cabecera con banda de color solido — unico bloque "fuerte" de color
+    // de toda la pagina, el resto son acentos sutiles
+    private void ComponentHeader(IContainer container)
+    {
+        container.Background(Color.FromHex(AzulOscuro)).Padding(15).Column(col =>
+        {
+            col.Item().Text("REPORTE EJECUTIVO").FontSize(20).Bold().FontColor(Colors.White);
+            col.Item().Text("Inventario Físico — Control de Stock").FontSize(11).FontColor(Color.FromHex("#BFD7EA"));
+        });
+    }
+
+    private void SectionTitle(IContainer container, string texto)
+    {
+        container.Row(row =>
+        {
+            row.AutoItem().Width(3).Background(Color.FromHex(Celeste));
+            row.RelativeItem().PaddingLeft(6).Text(texto).FontSize(13).Bold().FontColor(Color.FromHex(AzulOscuro));
         });
     }
 
@@ -56,68 +85,89 @@ public class ReporteEjecutivoDocument : IDocument
     {
         container.Column(col =>
         {
-            col.Item().Text("Información General").FontSize(13).Bold();
-            col.Item().Table(table =>
+            col.Item().Element(c => SectionTitle(c, "Información General"));
+            col.Item().PaddingTop(6).Table(table =>
             {
                 table.ColumnsDefinition(c =>
                 {
-                    c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
                 });
 
                 table.Cell().Element(CellHeaderStyle).Text("Inventario");
                 table.Cell().Element(CellHeaderStyle).Text("Almacén");
                 table.Cell().Element(CellHeaderStyle).Text("Fecha Inicio");
                 table.Cell().Element(CellHeaderStyle).Text("Fecha Fin");
+                table.Cell().Element(CellHeaderStyle).Text("Conteos Realizados");
                 table.Cell().Element(CellHeaderStyle).Text("Duración");
+                table.Cell().Element(CellHeaderStyle).Text("Usuarios Participantes");
 
                 table.Cell().Element(CellStyle).Text(_vm.CodInventario);
                 table.Cell().Element(CellStyle).Text(_vm.DscAlmacen ?? _vm.CodAlmacen);
                 table.Cell().Element(CellStyle).Text(_vm.FechaInicio.ToString("dd/MM/yyyy"));
                 table.Cell().Element(CellStyle).Text(_vm.FechaCierreFinal?.ToString("dd/MM/yyyy") ?? "-");
-                table.Cell().Element(CellStyle).Text($"{_vm.DuracionDias} días");
+                table.Cell().Element(CellStyle).Text(_vm.ConteosRealizados.ToString());
+                table.Cell().Element(CellStyle).Text($"{_vm.DuracionHoras} horas");
+                table.Cell().Element(CellStyle).Text(_vm.UsuariosParticipantes.ToString("N0"));
             });
         });
     }
 
-    private void ComponentKpis(IContainer container)
+    private void ComponentKpisFila1(IContainer container)
     {
         container.Row(row =>
         {
             row.Spacing(10);
-            row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosInventariados.ToString("N0"), "Productos Inventariados"));
-            row.RelativeItem().Element(c => KpiBox(c, _vm.UbicacionesConDiferencias.ToString("N0"), "Ubicaciones con Diferencias"));
-            row.RelativeItem().Element(c => KpiBox(c, _vm.UsuariosParticipantes.ToString("N0"), "Usuarios Participantes"));
-            row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosConDiferencia.ToString("N0"), "Productos con Diferencia"));
-            row.RelativeItem().Element(c => KpiBox(c, $"{_vm.ExactitudPct:0.00}%", "Exactitud del Inventario"));
+            row.RelativeItem().Element(c => KpiBox(c, $"{_vm.ExactitudPct:0.00}%", "Exactitud del Inventario", true));
+            row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosInventariados.ToString("N0"), "Productos Inventariados", false));
+            row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosFaltantes.ToString("N0"), "Productos Faltantes", false));
+            row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosSobrantes.ToString("N0"), "Productos Sobrantes", false));
+            row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosFueraUbicacion.ToString("N0"), "Productos Fuera de Ubicación", false));
         });
     }
 
-    private void KpiBox(IContainer container, string valor, string etiqueta)
-    {
-        container.Border(1).BorderColor(Colors.Grey.Lighten2).Padding(8).Column(col =>
-        {
-            col.Item().AlignCenter().Text(valor).FontSize(18).Bold();
-            col.Item().AlignCenter().Text(etiqueta).FontSize(8).FontColor(Colors.Grey.Darken1);
-        });
-    }
-
-    private void ComponentResumenDiferencias(IContainer container)
+    private void ComponentKpisFila2(IContainer container)
     {
         container.Row(row =>
         {
             row.Spacing(10);
-            row.RelativeItem().Element(c => KpiBox(c, $"+{_vm.SumaSobrantes:N0}", "Sobrantes"));
-            row.RelativeItem().Element(c => KpiBox(c, $"{_vm.SumaFaltantes:N0}", "Faltantes"));
-            row.RelativeItem().Element(c => KpiBox(c, $"{_vm.DiferenciaNeta:N0}", "Diferencia Neta"));
+            row.RelativeItem().Element(c => KpiBox(c, $"{Math.Abs(_vm.SumaFaltantes):N0}", "Stock Faltante", false));
+            row.RelativeItem().Element(c => KpiBox(c, $"+{_vm.SumaSobrantes:N0}", "Stock Sobrante", false));
         });
+    }
+    private void KpiBox(IContainer container, string valor, string etiqueta, bool destacado)
+    {
+        container
+            .Border(1)
+            .BorderColor(Color.FromHex("#D9E4EC"))
+            .BorderTop(destacado ? 3 : 1)
+            .BorderColor(destacado ? Color.FromHex(Celeste) : Color.FromHex("#D9E4EC"))
+            .Padding(8)
+            .Column(col =>
+            {
+                col.Item().AlignCenter().Text(valor).FontSize(18).Bold().FontColor(Color.FromHex(AzulOscuro));
+                col.Item().AlignCenter().Text(etiqueta).FontSize(8).FontColor(Color.FromHex(GrisTexto));
+            });
     }
 
     private void ComponentTopProductos(IContainer container)
     {
         container.Column(col =>
         {
-            col.Item().Text("Top 10 Productos con Mayor Diferencia").FontSize(12).Bold();
-            col.Item().Table(table =>
+            col.Item().Element(c => SectionTitle(c, "Top 10 Productos con Mayor Diferencia"));
+
+            if (!_vm.Top10Productos.Any())
+            {
+                col.Item().PaddingTop(6).Text("No se registraron diferencias en productos.").FontSize(9).Italic().FontColor(Color.FromHex(GrisTexto));
+                return;
+            }
+
+            col.Item().PaddingTop(6).Table(table =>
             {
                 table.ColumnsDefinition(c => { c.RelativeColumn(4); c.RelativeColumn(1); });
                 table.Cell().Element(CellHeaderStyle).Text("Producto");
@@ -136,41 +186,86 @@ public class ReporteEjecutivoDocument : IDocument
     {
         container.Column(col =>
         {
-            col.Item().Text("Top 10 Ubicaciones con Más Diferencias").FontSize(12).Bold();
-            col.Item().Table(table =>
+            col.Item().Element(c => SectionTitle(c, "Top 10 Ubicaciones con Más Diferencias"));
+
+            if (!_vm.Top10Ubicaciones.Any())
             {
-                table.ColumnsDefinition(c => { c.RelativeColumn(2); c.RelativeColumn(1); c.RelativeColumn(1); });
+                col.Item().PaddingTop(6).Text("No se registraron diferencias en ubicaciones.").FontSize(9).Italic().FontColor(Color.FromHex(GrisTexto));
+                return;
+            }
+
+            col.Item().PaddingTop(6).Table(table =>
+            {
+                table.ColumnsDefinition(c => { c.RelativeColumn(2); c.RelativeColumn(1); c.RelativeColumn(1); c.RelativeColumn(1); });
                 table.Cell().Element(CellHeaderStyle).Text("Ubicación");
-                table.Cell().Element(CellHeaderStyle).Text("Diferencia Neta");
-                table.Cell().Element(CellHeaderStyle).Text("Diferencia Abs.");
+                table.Cell().Element(CellHeaderStyle).Text("Stock Inicial");
+                table.Cell().Element(CellHeaderStyle).Text("Stock Final");
+                table.Cell().Element(CellHeaderStyle).Text("Diferencia");
 
                 foreach (var u in _vm.Top10Ubicaciones)
                 {
                     table.Cell().Element(CellStyle).Text(u.Codigo);
+                    table.Cell().Element(CellStyle).Text(u.StockInicial.ToString("N0"));
+                    table.Cell().Element(CellStyle).Text(u.StockFinal.ToString("N0"));
                     table.Cell().Element(CellStyle).Text(u.Diferencia.ToString("+#,##0;-#,##0;0"));
-                    table.Cell().Element(CellStyle).Text(Math.Abs(u.Diferencia).ToString("N0"));
                 }
             });
         });
     }
 
-    private void ComponentTopUsuarios(IContainer container)
+    private void ComponentTopFueraUbicacion(IContainer container)
     {
         container.Column(col =>
         {
-            col.Item().Text("Top Usuarios por Cantidad de Registros").FontSize(12).Bold();
-            col.Item().Text("Esta métrica muestra la distribución del trabajo, no busca evaluar al usuario.")
-                .FontSize(8).Italic().FontColor(Colors.Grey.Darken1);
-            col.Item().Table(table =>
+            col.Item().Element(c => SectionTitle(c, "Top 10 Productos Fuera de su Ubicación"));
+
+            if (!_vm.Top10ProductosFueraUbicacion.Any())
+            {
+                col.Item().PaddingTop(6).Text("No se registraron productos fuera de ubicación.").FontSize(9).Italic().FontColor(Color.FromHex(GrisTexto));
+                return;
+            }
+
+            col.Item().PaddingTop(6).Table(table =>
+            {
+                table.ColumnsDefinition(c => { c.RelativeColumn(3); c.RelativeColumn(1); c.RelativeColumn(1); });
+                table.Cell().Element(CellHeaderStyle).Text("Producto");
+                table.Cell().Element(CellHeaderStyle).Text("Ubicación Inicial");
+                table.Cell().Element(CellHeaderStyle).Text("Ubicación Contada");
+
+                foreach (var p in _vm.Top10ProductosFueraUbicacion)
+                {
+                    table.Cell().Element(CellStyle).Text(p.DscProducto);
+                    table.Cell().Element(CellStyle).Text(p.UbicacionInicial ?? "-");
+                    table.Cell().Element(CellStyle).Text(p.UbicacionContada ?? "-");
+                }
+            });
+        });
+    }
+
+    private void ComponentUsuarios(IContainer container)
+    {
+        container.Column(col =>
+        {
+            col.Item().Element(c => SectionTitle(c, "Usuarios por Cantidad de Productos"));
+            col.Item().PaddingTop(2).Text("Esta métrica muestra la distribución del trabajo, no busca evaluar al usuario.")
+                .FontSize(8).Italic().FontColor(Color.FromHex(GrisTexto));
+
+            if (!_vm.Usuarios.Any())
+            {
+                col.Item().PaddingTop(6).Text("No se registró participación de usuarios.").FontSize(9).Italic().FontColor(Color.FromHex(GrisTexto));
+                return;
+            }
+
+            col.Item().PaddingTop(6).Table(table =>
             {
                 table.ColumnsDefinition(c => { c.RelativeColumn(3); c.RelativeColumn(1); });
                 table.Cell().Element(CellHeaderStyle).Text("Usuario");
-                table.Cell().Element(CellHeaderStyle).Text("Lecturas");
+                table.Cell().Element(CellHeaderStyle).Text("Productos Lecturados");
 
-                foreach (var u in _vm.TopUsuarios)
+                foreach (var u in _vm.Usuarios)
                 {
                     table.Cell().Element(CellStyle).Text(!string.IsNullOrWhiteSpace(u.NombreCompleto) ? u.NombreCompleto : u.CodUsuario);
-                    table.Cell().Element(CellStyle).Text(u.CantLecturas.ToString());
+                    table.Cell().Element(CellStyle).Text(u.ProductosLecturados.ToString());
                 }
             });
         });
@@ -178,18 +273,21 @@ public class ReporteEjecutivoDocument : IDocument
 
     private void ComponentConclusiones(IContainer container)
     {
-        container.Column(col =>
-        {
-            col.Item().Text("Conclusiones").FontSize(13).Bold();
-            col.Item().Text("Resumen General").FontSize(11).Bold();
-            col.Item().Text(_vm.ResumenEjecutivo).FontSize(9);
-        });
+        container
+            .Background(Color.FromHex(CelesteClaro))
+            .Padding(10)
+            .Column(col =>
+            {
+                col.Item().Element(c => SectionTitle(c, "Conclusiones"));
+                col.Item().PaddingTop(6).Text("Resumen General").FontSize(11).Bold().FontColor(Color.FromHex(AzulOscuro));
+                col.Item().Text(_vm.ResumenEjecutivo).FontSize(9).FontColor(Color.FromHex(GrisTexto));
+            });
     }
-
     private static IContainer CellHeaderStyle(IContainer container) =>
-        container.Background(Colors.Grey.Lighten3).Padding(4).DefaultTextStyle(x => x.Bold().FontSize(9));
+        container.Background(Color.FromHex(CelesteClaro)).Padding(4)
+            .DefaultTextStyle(x => x.Bold().FontSize(9).FontColor(Color.FromHex(AzulOscuro)));
 
     private static IContainer CellStyle(IContainer container) =>
-        container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Padding(4).DefaultTextStyle(x => x.FontSize(9));
-
+        container.BorderBottom(1).BorderColor(Color.FromHex("#E3E3E3")).Padding(4)
+            .DefaultTextStyle(x => x.FontSize(9).FontColor(Color.FromHex(GrisTexto)));
 }

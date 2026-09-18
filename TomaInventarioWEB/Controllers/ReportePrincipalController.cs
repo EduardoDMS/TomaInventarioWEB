@@ -1,11 +1,15 @@
 ﻿using BE;
 using BE.Reportes;
 using BL;
+using Microsoft.Ajax.Utilities;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Web.Mvc;
 
 namespace TomaInventarioWEB.Controllers
@@ -1482,6 +1486,78 @@ namespace TomaInventarioWEB.Controllers
             }
         }
 
+
+
+
+
+
+
+
+
+        [GenerateNonce]
+        public ActionResult EnvioAlmacen()
+        {
+            Session["NavIndex"] = "4";
+
+            CombosBE objComboAlmacen = new CombosBE();
+
+            List<CombosBE> listaAlmacenes = new List<CombosBE>();
+
+            listaAlmacenes =
+                (List<CombosBE>)new CombosBL()
+                    .cbxAlmacenes()
+                    .Entity;
+
+            listaAlmacenes.Insert(0, objComboAlmacen);
+
+            ViewBag.ListaAlmacenes = listaAlmacenes;
+
+            return View();
+        }
+
+
+        [HttpGet]
+        public ActionResult Pdf(string codInventario)
+        {
+            if (string.IsNullOrWhiteSpace(codInventario))
+            {
+                return new HttpStatusCodeResult(
+                    HttpStatusCode.BadRequest,
+                    "Falta el código de inventario"
+                );
+            }
+
+            try
+            {
+                var bl = new ReporteEjecutivoService();
+
+                var vm = bl.ObtenerReporte(codInventario);
+
+                var documento = new ReporteEjecutivoDocument(vm);
+
+                byte[] pdfBytes = documento.GeneratePdf();
+
+                return File(
+                    pdfBytes,
+                    "application/pdf",
+                    $"ReporteEjecutivo_{codInventario}.pdf"
+                );
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new HttpStatusCodeResult(
+                    HttpStatusCode.NotFound,
+                    ex.Message
+                );
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(
+                    HttpStatusCode.InternalServerError,
+                    ex.ToString()
+                );
+            }
+        }
 
 
 

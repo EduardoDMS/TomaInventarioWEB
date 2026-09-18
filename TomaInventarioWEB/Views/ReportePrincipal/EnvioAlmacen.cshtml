@@ -1,0 +1,255 @@
+@{
+    ViewBag.Title = "Reporte Ejecutivo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+}
+
+<!-- Título -->
+<div class="card text-bg-primary text-white mb-3">
+    <div class="card-body p-3">
+        <div class="d-flex align-items-center justify-content-center">
+            <h2 class="fs-8 fw-bolder text-white mb-0">
+                Reporte Ejecutivo
+            </h2>
+        </div>
+    </div>
+</div>
+
+<!-- -->
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title mb-3 fw-semibold">
+                    <i class="ti ti-building-warehouse me-2"></i>
+                    Seleccionar un almacén
+                </h5>
+                <select class="form-select" id="cbxAlmacenes">
+                    @foreach (var item in ViewBag.ListaAlmacenes)
+                    {
+                        <option value="@item.vchValue">
+                            @item.vchdesc
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <!-- INVENTARIO -->
+            <div class="col-md-6">
+                <h5 class="card-title mb-3 fw-semibold">
+                    <i class="ti ti-clipboard-check me-2"></i>
+                    Seleccionar un inventario
+                </h5>
+                <select class="form-select" id="cbxInventariosPorAlmacen">
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="seccionReporte" class="card d-none">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="fw-semibold mb-1">
+                    Inventario seleccionado
+                </h5>
+                <div class="text-muted">
+                    <span id="txtAlmacen"></span>
+                    <span class="mx-2">|</span>
+                    <span id="txtCodigoInventario"></span>
+                </div>
+            </div>
+            <button type="button"
+                    class="btn btn-danger"
+                    id="btnGenerarPdf">
+
+                <i class="ti ti-file-type-pdf me-1"></i>
+                Generar reporte PDF
+            </button>
+        </div>
+    </div>
+</div><!-- fetch -->
+
+@section scripts {
+
+    <script nonce="@nonce">
+
+        let inventarioSeleccionado = {
+            almacen: '',
+            codigo: ''
+        };
+
+
+        $(document).ready(function () {
+
+            inicializarComponentes();
+            inicializarEventos();
+
+        });
+
+        function inicializarComponentes() {
+            $('#cbxAlmacenes').select2({
+                width: '100%',
+                placeholder: 'Seleccione un almacén',
+                allowClear: false,
+                language: {
+                    noResults: function () {
+                        return "No se encontraron resultados";
+                    },
+
+                    searching: function () {
+                        return "Buscando...";
+                    }
+                }
+            });
+
+            $('#cbxAlmacenes').on('change', function () {
+
+                const selectedValue = $(this).val();
+                const selectedText = $('#cbxAlmacenes option:selected').text();
+
+                $('#seccionReporte').addClass('d-none');
+                inventarioSeleccionado.almacen = '';
+                inventarioSeleccionado.codigo = '';
+                if (
+                    selectedValue &&
+                    selectedValue !== '-1' &&
+                    selectedValue !== ''
+                ) {
+                    inventarioSeleccionado.almacen = selectedText;
+                    $('#txtAlmacen').text(selectedText);
+                    LoadcbxInventario(selectedValue);
+                }
+            });
+
+            $('#cbxInventariosPorAlmacen').select2({
+
+                width: '100%',
+                placeholder: 'Seleccione un inventario',
+                allowClear: false,
+                language: {
+                    noResults: function () {
+                        return "No se encontraron resultados";
+                    },
+                    searching: function () {
+                        return "Buscando...";
+                    }
+                }
+            });
+
+
+            $('#cbxInventariosPorAlmacen').on('change', function () {
+                const selectedValue = $(this).val();
+                if (
+                    !selectedValue ||
+                    selectedValue === '-1' ||
+                    selectedValue === ''
+                ) {
+                    return;
+                }
+
+                inventarioSeleccionado.codigo = selectedValue;
+                $('#txtCodigoInventario').text(selectedValue);
+                $('#seccionReporte').removeClass('d-none');
+
+            });
+
+        }
+
+        function inicializarEventos() {
+
+            $('#btnGenerarPdf').on('click', function () {
+
+                GenerarReportePdf();
+
+            });
+
+        }
+
+        async function LoadcbxInventario(idAlmacen) {
+
+            const $combo = $('#cbxInventariosPorAlmacen');
+            $combo.empty();
+            const obj = {
+                idAlmacen: idAlmacen
+            };
+
+            try {
+
+                const response = await fetch(
+                    "FillCbxInventariosPorAlmacen",
+                    {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(obj)
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Error HTTP: ${response.status}`
+                    );
+                }
+
+                const result = await response.json();
+
+
+                if (!result.success) {
+                    console.error(result.mensaje);
+                    return;
+                }
+
+                const data = result.data;
+                let opciones = "";
+
+                if (data.length === 0) {
+                    opciones =
+                        "<option value='-1' disabled selected>" +
+                        "-- No se encuentran inventarios asociados al almacén --" +
+                        "</option>";
+                }
+                else {
+                    data.forEach(item => {
+                        opciones +=
+                            `<option value="${item.vchValue}">
+                                ${item.vchdesc}
+                             </option>`;
+                    });
+                }
+
+                $combo
+                    .html(opciones)
+                    .trigger("change.select2");
+            }
+            catch (error) {
+                console.error(
+                    "Error cargando inventarios:",
+                    error
+                );
+            }
+        }
+
+        function GenerarReportePdf() {
+            const codInventario = inventarioSeleccionado.codigo;
+
+            if (!codInventario) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: 'Debe seleccionar un inventario primero.'
+                });
+                return;
+            }
+
+            const url =
+                '@Url.Action("Pdf", "ReporteEjecutivo")' + '?codInventario=' + encodeURIComponent(codInventario);
+            window.open(url, '_blank');
+
+        }
+
+    </script>
+}

@@ -1517,7 +1517,7 @@ namespace TomaInventarioWEB.Controllers
 
 
         [HttpGet]
-        public ActionResult Pdf(string codInventario)
+        public ActionResult Pdf(string codInventario, bool preview = false)
         {
             if (string.IsNullOrWhiteSpace(codInventario))
             {
@@ -1530,25 +1530,22 @@ namespace TomaInventarioWEB.Controllers
             try
             {
                 var bl = new ReporteEjecutivoBL();
-
                 var vm = bl.ObtenerReporte(codInventario);
 
                 var documento = new ReporteEjecutivoDocument(vm);
-
                 byte[] pdfBytes = documento.GeneratePdf();
 
-                return File(
-                    pdfBytes,
-                    "application/pdf",
-                    $"ReporteEjecutivo_{codInventario}.pdf"
-                );
+                string fileName = $"ReporteEjecutivo_{codInventario}.pdf";
+                string disposition = preview ? "inline" : "attachment";
+
+                Response.Headers.Remove("Content-Disposition");
+                Response.Headers.Add("Content-Disposition", $"{disposition}; filename=\"{fileName}\"");
+
+                return File(pdfBytes, "application/pdf");
             }
             catch (InvalidOperationException ex)
             {
-                return new HttpStatusCodeResult(
-                    HttpStatusCode.NotFound,
-                    ex.Message
-                );
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound, ex.Message);
             }
             catch (Exception ex)
             {
@@ -1558,6 +1555,12 @@ namespace TomaInventarioWEB.Controllers
                 );
             }
         }
+
+        //[HttpGet]
+        //public ActionResult Pdf(string codInventario)
+        //{
+        //    return Content("ENTRO AL PDF");
+        //}
 
 
 

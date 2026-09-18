@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = "Reporte Ejecutivo";
+    ViewBag.Title = "Reporte Resumen Ejecutivo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
@@ -246,7 +246,7 @@
             }
 
             const url =
-                '@Url.Action("Pdf", "ReporteEjecutivo")' + '?codInventario=' + encodeURIComponent(codInventario);
+                '@Url.Action("Pdf", "ReportePrincipal")' + '?codInventario=' + encodeURIComponent(codInventario);
             window.open(url, '_blank');
 
         }

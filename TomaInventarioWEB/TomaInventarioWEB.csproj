@@ -158,7 +158,6 @@
     <Compile Include="Controllers\ImportacionController.cs" />
     <Compile Include="Controllers\InventarioController.cs" />
     <Compile Include="Controllers\MantenimientoController.cs" />
-    <Compile Include="Controllers\ReporteEjecutivoController.cs" />
     <Compile Include="Controllers\ReporteEjecutivoDocument .cs" />
     <Compile Include="Controllers\ReportePrincipalController.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
@@ -4459,7 +4458,7 @@
     <Content Include="Views\Mantenimiento\Modals\ModalsTipoMonedaMant.cshtml" />
     <Content Include="Views\ReportePrincipal\Reporte_Valorizado.cshtml" />
     <Content Include="Views\Inventario\HistorialInventario\Historial_Inventarios.cshtml" />
-    <Content Include="Views\ReportePrincipal\EnvioAlmacen.cshtml" />
+    <Content Include="Views\ReportePrincipal\Reporte_Resumen_Ejecutivo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

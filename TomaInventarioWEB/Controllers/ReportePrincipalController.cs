@@ -1495,7 +1495,7 @@ namespace TomaInventarioWEB.Controllers
 
 
         [GenerateNonce]
-        public ActionResult EnvioAlmacen()
+        public ActionResult Reporte_Resumen_Ejecutivo()
         {
             Session["NavIndex"] = "4";
 
@@ -1529,7 +1529,7 @@ namespace TomaInventarioWEB.Controllers
 
             try
             {
-                var bl = new ReporteEjecutivoService();
+                var bl = new ReporteEjecutivoBL();
 
                 var vm = bl.ObtenerReporte(codInventario);
 

@@ -49,6 +49,7 @@
     <Compile Include="InventarioDAO.cs" />
     <Compile Include="MantenimientosDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReporteEjecutivoDAO.cs" />
     <Compile Include="ReportePrincipalDAO.cs" />
     <Compile Include="ReportesDAO.cs" />
     <Compile Include="SeguridadDAO.cs" />

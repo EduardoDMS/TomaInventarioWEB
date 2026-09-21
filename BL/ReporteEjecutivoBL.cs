@@ -19,7 +19,7 @@ namespace BL
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaCierreFinal { get; set; }
         // public int ConteosRealizados { get; set; }
-        public int DuracionHoras { get; set; }
+        public string DuracionHoras { get; set; }
         public int ConteosRealizados { get; set; }
         public int UsuariosParticipantes { get; set; }
 

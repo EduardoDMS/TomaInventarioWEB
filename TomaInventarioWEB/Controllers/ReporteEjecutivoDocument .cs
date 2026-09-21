@@ -112,7 +112,7 @@ public class ReporteEjecutivoDocument : IDocument
                 table.Cell().Element(CellStyle).Text(_vm.FechaInicio.ToString("dd/MM/yyyy"));
                 table.Cell().Element(CellStyle).Text(_vm.FechaCierreFinal?.ToString("dd/MM/yyyy") ?? "-");
                 table.Cell().Element(CellStyle).Text(_vm.ConteosRealizados.ToString());
-                table.Cell().Element(CellStyle).Text($"{_vm.DuracionHoras} horas");
+                table.Cell().Element(CellStyle).Text($"{_vm.DuracionHoras}");
                 table.Cell().Element(CellStyle).Text(_vm.UsuariosParticipantes.ToString("N0"));
             });
         });

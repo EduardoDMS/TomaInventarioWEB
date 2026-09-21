@@ -17,7 +17,7 @@ namespace DAO.ReporteResumenEjecutivo
         public string DscAlmacen { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaCierreFinal { get; set; }
-        public int DuracionHoras { get; set; }
+        public string DuracionHoras { get; set; } // YA NO ES UN INT AHORA ES UN STRING 
         public string Estado { get; set; }
         public int ConteosRealizados { get; set; }
     }
@@ -95,7 +95,7 @@ namespace DAO.ReporteResumenEjecutivo
                                     info.FechaCierreFinal = null;
                                 }
 
-                                info.DuracionHoras = dr["DuracionHoras"] == DBNull.Value ? 0 : Convert.ToInt32(dr["DuracionHoras"]);
+                                info.DuracionHoras = dr["DuracionHoras"] == DBNull.Value ? String.Empty : dr["DuracionHoras"].ToString();
                                 info.Estado = dr["Estado"].ToString();
                                 info.ConteosRealizados = Convert.ToInt32(dr["ConteosRealizados"]);
 

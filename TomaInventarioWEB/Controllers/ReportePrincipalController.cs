@@ -1,11 +1,9 @@
 ﻿using BE;
 using BE.Reportes;
 using BL;
-using Microsoft.Ajax.Utilities;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1487,13 +1485,7 @@ namespace TomaInventarioWEB.Controllers
         }
 
 
-
-
-
-
-
-
-
+        // EJECUTIVO
         [GenerateNonce]
         public ActionResult Reporte_Resumen_Ejecutivo()
         {
@@ -1514,8 +1506,6 @@ namespace TomaInventarioWEB.Controllers
 
             return View();
         }
-
-
         [HttpGet]
         public ActionResult Pdf(string codInventario, bool preview = false)
         {

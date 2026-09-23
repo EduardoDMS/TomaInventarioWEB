@@ -1,12 +1,9 @@
-﻿using System;
+﻿using BE;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using BE;
 
 namespace DAO.ReporteResumenEjecutivo
 {
@@ -66,7 +63,7 @@ namespace DAO.ReporteResumenEjecutivo
 
             try
             {
-                using(cn = new SqlConnection(Connection.AppStringConection()))
+                using (cn = new SqlConnection(Connection.AppStringConection()))
                 {
                     using (cmd = new SqlCommand("SP_WEB_ReporteEjecutivo_Info_2026", cn))
                     {
@@ -104,15 +101,16 @@ namespace DAO.ReporteResumenEjecutivo
                         }
                     }
                 }
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 response.MENSAJE_ERROR = ex.Message.ToString();
                 response.HUBO_ERROR = true;
             }
             finally
             {
-                if(cn != null) { cn.Close(); cn.Dispose(); }
-                if(dr != null) { dr.Dispose(); }
+                if (cn != null) { cn.Close(); cn.Dispose(); }
+                if (dr != null) { dr.Dispose(); }
             }
             return response;
         }
@@ -144,17 +142,17 @@ namespace DAO.ReporteResumenEjecutivo
                         {
                             UbicacionesResultDao resultado = new UbicacionesResultDao();
 
-                                while (reader.Read())
+                            while (reader.Read())
+                            {
+                                resultado.Top10.Add(new UbicacionDiferenciaDto
                                 {
-                                    resultado.Top10.Add(new UbicacionDiferenciaDto
-                                    {
-                                        Codigo = reader["COD_UBICACION"].ToString(),
-                                        StockInicial = Convert.ToDecimal(reader["STOCK_INICIAL"]),
-                                        StockFinal = Convert.ToDecimal(reader["STOCK_FINAL"]),
-                                        Diferencia = Convert.ToDecimal(reader["DIFERENCIA"])
-                                    });
-                                }
-                                //      response.Entity = resultado;
+                                    Codigo = reader["COD_UBICACION"].ToString(),
+                                    StockInicial = Convert.ToDecimal(reader["STOCK_INICIAL"]),
+                                    StockFinal = Convert.ToDecimal(reader["STOCK_FINAL"]),
+                                    Diferencia = Convert.ToDecimal(reader["DIFERENCIA"])
+                                });
+                            }
+                            //      response.Entity = resultado;
                             response.Entity = resultado;
                         }
                     }
@@ -211,7 +209,7 @@ namespace DAO.ReporteResumenEjecutivo
                             ProductosKpiDao resultado = new ProductosKpiDao();
                             if (reader.Read())
                             {
-                                
+
 
                                 resultado.ProductosInventariados = Convert.ToInt32(reader["PRODUCTOS_INVENTARIADOS"]);
 
@@ -282,7 +280,7 @@ namespace DAO.ReporteResumenEjecutivo
                                     {
                                         CodProducto = dr["COD_PRODUCTO"].ToString(),
                                         DscProducto = dr["DSC_PRODUCTO"].ToString(),
-                                        Diferencia = Convert.ToDecimal( dr["DIFERENCIA"])
+                                        Diferencia = Convert.ToDecimal(dr["DIFERENCIA"])
                                     });
                                 }
                             }
@@ -315,13 +313,13 @@ namespace DAO.ReporteResumenEjecutivo
             {
                 using (con = new SqlConnection(Connection.AppStringConection()))
                 {
-                    using (cmd = new SqlCommand("SP_WEB_ReporteEjecutivo_Usuarios_2026",con))
+                    using (cmd = new SqlCommand("SP_WEB_ReporteEjecutivo_Usuarios_2026", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 120;
                         cmd.Parameters.Clear();
 
-                        cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value =codInventario;
+                        cmd.Parameters.Add("@COD_INVENTARIO", SqlDbType.VarChar, 20).Value = codInventario;
                         con.Open();
 
                         using (reader = cmd.ExecuteReader())
@@ -330,7 +328,7 @@ namespace DAO.ReporteResumenEjecutivo
 
                             if (reader.Read())
                             {
-                                resultado.UsuariosParticipantes =Convert.ToInt32(reader["USUARIOS_PARTICIPANTES"]);
+                                resultado.UsuariosParticipantes = Convert.ToInt32(reader["USUARIOS_PARTICIPANTES"]);
                             }
 
                             if (reader.NextResult())
@@ -358,7 +356,7 @@ namespace DAO.ReporteResumenEjecutivo
             }
             finally
             {
-                if (con != null) { con.Close();con.Dispose();}
+                if (con != null) { con.Close(); con.Dispose(); }
                 if (reader != null) { reader.Dispose(); }
             }
             return response;
@@ -416,7 +414,6 @@ namespace DAO.ReporteResumenEjecutivo
             }
             return response;
         }
-    
-    }
 
+    }
 }

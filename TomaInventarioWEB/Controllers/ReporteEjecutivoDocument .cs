@@ -31,11 +31,14 @@ public class ReporteEjecutivoDocument : IDocument
             page.Margin(30);
             page.DefaultTextStyle(x => x.FontFamily("Arial").FontSize(10));
 
-            page.Header().Element(ComponentHeader);
+            //page.Header().Element(ComponentHeader);
 
             page.Content().PaddingVertical(10).Column(col =>
             {
                 col.Spacing(15);
+
+                col.Item().Element(ComponentHeader);
+
                 col.Item().Element(ComponentInfoGeneral);
                 col.Item().Element(ComponentKpisFila1);
                 col.Item().Element(ComponentKpisFila2);
@@ -61,14 +64,12 @@ public class ReporteEjecutivoDocument : IDocument
         });
     }
 
-    // ZEUS: cabecera con banda de color solido — unico bloque "fuerte" de color
-    // de toda la pagina, el resto son acentos sutiles
     private void ComponentHeader(IContainer container)
     {
         container.Background(Color.FromHex(AzulOscuro)).Padding(15).Column(col =>
         {
             col.Item().Text("REPORTE EJECUTIVO").FontSize(20).Bold().FontColor(Colors.White);
-            col.Item().Text("Inventario Físico — Control de Stock").FontSize(11).FontColor(Color.FromHex("#BFD7EA"));
+            col.Item().Text("Inventario Físico").FontSize(11).FontColor(Color.FromHex("#BFD7EA"));
         });
     }
 
@@ -99,21 +100,21 @@ public class ReporteEjecutivoDocument : IDocument
                     c.RelativeColumn();
                 });
 
-                table.Cell().Element(CellHeaderStyle).Text("Inventario");
-                table.Cell().Element(CellHeaderStyle).Text("Almacén");
-                table.Cell().Element(CellHeaderStyle).Text("Fecha Inicio");
-                table.Cell().Element(CellHeaderStyle).Text("Fecha Fin");
-                table.Cell().Element(CellHeaderStyle).Text("Conteos Realizados");
-                table.Cell().Element(CellHeaderStyle).Text("Duración");
-                table.Cell().Element(CellHeaderStyle).Text("Usuarios Participantes");
+                table.Cell().Element(CellHeaderStyle).AlignCenter().Text("Inventario");
+                table.Cell().Element(CellHeaderStyle).AlignCenter().Text("Almacén");
+                table.Cell().Element(CellHeaderStyle).AlignCenter().Text("Fecha Inicio");
+                table.Cell().Element(CellHeaderStyle).AlignCenter().Text("Fecha Fin");
+                table.Cell().Element(CellHeaderStyle).AlignCenter().Text("Conteos Realizados");
+                table.Cell().Element(CellHeaderStyle).AlignCenter().Text("Duración");
+                table.Cell().Element(CellHeaderStyle).AlignCenter().Text("Operadores Participantes");
 
-                table.Cell().Element(CellStyle).Text(_vm.CodInventario);
-                table.Cell().Element(CellStyle).Text(_vm.DscAlmacen ?? _vm.CodAlmacen);
-                table.Cell().Element(CellStyle).Text(_vm.FechaInicio.ToString("dd/MM/yyyy"));
-                table.Cell().Element(CellStyle).Text(_vm.FechaCierreFinal?.ToString("dd/MM/yyyy") ?? "-");
-                table.Cell().Element(CellStyle).Text(_vm.ConteosRealizados.ToString());
-                table.Cell().Element(CellStyle).Text($"{_vm.DuracionHoras}");
-                table.Cell().Element(CellStyle).Text(_vm.UsuariosParticipantes.ToString("N0"));
+                table.Cell().Element(CellStyle).AlignCenter().Text(_vm.CodInventario);
+                table.Cell().Element(CellStyle).AlignCenter().Text(_vm.DscAlmacen ?? _vm.CodAlmacen);
+                table.Cell().Element(CellStyle).AlignCenter().Text(_vm.FechaInicio.ToString("dd/MM/yyyy"));
+                table.Cell().Element(CellStyle).AlignCenter().Text(_vm.FechaCierreFinal?.ToString("dd/MM/yyyy") ?? "-");
+                table.Cell().Element(CellStyle).AlignCenter().Text(_vm.ConteosRealizados.ToString());
+                table.Cell().Element(CellStyle).AlignCenter().Text($"{_vm.DuracionHoras}");
+                table.Cell().Element(CellStyle).AlignCenter().Text(_vm.UsuariosParticipantes.ToString("N0"));
             });
         });
     }
@@ -199,7 +200,7 @@ public class ReporteEjecutivoDocument : IDocument
                 table.ColumnsDefinition(c => { c.RelativeColumn(2); c.RelativeColumn(1); c.RelativeColumn(1); c.RelativeColumn(1); });
                 table.Cell().Element(CellHeaderStyle).Text("Ubicación");
                 table.Cell().Element(CellHeaderStyle).Text("Stock Inicial");
-                table.Cell().Element(CellHeaderStyle).Text("Stock Final");
+                table.Cell().Element(CellHeaderStyle).Text("Stock Contado");
                 table.Cell().Element(CellHeaderStyle).Text("Diferencia");
 
                 foreach (var u in _vm.Top10Ubicaciones)

@@ -124,7 +124,8 @@ public class ReporteEjecutivoDocument : IDocument
         container.Row(row =>
         {
             row.Spacing(10);
-            row.RelativeItem().Element(c => KpiBox(c, $"{_vm.ExactitudPct:0.00}%", "Exactitud del Inventario", true));
+            row.RelativeItem().Element(c => KpiBox(c, $"{_vm.ExactitudPct:0.00}%", "Exactitud Por productos", true));
+            row.RelativeItem().Element(c => KpiBox(c, $"{_vm.ExactitudPorUnidades:0.00}%", "Exactitud por Stock", true));
             row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosInventariados.ToString("N0"), "Productos Inventariados", false));
             row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosFaltantes.ToString("N0"), "Productos Faltantes", false));
             row.RelativeItem().Element(c => KpiBox(c, _vm.ProductosSobrantes.ToString("N0"), "Productos Sobrantes", false));
@@ -137,7 +138,7 @@ public class ReporteEjecutivoDocument : IDocument
         container.Row(row =>
         {
             row.Spacing(10);
-            row.RelativeItem().Element(c => KpiBox(c, $"{Math.Abs(_vm.SumaFaltantes):N0}", "Stock Faltante", false));
+            row.RelativeItem().Element(c => KpiBox(c, $"-{Math.Abs(_vm.SumaFaltantes):N0}", "Stock Faltante", false));
             row.RelativeItem().Element(c => KpiBox(c, $"+{_vm.SumaSobrantes:N0}", "Stock Sobrante", false));
         });
     }

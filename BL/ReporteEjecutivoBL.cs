@@ -36,6 +36,11 @@ namespace BL
 
         public decimal DiferenciaNeta { get; set; }
 
+        //
+        public decimal StockTotalInicial { get; set; }
+        public decimal StockTotalContado { get; set; }
+        public decimal StockTotalDiferencial { get; set; }
+
         public List<ProductoDiferenciaDto> Top10Productos { get; set; } = new List<ProductoDiferenciaDto>();
         public List<UbicacionDiferenciaDto> Top10Ubicaciones { get; set; } = new List<UbicacionDiferenciaDto>();
         public List<ProductoFueraUbicacionDto> Top10ProductosFueraUbicacion { get; set; } = new List<ProductoFueraUbicacionDto>();
@@ -51,6 +56,10 @@ namespace BL
                 2
             );
 
+        public decimal ExactitudPorUnidades =>
+        StockTotalInicial <= 0
+            ? 0
+            : Math.Round((1m - (StockTotalDiferencial/StockTotalInicial)) * 100m);
 
         public string ResumenEjecutivo { get; set; }
     }
@@ -136,6 +145,9 @@ namespace BL
             vm.SumaFaltantes = diferencias.SumaFaltantes;
             vm.DiferenciaNeta = diferencias.DiferenciaNeta;
             vm.Top10Productos = diferencias.Top10;
+            vm.StockTotalInicial = diferencias.StockInicialTotal;
+            vm.StockTotalContado = diferencias.StockFinalTotal;
+            vm.StockTotalDiferencial = diferencias.DiferenciaAbsolutaTotal;
             vm.Top10Ubicaciones = ubicaciones.Top10;
             vm.ProductosFueraUbicacion = fueraUbicacion.Total;
             vm.Top10ProductosFueraUbicacion = fueraUbicacion.Productos;
@@ -154,7 +166,8 @@ namespace BL
             var sb = new StringBuilder();
 
             sb.Append($"El inventario registró {vm.ProductosInventariados:N0} productos inventariados, ");
-            sb.Append($"con una exactitud global del {vm.ExactitudPct:0.00}%. ");
+            sb.Append($"con una exactitud global del {vm.ExactitudPct:0.00}%. "); 
+            sb.Append($"y del {vm.ExactitudPorUnidades:0.00}% por unidades de stock. ");
             sb.Append($"Se identificaron {vm.ProductosFaltantes:N0} productos faltantes ");
             sb.Append($"y {vm.ProductosSobrantes:N0} productos sobrantes. ");
             sb.Append($"El stock presentó {Math.Abs(vm.SumaFaltantes):N0} unidades faltantes ");

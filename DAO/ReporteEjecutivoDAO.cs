@@ -39,6 +39,9 @@ namespace DAO.ReporteResumenEjecutivo
         public decimal SumaSobrantes { get; set; }
         public decimal SumaFaltantes { get; set; }
         public decimal DiferenciaNeta { get; set; }
+        public decimal DiferenciaAbsolutaTotal { get; set; }
+        public decimal StockInicialTotal { get; set; }
+        public decimal StockFinalTotal { get; set; }
         public List<ProductoDiferenciaDto> Top10 { get; set; } = new List<ProductoDiferenciaDto>();
         // = new();
     }
@@ -270,6 +273,11 @@ namespace DAO.ReporteResumenEjecutivo
                                 resultado.SumaSobrantes = dr["SumaSobrantes"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["SumaSobrantes"]);
                                 resultado.SumaFaltantes = dr["SumaFaltantes"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["SumaFaltantes"]);
                                 resultado.DiferenciaNeta = dr["DiferenciaNeta"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["DiferenciaNeta"]);
+
+                                resultado.DiferenciaAbsolutaTotal = dr["DiferenciaAbsolutaTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["DiferenciaAbsolutaTotal"]);
+                                resultado.StockInicialTotal = dr["StockInicialTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["StockInicialTotal"]);
+                                resultado.StockFinalTotal = dr["StockFinalTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["StockFinalTotal"]);
+
                             }
 
                             if (dr.NextResult())

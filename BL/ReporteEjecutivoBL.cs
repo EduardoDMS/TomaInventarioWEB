@@ -1,10 +1,9 @@
-﻿using DAO.ReporteResumenEjecutivo;
+﻿using BE;
+using DAO.ReporteResumenEjecutivo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using BE;
 
 
 namespace BL
@@ -59,7 +58,7 @@ namespace BL
         public decimal ExactitudPorUnidades =>
         StockTotalInicial <= 0
             ? 0
-            : Math.Round((1m - (StockTotalDiferencial/StockTotalInicial)) * 100m);
+            : Math.Round((1m - (StockTotalDiferencial / StockTotalInicial)) * 100m, 2);
 
         public string ResumenEjecutivo { get; set; }
     }
@@ -135,10 +134,10 @@ namespace BL
             vm.FechaCierreFinal = info.FechaCierreFinal;
             vm.DuracionHoras = info.DuracionHoras;
             vm.ConteosRealizados = info.ConteosRealizados;
-            vm.ProductosInventariados = kpi.ProductosInventariados; 
-            vm.ProductosConDiferencia = kpi.ProductosConDiferencia; 
-            vm.ProductosFaltantes = kpi.ProductosFaltantes; 
-            vm.ProductosSobrantes = kpi.ProductosSobrantes; 
+            vm.ProductosInventariados = kpi.ProductosInventariados;
+            vm.ProductosConDiferencia = kpi.ProductosConDiferencia;
+            vm.ProductosFaltantes = kpi.ProductosFaltantes;
+            vm.ProductosSobrantes = kpi.ProductosSobrantes;
 
             // Stock
             vm.SumaSobrantes = diferencias.SumaSobrantes;
@@ -166,7 +165,7 @@ namespace BL
             var sb = new StringBuilder();
 
             sb.Append($"El inventario registró {vm.ProductosInventariados:N0} productos inventariados, ");
-            sb.Append($"con una exactitud global del {vm.ExactitudPct:0.00}%. "); 
+            sb.Append($"con una exactitud global del {vm.ExactitudPct:0.00}%. ");
             sb.Append($"y del {vm.ExactitudPorUnidades:0.00}% por unidades de stock. ");
             sb.Append($"Se identificaron {vm.ProductosFaltantes:N0} productos faltantes ");
             sb.Append($"y {vm.ProductosSobrantes:N0} productos sobrantes. ");

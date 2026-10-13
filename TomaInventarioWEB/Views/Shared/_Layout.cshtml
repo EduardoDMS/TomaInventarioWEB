@@ -202,13 +202,13 @@
                 </small>
             </a>
             @*<a class="submenu__secundario--item" href="@Url.Action("Historico_Inventariado", "Reportes")">
-            <span class="submenu__titulo">Historial de Inventario</span>
-            <small class="submenu__descripcion">Administra tus inventarios creados</small>
-        </a>*@
+                    <span class="submenu__titulo">Historial de Inventario</span>
+                    <small class="submenu__descripcion">Administra tus inventarios creados</small>
+                </a>*@
             @*<a class="submenu__secundario--item" href="@Url.Action("ImportacionArchivos", "Importacion")">
-            <span class="submenu__titulo">Importar archivos escenciales</span>
-            <small>Cargue archivos excel para el funcionamiento inicial de la aplicación</small>
-        </a>*@
+                    <span class="submenu__titulo">Importar archivos escenciales</span>
+                    <small>Cargue archivos excel para el funcionamiento inicial de la aplicación</small>
+                </a>*@
         </div>
         <!-- REPORTE-->
         <div class="submenu__secundario" id="reportes" data-nombre="Reportes">
@@ -246,44 +246,44 @@
                 <small>Muestra el valor económico de las diferencias del inventario</small>
             </a>
             <a class="submenu__secundario--item" href="@Url.Action("Reporte_Resumen_Ejecutivo", "ReportePrincipal")">
-                <span class="submenu__titulo">Resumen</span>
+                <span class="submenu__titulo">Ejecutivo</span>
                 <small> Obten un PDF con visión ejecutiva de los principales resultados del inventario</small>
             </a>
         </div>
         <!-- GESTION DE USUARIO-->
         @*<div class="submenu__secundario" id="gestionUsuario" data-nombre="Gestión de Usuarios">
-                <a class="submenu__secundario--item" href="@Url.Action("UsuariosMant", "Mantenimiento")">
-                    <span class="submenu__titulo">Usuarios Generales</span>
-                    <small>Realice modificaciones a sus usuarios (crea, edita y desactive)</small>
-                </a>
-                <a class="submenu__secundario--item" href="@Url.Action("UsuariosMant", "Mantenimiento")">
-                        <span class="submenu__titulo">Usuario Operador</span>
+                    <a class="submenu__secundario--item" href="@Url.Action("UsuariosMant", "Mantenimiento")">
+                        <span class="submenu__titulo">Usuarios Generales</span>
                         <small>Realice modificaciones a sus usuarios (crea, edita y desactive)</small>
-                </a>
-        </div>*@
+                    </a>
+                    <a class="submenu__secundario--item" href="@Url.Action("UsuariosMant", "Mantenimiento")">
+                            <span class="submenu__titulo">Usuario Operador</span>
+                            <small>Realice modificaciones a sus usuarios (crea, edita y desactive)</small>
+                    </a>
+            </div>*@
         <!-- GESTION DE RECURSOS-->
-    <div class="submenu__secundario" id="gestionRecursos" data-nombre="Gestión de Recursos">
-        <a class="submenu__secundario--item" href="@Url.Action("AlmacenesMant", "Mantenimiento")">
-            <span class="submenu__titulo">Almacenes</span>
-            <small>Administra tus almances (crea, edita y desactive)</small>
-        </a>
-        <a class="submenu__secundario--item" href="@Url.Action("UbicacionesMant", "Mantenimiento")">
-            <span class="submenu__titulo">Ubicaciones</span>
-            <small>Administra tus ubicaciones dentro de los almacenes (crea, edita y desactive)</small>
-        </a>
-        <a class="submenu__secundario--item" href="@Url.Action("ProductosMant", "Mantenimiento")">
-            <span class="submenu__titulo">Productos</span>
-            <small>Administra tus productos (crea, edita y desactive)</small>
-        </a>
-        <a class="submenu__secundario--item" href="@Url.Action("UnidadesMant", "Mantenimiento")">
-            <span class="submenu__titulo">Unidades de Medida</span>
-            <small>Administra como se cuantificaran tus productos</small>
-        </a>
-        <a class="submenu__secundario--item" href="@Url.Action("TipoMonedaMant", "Mantenimiento")">
-            <span class="submenu__titulo">Tipos de Moneda</span>
-            <small>Administra el tipo de moneda que tendrán tus productos</small>
-        </a>
-    </div>
+        <div class="submenu__secundario" id="gestionRecursos" data-nombre="Gestión de Recursos">
+            <a class="submenu__secundario--item" href="@Url.Action("AlmacenesMant", "Mantenimiento")">
+                <span class="submenu__titulo">Almacenes</span>
+                <small>Administra tus almances (crea, edita y desactive)</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("UbicacionesMant", "Mantenimiento")">
+                <span class="submenu__titulo">Ubicaciones</span>
+                <small>Administra tus ubicaciones dentro de los almacenes (crea, edita y desactive)</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("ProductosMant", "Mantenimiento")">
+                <span class="submenu__titulo">Productos</span>
+                <small>Administra tus productos (crea, edita y desactive)</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("UnidadesMant", "Mantenimiento")">
+                <span class="submenu__titulo">Unidades de Medida</span>
+                <small>Administra como se cuantificaran tus productos</small>
+            </a>
+            <a class="submenu__secundario--item" href="@Url.Action("TipoMonedaMant", "Mantenimiento")">
+                <span class="submenu__titulo">Tipos de Moneda</span>
+                <small>Administra el tipo de moneda que tendrán tus productos</small>
+            </a>
+        </div>
         <!-- AJUSTES-->
         <div class="submenu__secundario" id="ajustes" data-nombre="Ajustes">
             <a class="submenu__secundario--item" href="@Url.Action("ConfigGeneral_Empresa", "Configuracion")">
@@ -348,6 +348,7 @@
     @*<script src="~/assets/js/cdn/1.13.8-js-datatables.min.js"></script>
         <script src="~/assets/js/cdn/1.13.8-datatables.responsive.min.js"></script>*@
     <script src="~/assets/js/DatatableLanguage.js"></script>
+    <script src="~/assets/js/xlsx.full.min.js"></script>
 
     <!-- Scripts Propios -->
     <script src="~/Assets/JS/LayoutJS.js"></script>
@@ -356,7 +357,7 @@
 
     @RenderSection("scripts", required: false)
 
-<script nonce="@HttpContext.Current.Items["ScriptNonce"]">
+    <script nonce="@HttpContext.Current.Items["ScriptNonce"]">
 
         /*// IR A LA PAGINA DE AYUDA //*/
         document.getElementById("btnAyuda").addEventListener("click", function () {
@@ -385,6 +386,6 @@
             navigator.sendBeacon(urlCerrarSesion);
         });*@
 
-</script>
+    </script>
 </body>
 </html>

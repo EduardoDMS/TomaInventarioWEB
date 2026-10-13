@@ -14,7 +14,7 @@
             </div>
             <div class="d-flex gap-2">
                 <button id="btnResultadoImportacion" class="btn btn-success d-none d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#RImport_modal">
-                    <i class="ti-file-import fs-5 me-3"></i> Resultado de importación  
+                    @*<i class="ti-package-import fs-5 me-3"></i>*@Ver resultado de importación  
                 </button>
             </div>
         </div>
@@ -398,6 +398,9 @@
             </div>
 
             <div class="modal-footer border-top bg-light">
+                <button id="btnExportarErrores" type="button" class="btn btn-success">
+                    <i class="ti ti-file-spreadsheet me-1"></i>Descargar
+                </button>
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                     <i class="ti ti-check me-1"></i>Entendido
                 </button>
@@ -656,6 +659,7 @@
 
         /*// AGREGAR INVENTARIO POR IMPORTACION EXCEL //*/
         var importacionId = ""; // Identificador para la tabla temporar a la hora de importar
+        let listaErroresImportacion= [];
 
         $('#CrearInv_btn_Import').click(function () {
 
@@ -716,6 +720,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed || result.isDismissed) {
                                     $("#btnResultadoImportacion").removeClass("d-none");
+                                    listaErroresImportacion = data.ListaIncorrectos;
                                     Charge_RImport_Modal(data.ListaIncorrectos);
                                     CargarSelectErrores(data.ResultadoErroresImportacion);
                                     $("#PasosPrepararInventario").steps("next");
@@ -806,17 +811,52 @@
                 .draw();
         });
 
-        /* DESDE LA OPCION AGREGAR MANUAL IR AL SIGUIENTE PASO */
-        //document.getElementById("btnManual_crearInv").addEventListener("click", () => {
-        //    $("#PasosPrepararInventario").steps("next");
-        //});
+        /* DESCARGAR EXCEL CON ERRORES DE IMPORTACION */
+        const rutaPlantillaErrores = '@Url.Content("~/Plantillas/Plantilla_Errores_Importacion.xlsx")';
+
+        $("#btnExportarErrores").click(function () {
+            ExportarErroresExcel(listaErroresImportacion);
+        });
+
+        function ExportarErroresExcel(listaErrores) {
+            //console.log(listaErrores);
+            fetch(rutaPlantillaErrores)
+                .then(response => response.arrayBuffer())
+                .then(buffer => {
+
+                    const workbook = XLSX.read(buffer, {
+                        type: 'array'
+                    });
+
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                    const datos = listaErrores.map(x => [
+                        x.COD_UBICACION,
+                        x.DSC_UBICACION,
+                        x.COD_PRODUCTO,
+                        x.DSC_PRODUCTO,
+                        x.LOTE_PRODUCTO,
+                        x.STOCK_ACTUAL,
+                        x.Desc_Error
+                    ]);
+
+                    XLSX.utils.sheet_add_aoa(worksheet, datos, {
+                        origin: 'A2'
+                    });
+
+                    XLSX.writeFile(
+                        workbook,
+                        'Errores_Importacion.xlsx'
+                    );
+                });
+        }
 
 
 
         /* DESCARGAR PLANTILLA DE INVENTARIO */
         document.getElementById("CrearInv_btnTemplate").addEventListener("click", () => {
             esDescarga = true;
-             window.location.href = "@Url.Content("~/")Importacion/DescargarExcelDetalle"
+             window.location.href = '@Url.Content("~/Importacion/DescargarExcelDetalle")'
         });
 
 

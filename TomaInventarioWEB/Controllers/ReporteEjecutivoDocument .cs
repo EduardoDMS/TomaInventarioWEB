@@ -47,7 +47,7 @@ public class ReporteEjecutivoDocument : IDocument
                 col.Item().Element(ComponentTopFueraUbicacion);
                 col.Item().Element(ComponentUsuarios);
                 col.Item().Element(ComponentConclusiones);
-            });
+            });  
 
             page.Footer().Column(col =>
             {

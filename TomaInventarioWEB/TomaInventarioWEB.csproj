@@ -280,6 +280,7 @@
     <Content Include="Assets\JS\ReportesJS\CentralReportes.js" />
     <Content Include="Assets\JS\ReportesJS\ReportePrincipalJS.js" />
     <Content Include="Assets\JS\ReportesJS\ReportesJS.js" />
+    <Content Include="Assets\JS\xlsx.full.min.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -4387,6 +4388,7 @@
     <Content Include="Plantillas\Plantilla_Inventario.xlsx" />
     <Content Include="Plantillas\Plantilla_Reportes_Nuevo.xlsx" />
     <Content Include="Plantillas\Plantilla_Producto_Costos.xlsx" />
+    <Content Include="Plantillas\Plantilla_Errores_Importacion.xlsx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />

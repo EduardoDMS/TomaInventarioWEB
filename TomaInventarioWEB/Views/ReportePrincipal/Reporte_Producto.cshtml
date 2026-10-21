@@ -283,8 +283,8 @@
                                 <th class="text-center">Stock Inicial</th>
                                 <th class="text-center">Stock Contado</th>
                                 <th class="text-center">Diferencia</th>
-                                <th class="text-center">Observación</th>
                                 <th class="text-center">Usuario</th>
+                                <th class="text-center">Observación</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -305,6 +305,28 @@
 </div>
 
 @section scripts {
+
+    <style nonce="@nonce">
+        /* ZEUS: casillas apiladas dentro de una celda */
+        #tblReporteInventario td.celda-dividida {
+            padding: 0 !important;
+        }
+
+        #tblReporteInventario .sub-fila {
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 .5rem;
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+            #tblReporteInventario .sub-fila:last-child {
+                border-bottom: 0;
+            }
+    </style>
+
+
     <script nonce="@nonce">
         let modoFiltrado;
         let tblReporteUbicacion;
@@ -557,7 +579,8 @@
                 CargarKPIs(result.Entity);
 
                 // CARGAR TABLA
-                CargarTabla(result.Entity.TblReporteProductos);
+                // CARGAR TABLA
+                CargarTabla(AgruparPorProducto(result.Entity.TblReporteProductos));   // ZEUS: agrupado por producto
 
                 // CARGAR FOOTER
                 CargarFooterTabla(result.footerTable);
@@ -588,74 +611,36 @@
 
             $('#tblReporteInventario tbody').empty();
 
+            const normal = function (data) { return esc(vacio(data)); };
+
             tblReporteInventario = $('#tblReporteInventario').DataTable({
 
-                data: datos,
+                data: datos,   // ya viene agrupado: 1 objeto por producto
 
                 columns: [
-                    {
-                        data: "CodProducto",
-                        /*className: "text-center"*/
-                    },
+                    { data: "CodProducto", render: normal },
+                    { data: "DscProducto", render: normal },
+                    { data: "UbicacionInicial", className: "text-center", render: normal },
 
-                    {
-                        data: "DscProducto",
-                        /*className: "text-center"*/
-                    },
+                    // --- divididas por lectura ---
+                    { data: null, className: "text-center celda-dividida", render: renderDividido("UbicacionContada") },
 
-                    {
-                        data: "UbicacionInicial",
-                        className: "text-center"
-                    },
+                    { data: "LoteInicial", className: "text-center", render: normal },
 
-                    {
-                        data: "UbicacionContada",
-                        className: "text-center"
-                    },
+                    // --- divididas por lectura ---
+                    { data: null, className: "text-center celda-dividida", render: renderDividido("LoteContado") },
 
-                    {
-                        data: "LoteInicial",
-                        className: "text-center"
-                    },
+                    { data: "StockInicial", className: "text-center", render: normal },
 
-                    {
-                        data: "LoteContado",
-                        className: "text-center"
-                    },
+                    // --- dividida por lectura ---
+                    { data: null, className: "text-center celda-dividida", render: renderDividido("StockContado") },
 
-                    {
-                        data: "StockInicial",
-                        className: "text-center"
-                    },
+                    { data: "Diferencia", className: "text-center", render: normal },
+                   
+                    // --- dividida por lectura ---
+                    { data: null, className: "text-center celda-dividida", render: renderDividido("Usuario") },
 
-                    {
-                        data: "StockContado",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "Diferencia",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "Observacion",
-                        className: "text-center"
-                    },
-
-                    {
-                        data: "Usuario",
-                        className: "text-center"
-                    }
-                ],
-
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        render: function (data) {
-                            return data == null || data === "" ? "-" : data;
-                        }
-                    }
+                    { data: "Observacion", className: "text-center", render: normal },
                 ],
 
                 pageLength: 25,
@@ -664,7 +649,6 @@
                 dom: 'lrtip',
                 language: españolTbl
             });
-
         }
 
         function CargarFooterTabla(datosFooter) {
@@ -777,6 +761,56 @@
                      text: error.message || 'Ocurrió un error al generar el Excel.'
                  });
              }
-         }
+        }
+
+
+        // ZEUS: escapa texto para no inyectar HTML desde lote/usuario/ubicacion
+        function esc(v) {
+            return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function vacio(v) { return v == null || v === '' ? '-' : v; }
+
+        // ZEUS: el SP devuelve 1 fila por producto+ubicacion+lote -> aqui se junta en 1 objeto por producto
+        // Los datos de producto se toman de la primera fila (son iguales en todas)
+        function AgruparPorProducto(filas) {
+            const mapa = new Map();
+            (filas || []).forEach(f => {
+                let p = mapa.get(f.CodProducto);
+                if (!p) {
+                    p = {
+                        CodProducto: f.CodProducto,
+                        DscProducto: f.DscProducto,
+                        UbicacionInicial: f.UbicacionInicial,
+                        LoteInicial: f.LoteInicial,
+                        StockInicial: f.StockInicial,
+                        Diferencia: f.Diferencia,
+                        Observacion: f.Observacion,
+                        detalle: []
+                    };
+                    mapa.set(f.CodProducto, p);
+                }
+                p.detalle.push({
+                    UbicacionContada: f.UbicacionContada,
+                    LoteContado: f.LoteContado,
+                    StockContado: f.StockContado,
+                    Usuario: f.Usuario
+                });
+            });
+            return Array.from(mapa.values());
+        }
+
+        // ZEUS: render de columnas "divididas" (una casilla por lectura)
+        function renderDividido(campo) {
+            return function (data, type, row) {
+                if (type === 'sort') return row.detalle[0][campo];
+                if (type !== 'display')   // filter / search: texto plano de todas las casillas
+                    return row.detalle.map(d => d[campo]).filter(v => v != null && v !== '').join(' ');
+
+                return '<div class="celda-dividida">' +
+                    row.detalle.map(d => '<div class="sub-fila">' + esc(vacio(d[campo])) + '</div>').join('') +
+                    '</div>';
+            };
+        }
     </script>
 }

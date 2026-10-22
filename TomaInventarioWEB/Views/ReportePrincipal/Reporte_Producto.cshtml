@@ -2,6 +2,7 @@
     ViewBag.Title = "Reporte por Ubicación";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+    bool mostrarLote = ConfigApp.MostrarLote;
 }
 
 
@@ -278,8 +279,11 @@
                                 <th class="text-center">Producto</th>
                                 <th class="text-center">Ubicación Inicial</th>
                                 <th class="text-center">Ubicación Contada</th>
-                                <th class="text-center">Lote Inicial</th>
-                                <th class="text-center">Lote Contado</th>
+                                @if (mostrarLote)
+                                {
+                                    <th class="text-center">Lote Inicial</th>
+                                    <th class="text-center">Lote Contado</th>
+                                }
                                 <th class="text-center">Stock Inicial</th>
                                 <th class="text-center">Stock Contado</th>
                                 <th class="text-center">Diferencia</th>
@@ -290,7 +294,7 @@
                         <tbody></tbody>
                         <tfoot class="table-light">
                             <tr>
-                                <td colspan="6" class="fw-bolder">TOTALES</td>
+                                <td colspan="@(mostrarLote ? 6 : 4)" class="fw-bolder">TOTALES</td>
                                 <td class="text-end fw-bold" id="footerStockInicial">0</td>
                                 <td class="text-end fw-bold" id="footerStockFinal">0</td>
                                 <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
@@ -625,10 +629,14 @@
                     // --- divididas por lectura ---
                     { data: null, className: "text-center celda-dividida", render: renderDividido("UbicacionContada") },
 
-                    { data: "LoteInicial", className: "text-center", render: normal },
+                ...(APP_CONFIG.mostrarLote ? [
+                        { data: "LoteInicial", className: "text-center", render: normal },
 
                     // --- divididas por lectura ---
-                    { data: null, className: "text-center celda-dividida", render: renderDividido("LoteContado") },
+                        { data: null, className: "text-center celda-dividida", render: renderDividido("LoteContado") }
+
+                    ] : []),
+
 
                     { data: "StockInicial", className: "text-center", render: normal },
 

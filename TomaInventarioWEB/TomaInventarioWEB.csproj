@@ -145,6 +145,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Data\ConfigApp.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\Filters\ValidarSesionUnicaAttribute.cs" />
@@ -4463,7 +4464,6 @@
     <Content Include="Views\ReportePrincipal\Reporte_Resumen_Ejecutivo.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Assets\BootstrapTable\" />
     <Folder Include="Assets\JsonImport\" />
     <Folder Include="Content\matdash\libs\datatables.net-bs5\node_modules\datatables.net\types\" />

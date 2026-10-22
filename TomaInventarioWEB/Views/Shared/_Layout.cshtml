@@ -387,5 +387,12 @@
         });*@
 
     </script>
+
+
+    @{ string nonce = (string)HttpContext.Current.Items["ScriptNonce"]; }
+    <script nonce="@nonce">
+    // config global renderizada por el servidor
+    window.APP_CONFIG = { mostrarLote: @(ConfigApp.MostrarLote ? "true" : "false") };
+    </script>
 </body>
 </html>

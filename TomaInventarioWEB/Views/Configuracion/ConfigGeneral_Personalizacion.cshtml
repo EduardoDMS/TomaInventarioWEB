@@ -17,22 +17,22 @@
             <div class="card-titulo__mobile">
                 <h4 class="mb-0 fw-semibold text-white">Personalización</h4>
                 <h7 class="text-white opacity-75">Realice modificaciones a su entorno de trabajo</h7>
-            </div>            
+            </div>
         </div>
     </div>
 
     <div class="card-body card-cuerpo__mobile">
         <!-- Contenido Estetico -->
         <!--<div class="card border mb-4 p-3">
-            <div class="row">-->
-                <!-- Icono -->
-                <!--<div class="empresa__contenedor-imagen col-md-2">
-                    <div class="empresa__imagen mb-4">
-                        <i class="ti ti-brush"></i>
-                    </div>
-                </div>-->
-                <!-- Opciones -->
-                <!--<div class="col-md-4">
+        <div class="row">-->
+        <!-- Icono -->
+        <!--<div class="empresa__contenedor-imagen col-md-2">
+            <div class="empresa__imagen mb-4">
+                <i class="ti ti-brush"></i>
+            </div>
+        </div>-->
+        <!-- Opciones -->
+        <!--<div class="col-md-4">
                     <div class="mb-4">
                         <label class="form-label contenedor__subtitulo mb-2">Cambiar de tema</label>
                         <div class="d-flex justify-content-start gap-3">
@@ -96,71 +96,104 @@
                 </div>
             </div>
         </div>
+
+
+
+        <!-- ZEUS: Contenido Lote -->
+        <div class="card border mb-2 p-3">
+            <div class="row">
+                <!-- Icono -->
+                <div class="empresa__contenedor-imagen col-md-2">
+                    <div class="empresa__imagen mb-4">
+                        <i class="ti ti-table-options"></i>
+                    </div>
+                </div>
+                <!-- Opciones -->
+                <div class="col-md-4">
+                    <div class="mb-4">
+                        <label class="form-label contenedor__subtitulo mb-2">Columnas de Lote</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkOcultarLote"
+                                   @(ConfigApp.MostrarLote ? "" : "checked")>
+                            <label class="form-check-label" for="chkOcultarLote">
+                                Ocultar columnas de Lote en las tablas
+                            </label>
+                        </div>
+                        <small class="text-muted">
+                            <i class="ti ti-info-circle fs-4"></i>
+                            Aplica a todas las pantallas que muestran Lote Inicial y Lote Contado.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
 
 @*<div class="row gx-0 justify-content-center mb-2">
-    <header class="col-12 text-center">
-        <h1 class="contenedor__titulo">Personalización</h1>
-    </header>
-</div>
+        <header class="col-12 text-center">
+            <h1 class="contenedor__titulo">Personalización</h1>
+        </header>
+    </div>
 
 
-<div class="row gx-0 flex-grow-1">
-    <div class="col-md-7 col-xxl-5 mx-auto">
-        <div class="contenedor__estilo d-flex flex-column align-items-center">
-            
-            <div class="empresa__imagen">
-                <i class="ti ti-brush"></i>
-            </div>
-            <div class="row px-2">
-                <div class="col-12 mb-4">
-                    <label for="archivoExcel" class="form-label contenedor__subtitulo mb-2">Imagen de reportes en Excel</label>
-                    <input id="archivoExcel" class="form-control" type="file" accept=".png,.jpg,.jpeg">
-                    <div class="d-flex justify-content-center gap-3 mt-2 flex-wrap">
-                        <button id="Save_image_excel" class="btn btn-primary">Guardar Imagen</button>
-                        <button id="Delete_image_excel" class="btn btn-danger">No usar Imagen</button>
-                        (botones placeholder)
-                    </div>
+    <div class="row gx-0 flex-grow-1">
+        <div class="col-md-7 col-xxl-5 mx-auto">
+            <div class="contenedor__estilo d-flex flex-column align-items-center">
+
+                <div class="empresa__imagen">
+                    <i class="ti ti-brush"></i>
                 </div>
-                <div class="col-12 mb-4">
-                    <label class="form-label contenedor__subtitulo mb-2">Cambiar color principal</label>
-                    <div class="d-flex justify-content-start gap-2 flex-wrap">
-                        <div class="contenedor__tema temaColor" data-color="#004596">
-                            <i class="ti ti-inner-shadow-bottom-right-filled color__primario-dms"></i>
-                        </div>
-                        <div class="contenedor__tema temaColor" data-color="#a48356">
-                            <i class="ti ti-inner-shadow-bottom-right-filled color__primario-marron"></i>
-                        </div>
-                        <div class="contenedor__tema temaColor" data-color="#23803f">
-                            <i class="ti ti-inner-shadow-bottom-right-filled color__primario-verde"></i>
-                        </div>
-                        <div class="contenedor__tema temaColor" data-color="#763ebd">
-                            <i class="ti ti-inner-shadow-bottom-right-filled color__primario-purpura"></i>
-                        </div>
-                        <div class="contenedor__tema temaColor" data-color="#fa896b">
-                            <i class="ti ti-inner-shadow-bottom-right-filled color__primario-naranja"></i>
+                <div class="row px-2">
+                    <div class="col-12 mb-4">
+                        <label for="archivoExcel" class="form-label contenedor__subtitulo mb-2">Imagen de reportes en Excel</label>
+                        <input id="archivoExcel" class="form-control" type="file" accept=".png,.jpg,.jpeg">
+                        <div class="d-flex justify-content-center gap-3 mt-2 flex-wrap">
+                            <button id="Save_image_excel" class="btn btn-primary">Guardar Imagen</button>
+                            <button id="Delete_image_excel" class="btn btn-danger">No usar Imagen</button>
+                            (botones placeholder)
                         </div>
                     </div>
-                </div>
-                <div class="col-12 mb-4">
-                    <label class="form-label contenedor__subtitulo mb-2">Cambiar de tema</label>
-                    <div class="d-flex justify-content-start gap-3">
-                        <div id="temaClaro" class="contenedor__tema gap-2">
-                            <i class="ti ti-sun-high"></i>
-                            <small class="fs-5 fw-medium">Claro</small>
+                    <div class="col-12 mb-4">
+                        <label class="form-label contenedor__subtitulo mb-2">Cambiar color principal</label>
+                        <div class="d-flex justify-content-start gap-2 flex-wrap">
+                            <div class="contenedor__tema temaColor" data-color="#004596">
+                                <i class="ti ti-inner-shadow-bottom-right-filled color__primario-dms"></i>
+                            </div>
+                            <div class="contenedor__tema temaColor" data-color="#a48356">
+                                <i class="ti ti-inner-shadow-bottom-right-filled color__primario-marron"></i>
+                            </div>
+                            <div class="contenedor__tema temaColor" data-color="#23803f">
+                                <i class="ti ti-inner-shadow-bottom-right-filled color__primario-verde"></i>
+                            </div>
+                            <div class="contenedor__tema temaColor" data-color="#763ebd">
+                                <i class="ti ti-inner-shadow-bottom-right-filled color__primario-purpura"></i>
+                            </div>
+                            <div class="contenedor__tema temaColor" data-color="#fa896b">
+                                <i class="ti ti-inner-shadow-bottom-right-filled color__primario-naranja"></i>
+                            </div>
                         </div>
-                        <div id="temaOscuro" class="contenedor__tema gap-2">
-                            <i class="ti ti-moon"></i>
-                            <small class="fs-5 fw-medium">Oscuro</small>
+                    </div>
+                    <div class="col-12 mb-4">
+                        <label class="form-label contenedor__subtitulo mb-2">Cambiar de tema</label>
+                        <div class="d-flex justify-content-start gap-3">
+                            <div id="temaClaro" class="contenedor__tema gap-2">
+                                <i class="ti ti-sun-high"></i>
+                                <small class="fs-5 fw-medium">Claro</small>
+                            </div>
+                            <div id="temaOscuro" class="contenedor__tema gap-2">
+                                <i class="ti ti-moon"></i>
+                                <small class="fs-5 fw-medium">Oscuro</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>*@
+    </div>*@
 
 
 
@@ -168,5 +201,38 @@
 
     <script src="~/Assets/JS/cdn/! jQuery UI - v1.13.2 - 2022-07-14.js"></script>
     <script src="~/Assets/JS/ConfigJS/Config_Personalizacion.js"></script>
+    <script nonce="@nonce">
+    // ZEUS: toggle global de columnas Lote
+    $('#chkOcultarLote').on('change', async function () {
+        const chk = this;
+        const ocultar = chk.checked;
+        const obj = { valor: !ocultar }; // valor = MostrarLote
 
+        try {
+            const response = await fetch('@Url.Action("SetMostrarLote", "Configuracion")', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(obj)
+            });
+
+            if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+            const result = await response.json();
+            if (!result.success) throw new Error('No se pudo guardar la configuración.');
+
+            Swal.fire({
+                icon: 'success',
+                title: ocultar ? 'Columnas de Lote ocultas' : 'Columnas de Lote visibles',
+                text: 'El cambio se verá al abrir o recargar las pantallas.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+        catch (error) {
+            console.error(error);
+            chk.checked = !ocultar; // revierte el switch si falló
+            Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+        }
+    });
+    </script>
 }

@@ -2,6 +2,7 @@
     ViewBag.Title = "Reporte por Valorizado";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+    bool mostrarLote = ConfigApp.MostrarLote;
 }
 
 
@@ -295,7 +296,10 @@
                                 <th class="text-center">Código</th>
                                 <th class="text-center">Producto</th>
                                 <th class="text-center">Ubicacion Inicial</th>
-                                <th class="text-center">Lote Inicial</th>
+                                @if (mostrarLote)
+                                {
+                                    <th class="text-center">Lote Inicial</th>
+                                }
                                 <th class="text-center">Moneda</th>
                                 <th class="text-center">Costo Unitario</th>
                                 <th class="text-center">Stock Inicial</th>
@@ -597,7 +601,9 @@
                 { data: "Codigo", title: "Código" },
                 { data: "Producto", title: "Producto" },
                 { data: "Ubicacion_Inicial", title: "Ubicación Inicial", className: "text-center" },
-                { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" },
+                ...(APP_CONFIG.mostrarLote ? [
+                    { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" }
+                ] : []),
                 { data: "Cod_Moneda", title: "Moneda", className: "text-center" },
                 { data: "Costo_Unitario", title: "Costo Unitario", className: "text-center",
                     /*render: (d) => formatearMoneda(d) */},

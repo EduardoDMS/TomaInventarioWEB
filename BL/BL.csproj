@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="CombosBL.cs" />
     <Compile Include="ConfigBL.cs" />
+    <Compile Include="ConfigGlobalBL.cs" />
     <Compile Include="DashboardBL.cs" />
     <Compile Include="InventarioBL.cs" />
     <Compile Include="Licencias\ILicenciaProvider.cs" />

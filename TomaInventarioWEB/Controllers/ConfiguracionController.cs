@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -188,5 +189,15 @@ namespace TomaInventarioWEB.Controllers
             var response = new ConfigBL().SaveCorreo(obj);
             return Json(response);
         }
+
+
+        // archivo de configuracion para mostrar o no mostrar lote al consultar
+        [HttpPost]
+        public async Task<JsonResult> SetMostrarLote(bool valor)
+        {
+            await ConfigApp.SetMostrarLoteAsync(valor);
+            return Json(new { success = true });
+        }
+    
     }
 }

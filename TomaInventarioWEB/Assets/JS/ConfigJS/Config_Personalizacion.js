@@ -149,3 +149,5 @@ function alertaErrorInesperado(error) {
         footer: `<small>Detalles: ${error}</small>`
     });
 }
+
+

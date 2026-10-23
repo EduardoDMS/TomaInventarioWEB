@@ -25,8 +25,6 @@ public static class ConfigApp
                 return _mostrarLote.Value;
             }
         }
-
-
     }
 
 

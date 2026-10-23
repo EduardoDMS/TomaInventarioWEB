@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AlmacenBE.cs" />
     <Compile Include="CombosBE.cs" />
+    <Compile Include="ConfigGlobalEntity.cs" />
     <Compile Include="CorreoBE.cs" />
     <Compile Include="DashboardBE.cs" />
     <Compile Include="EmpresaBE.cs" />

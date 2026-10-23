@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Web.Mvc;
+using System.Linq;          // por el .Where(...).ToList()
 
 namespace TomaInventarioWEB.Controllers
 {
@@ -359,53 +360,58 @@ namespace TomaInventarioWEB.Controllers
                     //}
 
                     // CABECERA DE TABLA - FILA 12
-                    string[] headers = { "CÓDIGO", "PRODUCTO", "UBICACIÓN INICIAL", "UBICACIÓN CONTADA", "LOTE INICIAL", "LOTE CONTADO", "STOCK INICIAL", "STOCK CONTADO", "DIFERENCIA", "USUARIO" };
-                    for (int i = 0; i < headers.Length; i++)
+
+                    bool mostrarLote = ConfigApp.MostrarLote;
+
+                    var columnas = new List<ColExcelConteo>
                     {
-                        var cell = excelWorksheet.Cells[9, i + 2];
-                        cell.Value = headers[i];
+                        new ColExcelConteo{ Header = "CÓDIGO", Valor = x => x.CodProducto },
+                        new ColExcelConteo{ Header = "PRODUCTO", Valor = x => x.DscProducto },
+                        new ColExcelConteo{ Header = "UBICACION INICIAL", Valor = x => x.UbicacionInicial },
+                        new ColExcelConteo{ Header = "UBICACION CONTADA", Valor = x => x.UbicacionContada },
+                        new ColExcelConteo{ Header = "LOTE INICIAL", Valor = x => x.LoteInicial, EsLote = true },
+                        new ColExcelConteo{ Header = "LOTE CONTADO", Valor = x => x.LoteContado, EsLote = true },
+                        new ColExcelConteo{ Header = "STOCK INICIAL", Valor = x => x.StockInicial },
+                        new ColExcelConteo{ Header = "STOCK CONTADO", Valor = x => x.StockContado },
+                        new ColExcelConteo{ Header = "DIFERENCIA", Valor = x => x.StockDiferencial },
+                        new ColExcelConteo{ Header = "USUARIO", Valor = x => x.Usuario }
+                    }.Where(c => mostrarLote || !c.EsLote).ToList();
+
+                    const int colIni = 2;
+                    int ultimaCol = colIni + columnas.Count - 1;
+                    Func<string, int> idxCol = h => columnas.FindIndex(c => c.Header == h) + colIni;
+
+                    for(int i = 0; i < columnas.Count; i++)
+                    {
+                        var cell = excelWorksheet.Cells[9, colIni + i];
+                        cell.Value = columnas[i].Header;
                         cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        cell.Style.Fill.BackgroundColor.SetColor(
-                            System.Drawing.ColorTranslator.FromHtml("#305496")
-                        );
+                        cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
                     }
+                    excelWorksheet.Cells[9, colIni, 9,ultimaCol].AutoFilter = true;
 
-                    excelWorksheet.Cells["B9:K9"].AutoFilter = true;
-
-                    // CONTENIDO DE TABLA - FILA 13
                     int filaInicio = 10;
-                    foreach (var item in reporte.TblReporteConteo)
+                    foreach(var item in reporte.TblReporteConteo)
                     {
-                        excelWorksheet.Cells[filaInicio, 2].Value = item.CodProducto;
-                        excelWorksheet.Cells[filaInicio, 3].Value = item.DscProducto;
-                        excelWorksheet.Cells[filaInicio, 4].Value = item.UbicacionInicial;
-                        excelWorksheet.Cells[filaInicio, 5].Value = item.UbicacionContada;
-                        excelWorksheet.Cells[filaInicio, 6].Value = item.LoteInicial;
-                        excelWorksheet.Cells[filaInicio, 7].Value = item.LoteContado;
-                        excelWorksheet.Cells[filaInicio, 8].Value = item.StockInicial;
-                        excelWorksheet.Cells[filaInicio, 9].Value = item.StockContado;
-                        excelWorksheet.Cells[filaInicio, 10].Value = item.StockDiferencial;
-                        excelWorksheet.Cells[filaInicio, 11].Value = item.Usuario;
-
+                        for (int j = 0; j < columnas.Count; j++)
+                            excelWorksheet.Cells[filaInicio, colIni + j].Value = columnas[j].Valor(item);
                         filaInicio++;
                     }
 
-                    // FOOTER TOTALES
                     int filaTotal = 10 + reporte.TblReporteConteo.Count + 1;
-                    excelWorksheet.Cells[filaTotal, 2].Value = "Totales:";
-                    excelWorksheet.Cells[filaTotal, 2].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, colIni].Value = "Totales:";
+                    excelWorksheet.Cells[filaTotal, colIni].Style.Font.Bold = true;
 
-                    excelWorksheet.Cells[filaTotal, 8].Value = totales[0]; // Stock Inicial
-                    excelWorksheet.Cells[filaTotal, 9].Value = totales[1]; // Stock Conteo
-                    excelWorksheet.Cells[filaTotal, 10].Value = totales[2]; // Diferencial
+                    int cIni = idxCol("STOCK INICIAL"), cCont = idxCol("STOCK CONTADO"), cDif = idxCol("DIFERENCIA");
+                    excelWorksheet.Cells[filaTotal, cIni].Value = totales[0];
+                    excelWorksheet.Cells[filaTotal, cCont].Value = totales[1];
+                    excelWorksheet.Cells[filaTotal, cDif].Value = totales[2];
+                    excelWorksheet.Cells[filaTotal, cIni].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cCont].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cDif].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cDif].Style.Font.Color.SetColor(
+                    totales[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green);
 
-                    // Formato para totales
-                    excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 9].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 10].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 10].Style.Font.Color.SetColor(
-                        totales[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
-                    );
 
 
                     // Auto-ajustar columnas
@@ -717,90 +723,66 @@ namespace TomaInventarioWEB.Controllers
                     excelWorksheet.Cells["E6"].Value = reporte.EstadoConteo;
                     excelWorksheet.Cells["E7"].Value = reporte.ConteoSeleccionado;
 
-                    //// INDICADORES DEL REPORTE - FILA 9
-                    //excelWorksheet.Cells["B9"].Value = "Productos totales";
-                    //excelWorksheet.Cells["B10"].Value = reporte.ProductosInventariados;
+                    bool mostrarLote = ConfigApp.MostrarLote;
 
-                    //excelWorksheet.Cells["D9"].Value = "Productos sin diferencias";
-                    //excelWorksheet.Cells["D10"].Value = reporte.ProductosFueraInventario;
-
-                    //excelWorksheet.Cells["F9"].Value = "Productos con diferencias";
-                    //excelWorksheet.Cells["F10"].Value = reporte.ProductosConDiferencia;
-
-                    ////excelWorksheet.Cells["H9"].Value = "Productos fuera del inventario";
-                    ////excelWorksheet.Cells["H10"].Value = reporte.ProductosFueraInventario;
-
-                    //excelWorksheet.Cells["H9"].Value = "Productos fuera de ubicación";
-                    //excelWorksheet.Cells["H10"].Value = reporte.ProductosUbicacionDiferente;
-
-                    //excelWorksheet.Cells["J9"].Value = "Productos con lote diferente";
-                    //excelWorksheet.Cells["J10"].Value = reporte.ProductosLoteDiferente;
-
-                    //// Bordes de los indicadores
-                    //string[] rangosKPI =
-                    //{
-                    //    "B9:C10",
-                    //    "D9:E10",
-                    //    "F9:G10",
-                    //    "H9:I10",
-                    //    "J9:K10",
-                    //    //"L9:M10",
-                    //};
-
-                    //foreach (string rango in rangosKPI)
-                    //{
-                    //    excelWorksheet.Cells[rango].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    //}
-
-                    // CABECERA DE TABLA - FILA 12
-                    string[] headers = { "CÓDIGO", "PRODUCTO", "UBICACIÓN INICIAL", "UBICACIÓN CONTADA", "LOTE INICIAL", "LOTE CONTADO", "STOCK INICIAL", "STOCK CONTADO", "DIFERENCIA", "OBSERVACIÓN", "USUARIO" };
-                    for (int i = 0; i < headers.Length; i++)
+                    // ZEUS: una sola definición; las de lote se filtran según la config global
+                    var columnas = new List<ColExcelProducto>
                     {
-                        var cell = excelWorksheet.Cells[9, i + 2];
-                        cell.Value = headers[i];
+                        new ColExcelProducto { Header = "CÓDIGO",            Valor = x => x.CodProducto },
+                        new ColExcelProducto { Header = "PRODUCTO",          Valor = x => x.DscProducto },
+                        new ColExcelProducto { Header = "UBICACIÓN INICIAL", Valor = x => x.UbicacionInicial },
+                        new ColExcelProducto { Header = "UBICACIÓN CONTADA", Valor = x => x.UbicacionContada },
+                        new ColExcelProducto { Header = "LOTE INICIAL",      Valor = x => x.LoteInicial,  EsLote = true },
+                        new ColExcelProducto { Header = "LOTE CONTADO",      Valor = x => x.LoteContado,  EsLote = true },
+                        new ColExcelProducto { Header = "STOCK INICIAL",     Valor = x => x.StockInicial },
+                        new ColExcelProducto { Header = "STOCK CONTADO",     Valor = x => x.StockContado },
+                        new ColExcelProducto { Header = "DIFERENCIA",        Valor = x => x.Diferencia },
+                        new ColExcelProducto { Header = "OBSERVACIÓN",       Valor = x => x.Observacion },
+                        new ColExcelProducto { Header = "USUARIO",           Valor = x => x.Usuario }
+                    }.Where(c => mostrarLote || !c.EsLote).ToList();
+
+                    const int colIni = 2;                                   // columna B
+                    int ultimaCol = colIni + columnas.Count - 1;
+                    Func<string, int> idxCol = h => columnas.FindIndex(c => c.Header == h) + colIni;
+
+                    // CABECERA - FILA 9
+                    for (int i = 0; i < columnas.Count; i++)
+                    {
+                        var cell = excelWorksheet.Cells[9, colIni + i];
+                        cell.Value = columnas[i].Header;
                         cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        cell.Style.Fill.BackgroundColor.SetColor(
-                            System.Drawing.ColorTranslator.FromHtml("#305496")
-                        );
+                        cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
                     }
+                    excelWorksheet.Cells[9, colIni, 9, ultimaCol].AutoFilter = true;
 
-                    excelWorksheet.Cells["B9:L9"].AutoFilter = true;
-
-                    // CONTENIDO DE TABLA - FILA 13
+                    // CUERPO - FILA 10
                     int filaInicio = 10;
                     foreach (var item in reporte.TblReporteProductos)
                     {
-                        excelWorksheet.Cells[filaInicio, 2].Value = item.CodProducto;
-                        excelWorksheet.Cells[filaInicio, 3].Value = item.DscProducto;
-                        excelWorksheet.Cells[filaInicio, 4].Value = item.UbicacionInicial;
-                        excelWorksheet.Cells[filaInicio, 5].Value = item.UbicacionContada;
-                        excelWorksheet.Cells[filaInicio, 6].Value = item.LoteInicial;
-                        excelWorksheet.Cells[filaInicio, 7].Value = item.LoteContado;
-                        excelWorksheet.Cells[filaInicio, 8].Value = item.StockInicial;
-                        excelWorksheet.Cells[filaInicio, 9].Value = item.StockContado;
-                        excelWorksheet.Cells[filaInicio, 10].Value = item.Diferencia;
-                        excelWorksheet.Cells[filaInicio, 11].Value = item.Observacion;
-                        excelWorksheet.Cells[filaInicio, 12].Value = item.Usuario;
-
+                        for (int j = 0; j < columnas.Count; j++)
+                            excelWorksheet.Cells[filaInicio, colIni + j].Value = columnas[j].Valor(item);
                         filaInicio++;
                     }
 
-                    // FOOTER TOTALES
+                    // TOTALES: se ubican por nombre de columna, no por número fijo
                     int filaTotal = 10 + reporte.TblReporteProductos.Count + 1;
-                    excelWorksheet.Cells[filaTotal, 2].Value = "Totales:";
-                    excelWorksheet.Cells[filaTotal, 2].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, colIni].Value = "Totales:";
+                    excelWorksheet.Cells[filaTotal, colIni].Style.Font.Bold = true;
 
-                    excelWorksheet.Cells[filaTotal, 8].Value = totales[0]; // Stock Inicial
-                    excelWorksheet.Cells[filaTotal, 9].Value = totales[1]; // Stock Conteo
-                    excelWorksheet.Cells[filaTotal, 10].Value = totales[2]; // Diferencial
+                    int cIni = idxCol("STOCK INICIAL"), cCont = idxCol("STOCK CONTADO"), cDif = idxCol("DIFERENCIA");
+                    excelWorksheet.Cells[filaTotal, cIni].Value = totales[0];
+                    excelWorksheet.Cells[filaTotal, cCont].Value = totales[1];
+                    excelWorksheet.Cells[filaTotal, cDif].Value = totales[2];
+                    excelWorksheet.Cells[filaTotal, cIni].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cCont].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cDif].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cDif].Style.Font.Color.SetColor(
+                    totales[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green);
 
-                    // Formato para totales
-                    excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 9].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 10].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 10].Style.Font.Color.SetColor(
-                        totales[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
-                    );
+
+
+
+
 
                     // Auto-ajustar columnas
                     excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
@@ -1365,92 +1347,78 @@ namespace TomaInventarioWEB.Controllers
                     excelWorksheet.Cells["E6"].Value = reporte.Estado_Inventario;
                     excelWorksheet.Cells["E7"].Value = reporte.ConteoActual;
 
-                    // INDICADORES DEL REPORTE - FILA 9
-                    //excelWorksheet.Cells["B9"].Value = "Productos totales";
-                    //excelWorksheet.Cells["B10"].Value = reporte.Productos_Inventariados;
 
-                    //excelWorksheet.Cells["D9"].Value = "Productos sin diferencias";
-                    //excelWorksheet.Cells["D10"].Value = reporte.Productos_Sin_Diferencia;
 
-                    //excelWorksheet.Cells["F9"].Value = "Productos con diferencias";
-                    //excelWorksheet.Cells["F10"].Value = reporte.Productos_Con_Diferencia;
 
-                    //excelWorksheet.Cells["H9"].Value = "Usuarios participantes";
-                    //excelWorksheet.Cells["H10"].Value = reporte.Usuarios_Participantes;
 
-                    //excelWorksheet.Cells["J9"].Value = "Primera lectura";
-                    //excelWorksheet.Cells["J10"].Value = reporte.Primera_Lectura;
-
-                    //excelWorksheet.Cells["L9"].Value = "Última lectura";
-                    //excelWorksheet.Cells["L10"].Value = reporte.Ultima_Lectura;
-
-                    //// Bordes de los indicadores
-                    //string[] rangosKPI =
-                    //{
-                    //    "B9:C10",
-                    //    "D9:E10",
-                    //    "F9:G10",
-                    //    "H9:I10",
-                    //    "J9:K10",
-                    //    "L9:M10",
-                    //};
-
-                    //foreach (string rango in rangosKPI)
-                    //{
-                    //    excelWorksheet.Cells[rango].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    //}
-
-                    // CABECERA DE TABLA - FILA 12
-                    string[] headers = { "CÓDIGO", "PRODUCTO", "UBICACIÓN INICIAL", "LOTE INICIAL", "MONEDA", "COSTO UNITARIO", "STOCK INICIAL", "STOCK CONTADO", "DIFERENCIA", "IMPACTO ECONÓMICO", "ESTADO" };
-                    for (int i = 0; i < headers.Length; i++)
+                    // cambio de lote 
+                    bool mostrarLote = ConfigApp.MostrarLote;
+                    var columnas = new List<ColExcelValorizado>
                     {
-                        var cell = excelWorksheet.Cells[9, i + 2];
-                        cell.Value = headers[i];
+                        new ColExcelValorizado{Header = "CÓDIGO",               Valor = x => x.Codigo },
+                        new ColExcelValorizado{Header = "PRODUCTO",             Valor = x => x.Producto },
+                        new ColExcelValorizado{Header = "UBICACIÓN INICIAL",    Valor = x => x.Ubicacion_Inicial },
+                        new ColExcelValorizado{Header = "LOTE INICIAL",         Valor = x => x.Lote_Inicial , EsLoteInicio = true},
+                        new ColExcelValorizado{Header = "MONEDA",               Valor = x => x.Cod_Moneda },
+                        new ColExcelValorizado{Header = "COSTO UNITARIO",       Valor = x => x.Costo_Unitario },
+                        new ColExcelValorizado{Header = "STOCK INICIAL",        Valor = x => x.Stock_Inicial },
+                        new ColExcelValorizado{Header = "STOCK CONTADO",        Valor = x => x.Stock_Final },
+                        new ColExcelValorizado{Header = "DIFERENCIA",           Valor = x => x.Diferencia },
+                        new ColExcelValorizado{Header = "IMPACTO ECONOMICO",    Valor = x => x.Impacto_Economico },
+                        new ColExcelValorizado{Header = "ESTADO",               Valor = x => x.Observacion },
+                    }.Where(c => mostrarLote || !c.EsLoteInicio).ToList();
+
+                    const int colIni = 2;
+                    int umtilaCol = colIni + columnas.Count - 1;
+                    Func<string, int> idxCol = h => columnas.FindIndex(c => c.Header == h) + colIni;
+
+                    for(int i = 0; i < columnas.Count; i++)
+                    {
+                        var cell = excelWorksheet.Cells[9, colIni + i];
+                        cell.Value = columnas[i].Header;
                         cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        cell.Style.Fill.BackgroundColor.SetColor(
-                            System.Drawing.ColorTranslator.FromHtml("#305496")
-                        );
+                        cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
                     }
+                    excelWorksheet.Cells[9, colIni, 9, umtilaCol].AutoFilter = true;
 
-                    excelWorksheet.Cells["B9:L9"].AutoFilter = true;
 
-                    // CONTENIDO DE TABLA - FILA 13
                     int filaInicio = 10;
-                    foreach (var item in reporte.tblReporteValorizadoBE)
+                    foreach(var item in reporte.tblReporteValorizadoBE)
                     {
-                        excelWorksheet.Cells[filaInicio, 2].Value = item.Codigo;
-                        excelWorksheet.Cells[filaInicio, 3].Value = item.Producto;
-                        excelWorksheet.Cells[filaInicio, 4].Value = item.Ubicacion_Inicial;
-                        excelWorksheet.Cells[filaInicio, 5].Value = item.Lote_Inicial;
-                        excelWorksheet.Cells[filaInicio, 6].Value = item.Cod_Moneda;
-                        excelWorksheet.Cells[filaInicio, 7].Value = item.Costo_Unitario;
-                        excelWorksheet.Cells[filaInicio, 8].Value = item.Stock_Inicial;
-                        excelWorksheet.Cells[filaInicio, 9].Value = item.Stock_Final;
-                        excelWorksheet.Cells[filaInicio, 10].Value = item.Diferencia;
-                        excelWorksheet.Cells[filaInicio, 11].Value = item.Impacto_Economico;
-                        excelWorksheet.Cells[filaInicio, 12].Value = item.Observacion;
-
+                        for (int j = 0; j < columnas.Count; j++)
+                            excelWorksheet.Cells[filaInicio, colIni + j].Value = columnas[j].Valor(item);
                         filaInicio++;
                     }
 
-                    // FOOTER TOTALES
                     int filaTotal = 10 + reporte.tblReporteValorizadoBE.Count + 1;
-                    excelWorksheet.Cells[filaTotal, 2].Value = "Totales:";
-                    excelWorksheet.Cells[filaTotal, 2].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, colIni].Value = "Totales: ";
+                    excelWorksheet.Cells[filaTotal, colIni].Style.Font.Bold = true;
 
-                    excelWorksheet.Cells[filaTotal, 8].Value = reporte.Footer.StockInicialTotal; // Stock Inicial
-                    excelWorksheet.Cells[filaTotal, 9].Value = reporte.Footer.StockFinalTotal; // Stock Conteo
-                    excelWorksheet.Cells[filaTotal, 10].Value = reporte.Footer.StockDiferencial; // Diferencial
-                    excelWorksheet.Cells[filaTotal, 11].Value = reporte.Footer.ImpactoEconomicoTotal; // Impacto economico
+                    int cIni = idxCol("STOCK INICIAL");
+                    int cCont = idxCol("STOCK CONTADO");
+                    int cDif = idxCol("DIFERENCIA");
+                    int cImp = idxCol("IMPACTO ECONOMICO");
 
-                    // Formato para totales
-                    excelWorksheet.Cells[filaTotal, 8].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 9].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 10].Style.Font.Bold = true;
-                    excelWorksheet.Cells[filaTotal, 10].Style.Font.Color.SetColor(
-                        reporte.Footer.StockDiferencial < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green
-                    );
-                    excelWorksheet.Cells[filaTotal, 11].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cIni].Value = reporte.Footer.StockInicialTotal;
+                    excelWorksheet.Cells[filaTotal, cCont].Value = reporte.Footer.StockFinalTotal;
+                    excelWorksheet.Cells[filaTotal, cDif].Value = reporte.Footer.StockDiferencial;
+                    excelWorksheet.Cells[filaTotal, cImp].Value = reporte.Footer.ImpactoEconomicoTotal;
+
+
+                    excelWorksheet.Cells[filaTotal, cIni].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cCont].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cDif].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cImp].Style.Font.Bold = true;
+                    excelWorksheet.Cells[filaTotal, cDif].Style.Font.Color.SetColor(
+                        reporte.Footer.StockDiferencial < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green);
+
+                    // ZEUS: limpia el formato sobrante de la plantilla a la derecha de la tabla
+                    int ultimaColPlantilla = 12; // columna L
+                    if (umtilaCol < ultimaColPlantilla)
+                        excelWorksheet.Cells[9, umtilaCol + 1, filaTotal, ultimaColPlantilla].Clear();
+
+
+                    // fin cambio de lote
 
                     // Auto-ajustar columnas
                     excelWorksheet.Cells[excelWorksheet.Dimension.Address].AutoFitColumns();
@@ -1546,6 +1514,7 @@ namespace TomaInventarioWEB.Controllers
             }
         }
 
+        #region CODIGO COMENTADO
         //[HttpGet]
         //public ActionResult Pdf(string codInventario)
         //{
@@ -2862,5 +2831,27 @@ namespace TomaInventarioWEB.Controllers
         //        return RedirectToAction("Index"); // Cambia por tu action principal
         //    }
         //}
+        #endregion
+
+        private class ColExcelProducto
+        {
+            public string Header;
+            public Func<TblReporteProductoBE, object> Valor;
+            public bool EsLote;
+        }
+
+        private class ColExcelValorizado
+        {
+            public string Header;
+            public Func<TblReporteValorizadoBE, object> Valor;
+            public bool EsLoteInicio;
+        }
+
+        private class ColExcelConteo
+        {
+            public string Header;
+            public Func<TblReporteConteoBE, object> Valor;
+            public bool EsLote;
+        }
     }
 }

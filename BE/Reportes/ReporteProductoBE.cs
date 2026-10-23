@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BE.Reportes
 {
@@ -19,5 +20,8 @@ namespace BE.Reportes
 
         // TABLA
         public List<TblReporteProductoBE> TblReporteProductos { get; set; }
+   
+       
+
     }
 }

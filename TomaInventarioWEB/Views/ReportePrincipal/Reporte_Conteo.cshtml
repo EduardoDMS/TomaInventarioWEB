@@ -2,6 +2,7 @@
     ViewBag.Title = "Reporte Conteo";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+    bool mostrarLote = ConfigApp.MostrarLote;
 }
 @*<link href="~/Content/matdash/css/fonts.css" rel="stylesheet" />
     <link href="~/Content/matdash/css/styles.css" rel="stylesheet" />
@@ -139,20 +140,20 @@
                     </div>
 
                     @*<div class="col">
-                        <div class="card overflow-hidden">
-                            <div class="d-flex flex-row">
-                                <div class="p-3 bg-danger-subtle d-flex align-items-center">
-                                    <h3 class="text-danger box mb-0">
-                                        <i class="ti ti-package-off"></i>
-                                    </h3>
-                                </div>
-                                <div class="p-3">
-                                    <h3 id="txtProductosFueraInventario" class="text-danger mb-0 fs-6"></h3>
-                                    <span>Productos fuera del inventario</span>
+                            <div class="card overflow-hidden">
+                                <div class="d-flex flex-row">
+                                    <div class="p-3 bg-danger-subtle d-flex align-items-center">
+                                        <h3 class="text-danger box mb-0">
+                                            <i class="ti ti-package-off"></i>
+                                        </h3>
+                                    </div>
+                                    <div class="p-3">
+                                        <h3 id="txtProductosFueraInventario" class="text-danger mb-0 fs-6"></h3>
+                                        <span>Productos fuera del inventario</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>*@
+                        </div>*@
 
                     <div class="col">
                         <div class="card overflow-hidden">
@@ -217,8 +218,8 @@
                                     <label for="slcConteo" class="form-label">Conteo</label>
                                     <select id="slcConteo" class="form-select">
                                         @*<option selected>1</option>
-                                <option>2</option>
-                                <option>3</option>*@
+                                            <option>2</option>
+                                            <option>3</option>*@
                                     </select>
                                 </div>
                             </div>
@@ -236,8 +237,11 @@
                                 <th class="text-center">Producto</th>
                                 <th class="text-center">Ubicación Inicial</th>
                                 <th class="text-center">Ubicación Contada</th>
-                                <th class="text-center">Lote Inicial</th>
-                                <th class="text-center">Lote Contado</th>
+                                @if(mostrarLote)
+                                {
+                                    <th class="text-center">Lote Inicial</th>
+                                    <th class="text-center">Lote Contado</th>
+                                }
                                 <th class="text-center">Stock Inicial</th>
                                 <th class="text-center">Stock Contado</th>
                                 <th class="text-center">Diferencia</th>
@@ -247,7 +251,7 @@
                         <tbody></tbody>
                         <tfoot class="table-light">
                             <tr>
-                                <td colspan="6" class="fw-bolder">TOTALES</td>
+                                <td colspan="@(mostrarLote ? 6 : 4)" class="fw-bolder">TOTALES</td>
                                 <td class="text-end fw-bold" id="footerStockInicial">0</td>
                                 <td class="text-end fw-bold" id="footerStockFinal">0</td>
                                 <td class="text-end fw-bold" id="footerStockDiferencial">0</td>
@@ -260,6 +264,7 @@
         </div>
     </div>
 </div>
+
 
 @section scripts {
     <script nonce="@nonce">
@@ -563,16 +568,19 @@
                         className: "text-center"
                     },
 
-                    {
-                        data: "LoteInicial",
-                        className: "text-center"
-                    },
+                    ...(APP_CONFIG.mostrarLote ? [
+                        {
+                            data: "LoteInicial",
+                            className: "text-center"
+                        },
 
-                    {
-                        data: "LoteContado",
-                        className: "text-center"
-                    },
+                        {
+                            data: "LoteContado",
+                            className: "text-center"
+                        }
 
+                    ] : []),
+                    
                     {
                         data: "StockInicial",
                         className: "text-center"

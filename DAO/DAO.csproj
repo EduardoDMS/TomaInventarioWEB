@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="CombosDAO.cs" />
     <Compile Include="ConfigDAO.cs" />
+    <Compile Include="ConfigGlobalDAO.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="DashboardDAO.cs" />
     <Compile Include="InventarioDAO.cs" />

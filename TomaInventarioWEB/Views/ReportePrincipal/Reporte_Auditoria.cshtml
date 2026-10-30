@@ -2,6 +2,7 @@
     ViewBag.Title = "Reporte por Auditoria";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string nonce = (string)HttpContext.Current.Items["ScriptNonce"];
+    bool mostrarLote = ConfigApp.MostrarLote;
 }
 
 
@@ -30,6 +31,8 @@
                             {
                                 <option value="@item.vchValue">@item.vchdesc</option>
                             }
+
+
                         </select>
                     </div>
                 </div>
@@ -286,7 +289,10 @@
                                 <th class="text-center">Producto</th>
                                 <th class="text-center">Stock Inicial</th>
                                 <th class="text-center">Ubicacion Inicial</th>
-                                <th class="text-center">Lote Inicial</th>
+                                @if (mostrarLote)
+                                {
+                                    <th class="text-center">Lote Inicial</th>
+                                }
                                 <th class="text-center">Stock final</th>
                                 <th class="text-center">Diferencia</th>
                                 <th class="text-center">Estado</th>
@@ -447,7 +453,7 @@
                 if (modoFiltrado === "SERVIDOR") {
                     CargarReporteInventarioAuditoria(inventarioSeleccionado.codigo);
                 } else {
-                    tblReporteInventario.column(11).search($(this).val() === "TODOS" ? "" : $(this).val()).draw();
+                    tblReporteInventario.column(-1).search($(this).val() === "TODOS" ? "" : $(this).val()).drawn();
                 }
             });
         }
@@ -605,7 +611,15 @@
                 { data: "Producto", title: "Producto", /*className: "text-center"*/ },
                 { data: "Stock_Inicial", title: "Stock Inicial", className: "text-center" },
                 { data: "Ubicacion_Inicial", title: "Ubicación Inicial", className: "text-center" },
-                { data: "Lote_Inicial", title: "Lote Inicial", className: "text-center" }
+                ...(APP_CONFIG.mostrarLote ?
+                    [
+                        {
+                            data: "Lote_Inicial",
+                            title: "Lote Inicial",
+                            className: "text-center"
+                        }
+                    ] : [])
+                
             ];
 
             numerosConteo.forEach(n => {
@@ -617,11 +631,16 @@
                         if (!row.Conteos) return "";
                         const conteo = row.Conteos.find(x => x.Nro_Conteo === n);
                         if (!conteo) return "-";
+
+                        const lineaLote = APP_CONFIG.mostrarLote
+                            ? `<div><strong>Lote:</strong> ${conteo.Lote_Contado || "-"}</div>`
+                            : "";
+
                         return `
                         <div class="text-start">
                             <div><strong>Stock:</strong> ${conteo.Stock_Contado ?? 0}</div>
                             <div><strong>Ubicación:</strong> ${conteo.Ubicaciones_Contadas || "-"}</div>
-                            <div><strong>Lote:</strong> ${conteo.Lote_Contado || "-"}</div>
+                            ${lineaLote}
                             <div><strong>Usuario:</strong> ${conteo.Usuario || "-"}</div>
                             <div><strong>Hora:</strong> ${conteo.Hora_Registro || "-"}</div>
                         </div>
@@ -682,7 +701,10 @@
             fila.append(`<td colspan="2" class="fw-bolder">TOTALES</td>`);
             fila.append(`<td class="text-center fw-bold">${footer.StockInicialTotal ?? 0}</td>`);
             fila.append(`<td></td>`);
-            fila.append(`<td></td>`);
+
+            if (APP_CONFIG.mostrarLote) {
+                fila.append(`<td></td>`);
+            }
 
             numerosConteo.forEach(n => {
                 let totalConteo = (footer.TotalesPorConteo || []).find(t => t.Nro_ConteoTotal === n);

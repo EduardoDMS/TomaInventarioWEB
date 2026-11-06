@@ -704,14 +704,14 @@ namespace TomaInventarioWEB.Controllers
                         new ColExcelProducto { Header = "CÓDIGO",            Valor = x => x.CodProducto },
                         new ColExcelProducto { Header = "PRODUCTO",          Valor = x => x.DscProducto },
                         new ColExcelProducto { Header = "UBICACIÓN INICIAL", Valor = x => x.UbicacionInicial },
-                        new ColExcelProducto { Header = "UBICACIÓN CONTADA", Valor = x => x.UbicacionContada },
+                        new ColExcelProducto { Header = "UBICACIÓN CONTADA", Valor = x => x.UbicacionContada,Dividida = true },
                         new ColExcelProducto { Header = "LOTE INICIAL",      Valor = x => x.LoteInicial,  EsLote = true },
-                        new ColExcelProducto { Header = "LOTE CONTADO",      Valor = x => x.LoteContado,  EsLote = true },
+                        new ColExcelProducto { Header = "LOTE CONTADO",      Valor = x => x.LoteContado,  EsLote = true , Dividida = true},
                         new ColExcelProducto { Header = "STOCK INICIAL",     Valor = x => x.StockInicial },
-                        new ColExcelProducto { Header = "STOCK CONTADO",     Valor = x => x.StockContado },
+                        new ColExcelProducto { Header = "STOCK CONTADO",     Valor = x => x.StockContado , Dividida = true},
                         new ColExcelProducto { Header = "DIFERENCIA",        Valor = x => x.Diferencia },
                         new ColExcelProducto { Header = "OBSERVACIÓN",       Valor = x => x.Observacion },
-                        new ColExcelProducto { Header = "USUARIO",           Valor = x => x.Usuario }
+                        new ColExcelProducto { Header = "USUARIO",           Valor = x => x.Usuario , Dividida = true}
                     }.Where(c => mostrarLote || !c.EsLote).ToList();
 
                     const int colIni = 2;                                   // columna B
@@ -729,16 +729,53 @@ namespace TomaInventarioWEB.Controllers
                     excelWorksheet.Cells[9, colIni, 9, ultimaCol].AutoFilter = true;
 
                     // CUERPO - FILA 10
+                    // ZEUS: el SP devuelve 1 fila por producto+ubicacion+lote+usuario -> se agrupa por producto.
+                    // GroupBy mantiene el orden de primera aparicion, asi respeta el ORDER BY del SP.
                     int filaInicio = 10;
-                    foreach (var item in reporte.TblReporteProductos)
+                    var productos = reporte.TblReporteProductos.GroupBy(x => x.CodProducto).ToList();
+
+                    foreach (var grupo in productos)
                     {
+                        var filas = grupo.ToList();
+                        var primera = filas[0];                       // datos de producto: iguales en todas las filas
+                        int filaFin = filaInicio + filas.Count - 1;
+
                         for (int j = 0; j < columnas.Count; j++)
-                            excelWorksheet.Cells[filaInicio, colIni + j].Value = columnas[j].Valor(item);
-                        filaInicio++;
+                        {
+                            int c = colIni + j;
+
+                            if (columnas[j].Dividida)
+                            {
+                                // una celda por lectura
+                                for (int k = 0; k < filas.Count; k++)
+                                    excelWorksheet.Cells[filaInicio + k, c].Value = columnas[j].Valor(filas[k]);
+                            }
+                            else
+                            {
+                                // una sola celda combinada para todo el producto
+                                excelWorksheet.Cells[filaInicio, c].Value = columnas[j].Valor(primera);
+
+                                var rango = excelWorksheet.Cells[filaInicio, c, filaFin, c];
+                                if (filas.Count > 1) rango.Merge = true;
+                                rango.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            }
+                        }
+
+                        filaInicio = filaFin + 1;
                     }
 
-                    // TOTALES: se ubican por nombre de columna, no por número fijo
-                    int filaTotal = 10 + reporte.TblReporteProductos.Count + 1;
+                    // Bordes finos a todo el cuerpo (para que se vean bien las celdas combinadas)
+                    if (filaInicio > 10)
+                    {
+                        var cuerpo = excelWorksheet.Cells[10, colIni, filaInicio - 1, ultimaCol];
+                        cuerpo.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        cuerpo.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        cuerpo.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        cuerpo.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    }
+
+                    // TOTALES: ahora la fila depende de las filas reales escritas (no de productos)
+                    int filaTotal = filaInicio + 1;
                     excelWorksheet.Cells[filaTotal, colIni].Value = "Totales:";
                     excelWorksheet.Cells[filaTotal, colIni].Style.Font.Bold = true;
 
@@ -750,7 +787,7 @@ namespace TomaInventarioWEB.Controllers
                     excelWorksheet.Cells[filaTotal, cCont].Style.Font.Bold = true;
                     excelWorksheet.Cells[filaTotal, cDif].Style.Font.Bold = true;
                     excelWorksheet.Cells[filaTotal, cDif].Style.Font.Color.SetColor(
-                    totales[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green);
+                        totales[2] < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Green);
 
 
 
@@ -2812,6 +2849,9 @@ namespace TomaInventarioWEB.Controllers
             public string Header;
             public Func<TblReporteProductoBE, object> Valor;
             public bool EsLote;
+
+            // agregando
+            public bool Dividida { get; set; }
         }
 
         private class ColExcelValorizado
